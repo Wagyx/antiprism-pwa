@@ -7,7 +7,7 @@ import "./index.css";
 // Register for offline use; avoid forced reloads that fight Vite HMR.
 registerSW({
   immediate: true,
-  onRegisteredSW(swUrl, registration) {
+  onRegisteredSW(_swUrl, registration) {
     if (!registration) return;
     // Periodic update check only — no automatic page reload loop.
     window.setInterval(() => {

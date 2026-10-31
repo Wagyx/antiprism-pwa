@@ -1,11 +1,10 @@
 import { runAntiprism } from "../wasm/client";
-import type { PipelineOp } from "./types";
+import { opToArgs, type PipelineOp } from "./types";
 
 export type PipelineResult = {
   ok: boolean;
   offText: string | null;
   error: string | null;
-  /** Index of the step that failed, if any. */
   failedStep: number | null;
 };
 
@@ -17,10 +16,9 @@ export async function runPipeline(ops: PipelineOp[]): Promise<PipelineResult> {
   let off = "";
   for (let i = 0; i < ops.length; i++) {
     const op = ops[i];
-    const result =
-      op.kind === "polygon"
-        ? await runAntiprism("polygon", [op.polygonType, String(op.numSides)])
-        : await runAntiprism("conway", [op.notation.trim()], off);
+    const args = opToArgs(op);
+    const stdin = op.kind === "polygon" ? "" : off;
+    const result = await runAntiprism(op.kind, args, stdin);
 
     if (!result.ok) {
       const msg =

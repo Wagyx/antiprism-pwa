@@ -1,4 +1,9 @@
-export type AntiprismTool = "polygon" | "conway";
+export type AntiprismTool =
+  | "polygon"
+  | "conway"
+  | "geodesic"
+  | "off_color"
+  | "off_util";
 
 export type ToolResult = {
   ok: boolean;

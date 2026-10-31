@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Compare Wasm polygon/conway OFF output to native Antiprism CLIs.
+ * Compare Wasm tool OFF output to native Antiprism CLIs.
  * Coordinates may differ by 1 ULP across native vs Wasm math; compare numerically.
  */
 import { spawnSync } from "node:child_process";
@@ -79,6 +79,13 @@ function compareOff(nativeText, wasmText) {
   return { ok: true };
 }
 
+const seedPrism = nativeRun("polygon", ["prism", "4"]);
+if (!seedPrism.ok) {
+  console.error("failed to make seed prism for piped tests");
+  process.exit(1);
+}
+const seedOff = seedPrism.stdout;
+
 const cases = [
   { tool: "polygon", args: ["prism", "4"] },
   { tool: "polygon", args: ["antiprism", "5"] },
@@ -86,6 +93,11 @@ const cases = [
   { tool: "conway", args: ["T"] },
   { tool: "conway", args: ["oT"] },
   { tool: "conway", args: ["aC"] },
+  { tool: "geodesic", args: ["-f", "2"], stdin: seedOff },
+  { tool: "geodesic", args: ["-f", "3", "-c", "2", "-M", "p"], stdin: seedOff },
+  { tool: "off_color", args: ["-f", "N", "-e", "U"], stdin: seedOff },
+  { tool: "off_util", args: ["-s"], stdin: seedOff },
+  { tool: "off_util", args: ["-S", "-O", "positive"], stdin: seedOff },
 ];
 
 const Module = await createAntiprismModule({

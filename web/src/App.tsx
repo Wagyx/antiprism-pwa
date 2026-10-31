@@ -1,4 +1,11 @@
-import { useEffect, useEffectEvent, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useEffectEvent,
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 import { runPipeline } from "./pipeline/runPipeline";
 import {
   defaultDisplay,
@@ -7,11 +14,15 @@ import {
   type PipelineOp,
 } from "./pipeline/types";
 import { useUndoable } from "./pipeline/useUndoable";
+import { DisplayPanel } from "./ui/DisplayPanel";
 import { StackPanel } from "./ui/StackPanel";
 import { PolyhedronViewer } from "./viewer/PolyhedronViewer";
 import "./App.css";
 
 const DEBOUNCE_MS = 200;
+const PANEL_MIN = 200;
+const PANEL_MAX = 520;
+const PANEL_DEFAULT = 280;
 
 function opsKey(ops: PipelineOp[]): string {
   return JSON.stringify(ops);
@@ -33,11 +44,13 @@ export default function App() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [failedStep, setFailedStep] = useState<number | null>(null);
+  const [panelWidth, setPanelWidth] = useState(PANEL_DEFAULT);
 
   const latestRun = useRef(0);
   const lastRunKey = useRef<string>("");
   const offTextRef = useRef<string | null>(null);
   const busyTimer = useRef<number | null>(null);
+  const dragRef = useRef<{ startX: number; startW: number } | null>(null);
 
   const clearBusyTimer = () => {
     if (busyTimer.current != null) {
@@ -48,7 +61,6 @@ export default function App() {
 
   const evaluate = useEffectEvent(async (ops: PipelineOp[], runId: number) => {
     clearBusyTimer();
-    // Show "Running…" only for slow runs; keep the node mounted via CSS when possible.
     busyTimer.current = window.setTimeout(() => {
       if (runId === latestRun.current) setBusy(true);
     }, 250);
@@ -93,7 +105,6 @@ export default function App() {
   useEffect(() => {
     const key = opsKey(present);
     const t = window.setTimeout(() => {
-      // Same stack content as last started run — do not re-run or flash busy.
       if (key === lastRunKey.current) return;
       lastRunKey.current = key;
       const runId = ++latestRun.current;
@@ -119,14 +130,40 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKey);
   }, [undo, redo]);
 
+  const onResizePointerDown = useCallback(
+    (e: ReactPointerEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      dragRef.current = { startX: e.clientX, startW: panelWidth };
+      e.currentTarget.setPointerCapture(e.pointerId);
+    },
+    [panelWidth],
+  );
+
+  const onResizePointerMove = useCallback((e: ReactPointerEvent<HTMLDivElement>) => {
+    if (!dragRef.current) return;
+    const dx = e.clientX - dragRef.current.startX;
+    const next = Math.min(
+      PANEL_MAX,
+      Math.max(PANEL_MIN, dragRef.current.startW + dx),
+    );
+    setPanelWidth(next);
+  }, []);
+
+  const onResizePointerUp = useCallback((e: ReactPointerEvent<HTMLDivElement>) => {
+    dragRef.current = null;
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {
+      /* already released */
+    }
+  }, []);
+
   return (
-    <div className="app">
+    <div className="app" style={{ ["--panel-width" as string]: `${panelWidth}px` }}>
       <StackPanel
         ops={present}
         onCommit={commitStack}
         onPatch={patchStack}
-        display={display}
-        onDisplayChange={setDisplay}
         busy={busy}
         error={error}
         failedStep={failedStep}
@@ -135,7 +172,21 @@ export default function App() {
         onUndo={undo}
         onRedo={redo}
       />
+      <div
+        className="panel-resizer"
+        role="separator"
+        aria-orientation="vertical"
+        aria-label="Resize sidebar"
+        aria-valuenow={panelWidth}
+        aria-valuemin={PANEL_MIN}
+        aria-valuemax={PANEL_MAX}
+        onPointerDown={onResizePointerDown}
+        onPointerMove={onResizePointerMove}
+        onPointerUp={onResizePointerUp}
+        onPointerCancel={onResizePointerUp}
+      />
       <main className="stage">
+        <DisplayPanel display={display} onChange={setDisplay} />
         <PolyhedronViewer
           offText={offText}
           verticesActive={display.verticesActive}

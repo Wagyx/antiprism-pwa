@@ -1,5 +1,5 @@
 /*
- * Low-level Wasm exports for Antiprism polygon / conway.
+ * Low-level Wasm exports for Antiprism editor tools.
  * JS catches Emscripten ExitStatus when tools call exit().
  */
 
@@ -12,6 +12,9 @@
 
 extern int polygon_main(int argc, char **argv);
 extern int conway_main(int argc, char **argv);
+extern int geodesic_main(int argc, char **argv);
+extern int off_color_main(int argc, char **argv);
+extern int off_util_main(int argc, char **argv);
 
 namespace {
 
@@ -75,6 +78,12 @@ int call_tool(const std::string &tool, const std::vector<std::string> &args)
     return polygon_main(argc, g_argv_ptrs.data());
   if (tool == "conway")
     return conway_main(argc, g_argv_ptrs.data());
+  if (tool == "geodesic")
+    return geodesic_main(argc, g_argv_ptrs.data());
+  if (tool == "off_color")
+    return off_color_main(argc, g_argv_ptrs.data());
+  if (tool == "off_util")
+    return off_util_main(argc, g_argv_ptrs.data());
   fprintf(stderr, "unknown tool: %s\n", tool.c_str());
   return 1;
 }

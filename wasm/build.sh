@@ -111,9 +111,12 @@ for f in "${TESS_SRCS[@]}"; do
   TESS_OBJS+=("$obj")
 done
 
-echo "==> Compiling polygon + conway tools (renamed main)"
+echo "==> Compiling editor tools (renamed main)"
 compile_one "$ANTI/src/polygon.cc" "$OBJ_DIR/src/polygon.o" -Dmain=polygon_main
 compile_one "$ANTI/src/conway.cc" "$OBJ_DIR/src/conway.o" -Dmain=conway_main
+compile_one "$ANTI/src/geodesic.cc" "$OBJ_DIR/src/geodesic.o" -Dmain=geodesic_main
+compile_one "$ANTI/src/off_color.cc" "$OBJ_DIR/src/off_color.o" -Dmain=off_color_main
+compile_one "$ANTI/src/off_util.cc" "$OBJ_DIR/src/off_util.o" -Dmain=off_util_main
 compile_one "$ANTI/src/canonical_common.cc" "$OBJ_DIR/src/canonical_common.o"
 compile_one "$ANTI/src/color_common.cc" "$OBJ_DIR/src/color_common.o"
 
@@ -130,6 +133,9 @@ em++ -O2 \
   "${TESS_OBJS[@]}" \
   "$OBJ_DIR/src/polygon.o" \
   "$OBJ_DIR/src/conway.o" \
+  "$OBJ_DIR/src/geodesic.o" \
+  "$OBJ_DIR/src/off_color.o" \
+  "$OBJ_DIR/src/off_util.o" \
   "$OBJ_DIR/src/canonical_common.o" \
   "$OBJ_DIR/src/color_common.o" \
   "$OBJ_DIR/bindings.o" \
