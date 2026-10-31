@@ -2,6 +2,7 @@ antiprism/
 node_modules/
 web/node_modules/
 web/dist/
+wasm/dist/
 wasm/build/
 *.log
 .DS_Store

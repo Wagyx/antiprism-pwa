@@ -34,8 +34,9 @@ export default defineConfig({
         maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
         navigateFallback: "/index.html",
       },
+      // Keep the SW out of `vite dev` — it fights HMR and can look like a UI blink loop.
       devOptions: {
-        enabled: true,
+        enabled: false,
       },
     }),
   ],
