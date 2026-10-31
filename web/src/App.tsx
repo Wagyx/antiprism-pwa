@@ -14,6 +14,7 @@ import {
   type PipelineOp,
 } from "./pipeline/types";
 import { useUndoable } from "./pipeline/useUndoable";
+import { saveOffFile } from "./io/saveOff";
 import { DisplayPanel } from "./ui/DisplayPanel";
 import { StackPanel } from "./ui/StackPanel";
 import { PolyhedronViewer } from "./viewer/PolyhedronViewer";
@@ -158,6 +159,17 @@ export default function App() {
     }
   }, []);
 
+  const saveLock = useRef(false);
+  const onSaveOff = useCallback(() => {
+    if (saveLock.current) return;
+    const text = offText ?? offTextRef.current;
+    if (!text?.trim()) return;
+    saveLock.current = true;
+    void saveOffFile(text).finally(() => {
+      saveLock.current = false;
+    });
+  }, [offText]);
+
   return (
     <div className="app" style={{ ["--panel-width" as string]: `${panelWidth}px` }}>
       <StackPanel
@@ -171,6 +183,8 @@ export default function App() {
         canRedo={canRedo}
         onUndo={undo}
         onRedo={redo}
+        canSave={Boolean(offText?.trim())}
+        onSaveOff={onSaveOff}
       />
       <div
         className="panel-resizer"

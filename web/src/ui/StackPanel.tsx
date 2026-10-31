@@ -46,6 +46,8 @@ type Props = {
   canRedo: boolean;
   onUndo: () => void;
   onRedo: () => void;
+  canSave: boolean;
+  onSaveOff: () => void;
 };
 
 function updateOp(ops: PipelineOp[], id: string, patch: Partial<PipelineOp>): PipelineOp[] {
@@ -291,6 +293,8 @@ export function StackPanel({
   busy,
   error,
   failedStep,
+  canSave,
+  onSaveOff,
 }: Props) {
   useDismissDetails();
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
@@ -343,6 +347,14 @@ export function StackPanel({
             ))}
           </div>
         </details>
+        <button
+          type="button"
+          disabled={!canSave || busy}
+          onClick={onSaveOff}
+          title="Save pipeline result as OFF"
+        >
+          Save as OFF
+        </button>
         {/* Undo/Redo buttons hidden for now; stack history still wired in App */}
         <span className={`busy-hint${busy ? " is-on" : ""}`} aria-live="polite">
           Running…

@@ -14,6 +14,6 @@ The application has an editor module that lets the user inspect the polyhedron i
 
 
 TODOS:
-- exporter (OBJ, OFF, ...?)
+- exporter (OBJ, …)
 - importer (OBJ, OFF, WRL ?)
 - undo/redo
