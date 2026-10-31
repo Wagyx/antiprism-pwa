@@ -19,7 +19,11 @@ export function runTool(Module, tool, args = [], stdinOff = "") {
     }
     const stdout = Module.read_stdout();
     const stderr = Module.read_stderr();
-    return { ok: code === 0, code, stdout, stderr };
+    // conv_hull returns the hull dimension (2/3) as its exit status on success
+    const ok =
+      code === 0 ||
+      (tool === "conv_hull" && /^\s*OFF\b/i.test(stdout));
+    return { ok, code, stdout, stderr };
   } finally {
     vec.delete();
   }

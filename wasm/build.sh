@@ -111,12 +111,25 @@ for f in "${TESS_SRCS[@]}"; do
   TESS_OBJS+=("$obj")
 done
 
-echo "==> Compiling editor tools (renamed main)"
+echo "==> Compiling editor tools (renamed main + disambiguated locals)"
+# Tool .cc files reuse short names (pr_opts, cn_opts, make_skeleton, …).
+# Prefix those with -D so multiple tools can link into one Wasm module.
+rm -f "$OBJ_DIR/src"/{polygon,conway,geodesic,off_color,off_util,off_trans,pol_recip,canonical,conv_hull,planar}.o
 compile_one "$ANTI/src/polygon.cc" "$OBJ_DIR/src/polygon.o" -Dmain=polygon_main
-compile_one "$ANTI/src/conway.cc" "$OBJ_DIR/src/conway.o" -Dmain=conway_main
+compile_one "$ANTI/src/conway.cc" "$OBJ_DIR/src/conway.o" \
+  -Dmain=conway_main -Dcn_opts=conway_cn_opts -Dextended_help=conway_extended_help
 compile_one "$ANTI/src/geodesic.cc" "$OBJ_DIR/src/geodesic.o" -Dmain=geodesic_main
 compile_one "$ANTI/src/off_color.cc" "$OBJ_DIR/src/off_color.o" -Dmain=off_color_main
-compile_one "$ANTI/src/off_util.cc" "$OBJ_DIR/src/off_util.o" -Dmain=off_util_main
+compile_one "$ANTI/src/off_util.cc" "$OBJ_DIR/src/off_util.o" \
+  -Dmain=off_util_main -Dpr_opts=off_util_pr_opts -Dmake_skeleton=off_util_make_skeleton
+compile_one "$ANTI/src/off_trans.cc" "$OBJ_DIR/src/off_trans.o" -Dmain=off_trans_main
+compile_one "$ANTI/src/pol_recip.cc" "$OBJ_DIR/src/pol_recip.o" \
+  -Dmain=pol_recip_main -Dpr_opts=pol_recip_pr_opts
+compile_one "$ANTI/src/canonical.cc" "$OBJ_DIR/src/canonical.o" \
+  -Dmain=canonical_main -Dcn_opts=canonical_cn_opts -Dextended_help=canonical_extended_help
+compile_one "$ANTI/src/conv_hull.cc" "$OBJ_DIR/src/conv_hull.o" -Dmain=conv_hull_main
+compile_one "$ANTI/src/planar.cc" "$OBJ_DIR/src/planar.o" \
+  -Dmain=planar_main -Dmake_skeleton=planar_make_skeleton
 compile_one "$ANTI/src/canonical_common.cc" "$OBJ_DIR/src/canonical_common.o"
 compile_one "$ANTI/src/color_common.cc" "$OBJ_DIR/src/color_common.o"
 
@@ -136,6 +149,11 @@ em++ -O2 \
   "$OBJ_DIR/src/geodesic.o" \
   "$OBJ_DIR/src/off_color.o" \
   "$OBJ_DIR/src/off_util.o" \
+  "$OBJ_DIR/src/off_trans.o" \
+  "$OBJ_DIR/src/pol_recip.o" \
+  "$OBJ_DIR/src/canonical.o" \
+  "$OBJ_DIR/src/conv_hull.o" \
+  "$OBJ_DIR/src/planar.o" \
   "$OBJ_DIR/src/canonical_common.o" \
   "$OBJ_DIR/src/color_common.o" \
   "$OBJ_DIR/bindings.o" \

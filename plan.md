@@ -11,3 +11,10 @@ https://asliceofcuriosity.fr/blog/extra/polyhedra-viewer-antiprism.html
 The application has a library module that allows to load polyhedra in (OFF and OBJ file formats). It also allows to browse and search through the library. There is a default internal library and the user can create its own which is stored locally.
 
 The application has an editor module that lets the user inspect the polyhedron in a 3D view and call the programs from antiprism. Some operations from antiprism can be piped like the geometry modifiers from Blender.
+
+
+TODOS:
+- version number
+- exporter (OBJ, OFF, ...?)
+- importer (OBJ, OFF, WRL ?)
+- undo/redo

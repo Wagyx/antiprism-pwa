@@ -15,6 +15,11 @@ extern int conway_main(int argc, char **argv);
 extern int geodesic_main(int argc, char **argv);
 extern int off_color_main(int argc, char **argv);
 extern int off_util_main(int argc, char **argv);
+extern int off_trans_main(int argc, char **argv);
+extern int pol_recip_main(int argc, char **argv);
+extern int canonical_main(int argc, char **argv);
+extern int conv_hull_main(int argc, char **argv);
+extern int planar_main(int argc, char **argv);
 
 namespace {
 
@@ -84,6 +89,16 @@ int call_tool(const std::string &tool, const std::vector<std::string> &args)
     return off_color_main(argc, g_argv_ptrs.data());
   if (tool == "off_util")
     return off_util_main(argc, g_argv_ptrs.data());
+  if (tool == "off_trans")
+    return off_trans_main(argc, g_argv_ptrs.data());
+  if (tool == "pol_recip")
+    return pol_recip_main(argc, g_argv_ptrs.data());
+  if (tool == "canonical")
+    return canonical_main(argc, g_argv_ptrs.data());
+  if (tool == "conv_hull")
+    return conv_hull_main(argc, g_argv_ptrs.data());
+  if (tool == "planar")
+    return planar_main(argc, g_argv_ptrs.data());
   fprintf(stderr, "unknown tool: %s\n", tool.c_str());
   return 1;
 }

@@ -86,6 +86,13 @@ if (!seedPrism.ok) {
 }
 const seedOff = seedPrism.stdout;
 
+const seedAmbo = nativeRun("conway", ["a"], seedOff);
+if (!seedAmbo.ok) {
+  console.error("failed to make ambo seed for planar tests");
+  process.exit(1);
+}
+const amboOff = seedAmbo.stdout;
+
 const cases = [
   { tool: "polygon", args: ["prism", "4"] },
   { tool: "polygon", args: ["antiprism", "5"] },
@@ -98,6 +105,14 @@ const cases = [
   { tool: "off_color", args: ["-f", "N", "-e", "U"], stdin: seedOff },
   { tool: "off_util", args: ["-s"], stdin: seedOff },
   { tool: "off_util", args: ["-S", "-O", "positive"], stdin: seedOff },
+  { tool: "off_trans", args: ["-S", "1.5"], stdin: seedOff },
+  { tool: "off_trans", args: ["-R", "0,0,45"], stdin: seedOff },
+  { tool: "pol_recip", args: ["-c", "C"], stdin: seedOff },
+  { tool: "canonical", args: ["-p", "p", "-n", "40", "-i", "40"], stdin: seedOff },
+  // prism-4 hull can exit non-zero (qhull status) despite OFF; use prism-5
+  { tool: "conv_hull", args: [], stdin: nativeRun("polygon", ["prism", "5"]).stdout },
+  { tool: "conv_hull", args: ["-a"], stdin: nativeRun("polygon", ["prism", "5"]).stdout },
+  { tool: "planar", args: ["-d", "1"], stdin: amboOff },
 ];
 
 const Module = await createAntiprismModule({
@@ -110,7 +125,11 @@ for (const c of cases) {
   const native = nativeRun(c.tool, c.args, c.stdin ?? "");
   const wasm = runTool(Module, c.tool, c.args, c.stdin ?? "");
 
-  if (!native.ok) {
+  // conv_hull returns hull dimension as exit status on success
+  const nativeOk =
+    native.ok ||
+    (c.tool === "conv_hull" && /^\s*OFF\b/i.test(native.stdout));
+  if (!nativeOk) {
     console.error(`FAIL ${label}: native exited ${native.code}\n${native.stderr}`);
     failed++;
     continue;

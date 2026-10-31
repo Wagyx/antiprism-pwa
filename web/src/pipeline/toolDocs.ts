@@ -283,4 +283,144 @@ export const TOOL_DOCS: Record<PipelineKind, ToolDoc> = {
       },
     ],
   },
+
+  off_trans: {
+    title: "off_trans",
+    blurb:
+      "Apply geometric transforms to OFF from stdin: translate, rotate, reflect, scale, invert, matrices.",
+    sections: [
+      {
+        heading: "Transforms",
+        entries: [
+          { symbol: "-T x,y,z", summary: "Translate by displacement." },
+          {
+            symbol: "-R …",
+            summary:
+              "Rotate: 3 angles (xyz°), or axis+angle (4), or from→to vectors (6/12).",
+          },
+          { symbol: "-M x,y,z", summary: "Reflect in plane with this normal." },
+          {
+            symbol: "-S …",
+            summary: "Scale: one factor, xyz factors, or direction+factor.",
+          },
+          { symbol: "-I", summary: "Inversion through the origin." },
+          { symbol: "-X mtrx", summary: "Premultiply by 9- or 12-value matrix." },
+          { symbol: "-C", summary: "Translate so centroid is at the origin." },
+          { symbol: "-s r|e|…", summary: "Normalise size (radius / edge / …)." },
+        ],
+      },
+    ],
+  },
+
+  pol_recip: {
+    title: "pol_recip",
+    blurb:
+      "Polar reciprocal (dual): faces become vertices from face planes. Centre and radius control the dual geometry.",
+    sections: [
+      {
+        heading: "Centre (-c)",
+        entries: [
+          { symbol: "C", summary: "Vertex centroid (default)." },
+          { symbol: "0 / X,Y,Z", summary: "Origin or explicit centre." },
+          { symbol: "M", summary: "Approximate mid-sphere." },
+          { symbol: "R", summary: "Circumcentre (average)." },
+          { symbol: "e / E", summary: "Edge balanced (+ invert)." },
+          { symbol: "v / V", summary: "Vert/face balanced (+ invert)." },
+          { symbol: "a / A", summary: "V/f/e balanced (+ invert)." },
+        ],
+      },
+      {
+        heading: "Other",
+        entries: [
+          {
+            symbol: "-r",
+            summary: "Radius: value, or v/V/e/E/f/F nearest/furthest distances.",
+          },
+          { symbol: "-i", summary: "Reflect dual through the centre." },
+          { symbol: "-n / -l", summary: "Iteration cap / convergence limit." },
+        ],
+      },
+    ],
+  },
+
+  canonical: {
+    title: "canonical",
+    blurb:
+      "Planarize or canonicalize a polyhedron (George Hart algorithms). Cap -n/-i in the browser so iteration cannot hang.",
+    sections: [
+      {
+        heading: "Modes",
+        entries: [
+          {
+            symbol: "-p p|m|…",
+            summary: "Planarize only (or before -c). Methods include poly_form, mathematica.",
+          },
+          {
+            symbol: "-c c|m|…",
+            summary: "Canonicalize (circle packing / mathematica / …).",
+          },
+          {
+            symbol: "-n / -i",
+            summary: "Max iterations for canonicalize / planarize (UI default 80).",
+          },
+          {
+            symbol: "-l",
+            summary: "Convergence limit as negative exponent (default 12).",
+          },
+          {
+            symbol: "-e s",
+            summary: "Project vertices onto a sphere (canonicalization).",
+          },
+          {
+            symbol: "-t b|p|c",
+            summary: "Work on base, dual (planarize), or dual (full).",
+          },
+        ],
+      },
+    ],
+  },
+
+  conv_hull: {
+    title: "conv_hull",
+    blurb: "Replace the model with its convex hull (Qhull), or append the hull to the input.",
+    sections: [
+      {
+        heading: "Options",
+        entries: [
+          { symbol: "(none)", summary: "Output the convex hull only." },
+          { symbol: "-a", summary: "Append hull faces/verts to the input model." },
+          { symbol: "-Q args", summary: "Extra Qhull args (unsupported / experimental)." },
+        ],
+      },
+    ],
+  },
+
+  planar: {
+    title: "planar",
+    blurb:
+      "Convert overlapping coplanar polygons into non-overlapping tiles (or merge adjacent coplanar faces).",
+    sections: [
+      {
+        heading: "Scene",
+        entries: [
+          {
+            symbol: "-d 1|2",
+            summary: "1 = tile overlapping faces; 2 = merge adjacent coplanar.",
+          },
+          {
+            symbol: "-p 1–5",
+            summary: "Fill algorithm: angular, modulo2, triangulation, …",
+          },
+          { symbol: "-S", summary: "Stitch seams after tiling/merging." },
+          { symbol: "-R", summary: "Split pinched faces." },
+          { symbol: "-r", summary: "Rebuild compound model (separate vertices)." },
+          { symbol: "-I", summary: "Remove extra in-line face vertices." },
+          {
+            symbol: "-e / -E",
+            summary: "Blend / rebuild explicit edges from face colours.",
+          },
+        ],
+      },
+    ],
+  },
 };

@@ -3,7 +3,12 @@ export type AntiprismTool =
   | "conway"
   | "geodesic"
   | "off_color"
-  | "off_util";
+  | "off_util"
+  | "off_trans"
+  | "pol_recip"
+  | "canonical"
+  | "conv_hull"
+  | "planar";
 
 export type ToolResult = {
   ok: boolean;
@@ -46,12 +51,13 @@ export function runTool(
         throw e;
       }
     }
-    return {
-      ok: code === 0,
-      code,
-      stdout: Module.read_stdout(),
-      stderr: Module.read_stderr(),
-    };
+    const stdout = Module.read_stdout();
+    const stderr = Module.read_stderr();
+    // conv_hull returns the hull dimension (2/3) as its exit status on success
+    const ok =
+      code === 0 ||
+      (tool === "conv_hull" && /^\s*OFF\b/i.test(stdout));
+    return { ok, code, stdout, stderr };
   } finally {
     vec.delete();
   }

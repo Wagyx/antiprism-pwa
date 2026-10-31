@@ -1,15 +1,38 @@
 import { useState } from "react";
 import {
   createOp,
+  FLAG_PRESETS,
+  isFlagsTool,
   OFF_COLOR_PRESETS,
-  OFF_UTIL_PRESETS,
+  opToCommandLine,
   PIPELINE_KINDS,
   POLYGON_TYPES,
+  type FlagsToolKind,
   type PipelineKind,
   type PipelineOp,
-  type PolygonType,
 } from "../pipeline/types";
+import { MenuSelect } from "./MenuSelect";
 import { ToolInfoButton } from "./ToolInfoButton";
+import { useDismissDetails } from "./useDismissDetails";
+
+const POLYGON_TYPE_OPTIONS = POLYGON_TYPES.map((t) => ({ value: t, label: t }));
+
+const GEODESIC_CLASS_OPTIONS = [
+  { value: "1", label: "I (1)" },
+  { value: "2", label: "II (2)" },
+  { value: "1,1", label: "III (1,1)" },
+  { value: "2,1", label: "III (2,1)" },
+] as const;
+
+const GEODESIC_METHOD_OPTIONS = [
+  { value: "s", label: "sphere" },
+  { value: "p", label: "planar" },
+] as const;
+
+const PIPELINE_KIND_OPTIONS = PIPELINE_KINDS.map((k) => ({
+  value: k,
+  label: k,
+}));
 
 type Props = {
   ops: PipelineOp[];
@@ -51,8 +74,8 @@ function opSummary(op: PipelineOp): string {
       return [op.faces && `f:${op.faces}`, op.edges && `e:${op.edges}`, op.vertices && `v:${op.vertices}`]
         .filter(Boolean)
         .join(" ") || "…";
-    case "off_util":
-      return op.flags || "…";
+    default:
+      return op.flags || "(default)";
   }
 }
 
@@ -74,22 +97,18 @@ function OpFields({
       <div className="stack-card-body">
         <label className="field">
           <span>Type</span>
-          <select
+          <MenuSelect
+            aria-label="Polygon type"
             value={op.polygonType}
-            onChange={(e) =>
+            options={POLYGON_TYPE_OPTIONS}
+            onChange={(polygonType) =>
               onCommit(
                 updateOp(ops, op.id, {
-                  polygonType: e.target.value as PolygonType,
+                  polygonType: polygonType as (typeof POLYGON_TYPES)[number],
                 }),
               )
             }
-          >
-            {POLYGON_TYPES.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
+          />
         </label>
         <label className="field">
           <span>Sides</span>
@@ -158,33 +177,29 @@ function OpFields({
         </label>
         <label className="field">
           <span>Class</span>
-          <select
+          <MenuSelect
+            aria-label="Geodesic class"
             value={op.faceClass}
-            onChange={(e) =>
-              onCommit(updateOp(ops, op.id, { faceClass: e.target.value }))
+            options={GEODESIC_CLASS_OPTIONS}
+            onChange={(faceClass) =>
+              onCommit(updateOp(ops, op.id, { faceClass }))
             }
-          >
-            <option value="1">I (1)</option>
-            <option value="2">II (2)</option>
-            <option value="1,1">III (1,1)</option>
-            <option value="2,1">III (2,1)</option>
-          </select>
+          />
         </label>
         <label className="field">
           <span>Method</span>
-          <select
+          <MenuSelect
+            aria-label="Geodesic method"
             value={op.method}
-            onChange={(e) =>
+            options={GEODESIC_METHOD_OPTIONS}
+            onChange={(method) =>
               onCommit(
                 updateOp(ops, op.id, {
-                  method: e.target.value as "s" | "p",
+                  method: method as "s" | "p",
                 }),
               )
             }
-          >
-            <option value="s">sphere</option>
-            <option value="p">planar</option>
-          </select>
+          />
         </label>
         {index === 0 ? (
           <p className="hint">Needs a prior seed in the stack (reads OFF stdin).</p>
@@ -200,88 +215,72 @@ function OpFields({
       <div className="stack-card-body">
         <label className="field">
           <span>Faces (-f)</span>
-          <select
+          <MenuSelect
+            aria-label="Face colouring"
             value={op.faces}
-            onChange={(e) =>
-              onCommit(updateOp(ops, op.id, { faces: e.target.value }))
-            }
-          >
-            {OFF_COLOR_PRESETS.map((p) => (
-              <option key={`f-${p.value || "omit"}`} value={p.value}>
-                {p.label}
-              </option>
-            ))}
-          </select>
+            options={OFF_COLOR_PRESETS}
+            onChange={(faces) => onCommit(updateOp(ops, op.id, { faces }))}
+          />
         </label>
         <label className="field">
           <span>Edges (-e)</span>
-          <select
+          <MenuSelect
+            aria-label="Edge colouring"
             value={op.edges}
-            onChange={(e) =>
-              onCommit(updateOp(ops, op.id, { edges: e.target.value }))
-            }
-          >
-            {OFF_COLOR_PRESETS.map((p) => (
-              <option key={`e-${p.value || "omit"}`} value={p.value}>
-                {p.label}
-              </option>
-            ))}
-          </select>
+            options={OFF_COLOR_PRESETS}
+            onChange={(edges) => onCommit(updateOp(ops, op.id, { edges }))}
+          />
         </label>
         <label className="field">
           <span>Vertices (-v)</span>
-          <select
+          <MenuSelect
+            aria-label="Vertex colouring"
             value={op.vertices}
-            onChange={(e) =>
-              onCommit(updateOp(ops, op.id, { vertices: e.target.value }))
+            options={OFF_COLOR_PRESETS}
+            onChange={(vertices) =>
+              onCommit(updateOp(ops, op.id, { vertices }))
             }
-          >
-            {OFF_COLOR_PRESETS.map((p) => (
-              <option key={`v-${p.value || "omit"}`} value={p.value}>
-                {p.label}
-              </option>
-            ))}
-          </select>
+          />
         </label>
         <p className="hint">Pipes previous OFF in as input.</p>
       </div>
     );
   }
 
-  return (
-    <div className="stack-card-body">
-      <label className="field">
-        <span>Preset</span>
-        <select
-          value={OFF_UTIL_PRESETS.some((p) => p.value === op.flags) ? op.flags : ""}
-          onChange={(e) => {
-            if (!e.target.value) return;
-            onCommit(updateOp(ops, op.id, { flags: e.target.value }));
-          }}
-        >
-          {!OFF_UTIL_PRESETS.some((p) => p.value === op.flags) ? (
-            <option value="">custom…</option>
-          ) : null}
-          {OFF_UTIL_PRESETS.map((p) => (
-            <option key={p.value} value={p.value}>
-              {p.label}
-            </option>
-          ))}
-        </select>
-      </label>
-      <label className="field">
-        <span>Flags</span>
-        <input
-          type="text"
-          value={op.flags}
-          placeholder="e.g. -s  or  -S -O positive"
-          onChange={(e) => onPatch(updateOp(ops, op.id, { flags: e.target.value }))}
-          onBlur={() => onCommit(ops)}
-        />
-      </label>
-      <p className="hint">Pipes previous OFF in as input.</p>
-    </div>
-  );
+  if (isFlagsTool(op.kind)) {
+    const kind = op.kind as FlagsToolKind;
+    const presets = FLAG_PRESETS[kind];
+    const matched = presets.some((p) => p.value === op.flags);
+    return (
+      <div className="stack-card-body">
+        <label className="field">
+          <span>Preset</span>
+          <MenuSelect
+            aria-label={`${kind} preset`}
+            value={op.flags}
+            options={presets}
+            fallbackLabel={matched ? "custom…" : `custom… (${op.flags || "empty"})`}
+            onChange={(flags) => onCommit(updateOp(ops, op.id, { flags }))}
+          />
+        </label>
+        <label className="field">
+          <span>Flags</span>
+          <input
+            type="text"
+            value={op.flags}
+            placeholder="CLI flags (space-separated)"
+            onChange={(e) =>
+              onPatch(updateOp(ops, op.id, { flags: e.target.value }))
+            }
+            onBlur={() => onCommit(ops)}
+          />
+        </label>
+        <p className="hint">Pipes previous OFF in as input.</p>
+      </div>
+    );
+  }
+
+  return null;
 }
 
 export function StackPanel({
@@ -291,11 +290,8 @@ export function StackPanel({
   busy,
   error,
   failedStep,
-  canUndo,
-  canRedo,
-  onUndo,
-  onRedo,
 }: Props) {
+  useDismissDetails();
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
 
   const isExpanded = (id: string) => expanded[id] ?? true;
@@ -335,12 +331,7 @@ export function StackPanel({
             ))}
           </div>
         </details>
-        <button type="button" disabled={!canUndo} onClick={onUndo} title="Undo (Ctrl+Z)">
-          Undo
-        </button>
-        <button type="button" disabled={!canRedo} onClick={onRedo} title="Redo (Ctrl+Y)">
-          Redo
-        </button>
+        {/* Undo/Redo buttons hidden for now; stack history still wired in App */}
         <span className={`busy-hint${busy ? " is-on" : ""}`} aria-live="polite">
           Running…
         </span>
@@ -356,7 +347,7 @@ export function StackPanel({
           return (
             <div
               key={op.id}
-              className={`stack-card${failedStep === index ? " is-error" : ""}${open ? " is-open" : ""}`}
+              className={`stack-card${failedStep === index ? " is-error" : ""}${open ? " is-open" : ""}${op.enabled ? "" : " is-off"}`}
             >
               <div className="stack-card-head">
                 <button
@@ -368,29 +359,43 @@ export function StackPanel({
                 >
                   {open ? "▾" : "▸"}
                 </button>
-                <span className="step-index">{index + 1}</span>
-                <select
-                  className="kind-select"
-                  value={op.kind}
-                  onChange={(e) => {
-                    const kind = e.target.value as PipelineKind;
-                    if (kind === op.kind) return;
-                    const replacement = createOp(kind, index === 0);
-                    onCommit(
-                      ops.map((o, i) =>
-                        i === index ? { ...replacement, id: o.id } : o,
-                      ),
-                    );
-                    setExpanded((prev) => ({ ...prev, [op.id]: true }));
-                  }}
+                <label
+                  className={`op-enable${op.enabled ? "" : " is-off"}`}
+                  title={op.enabled ? "On — included in pipeline" : "Off — skipped"}
+                >
+                  <input
+                    type="checkbox"
+                    checked={op.enabled}
+                    aria-label={op.enabled ? "Disable step" : "Enable step"}
+                    onChange={() =>
+                      onCommit(updateOp(ops, op.id, { enabled: !op.enabled }))
+                    }
+                  />
+                </label>
+                <div
+                  className="kind-select-wrap"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  {PIPELINE_KINDS.map((k) => (
-                    <option key={k} value={k}>
-                      {k}
-                    </option>
-                  ))}
-                </select>
+                  <MenuSelect
+                    className="kind-select"
+                    aria-label="Operation kind"
+                    value={op.kind}
+                    options={PIPELINE_KIND_OPTIONS}
+                    onChange={(kind) => {
+                      const k = kind as PipelineKind;
+                      if (k === op.kind) return;
+                      const replacement = createOp(k, index === 0);
+                      onCommit(
+                        ops.map((o, i) =>
+                          i === index
+                            ? { ...replacement, id: o.id, enabled: o.enabled }
+                            : o,
+                        ),
+                      );
+                      setExpanded((prev) => ({ ...prev, [op.id]: true }));
+                    }}
+                  />
+                </div>
                 <ToolInfoButton kind={op.kind} />
                 {!open ? (
                   <button
@@ -430,13 +435,18 @@ export function StackPanel({
               </div>
 
               {open ? (
-                <OpFields
-                  op={op}
-                  index={index}
-                  ops={ops}
-                  onCommit={onCommit}
-                  onPatch={onPatch}
-                />
+                <>
+                  <OpFields
+                    op={op}
+                    index={index}
+                    ops={ops}
+                    onCommit={onCommit}
+                    onPatch={onPatch}
+                  />
+                  <p className="op-cmdline" title="Equivalent command line">
+                    <code>{opToCommandLine(op)}</code>
+                  </p>
+                </>
               ) : null}
             </div>
           );
