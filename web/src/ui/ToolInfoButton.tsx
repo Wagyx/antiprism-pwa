@@ -1,11 +1,19 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { CONWAY_OPERATORS, CONWAY_SEEDS } from "../pipeline/conwayInfo";
+import { TOOL_DOCS, type ToolDoc } from "../pipeline/toolDocs";
+import type { PipelineKind } from "../pipeline/types";
 
-const PANEL_WIDTH = 352;
+const PANEL_WIDTH = 360;
 const GAP = 8;
 
-export function ConwayInfoButton() {
+type Props = {
+  kind: PipelineKind;
+  /** Optional override; defaults to TOOL_DOCS[kind]. */
+  doc?: ToolDoc;
+};
+
+export function ToolInfoButton({ kind, doc }: Props) {
+  const info = doc ?? TOOL_DOCS[kind];
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
@@ -20,11 +28,10 @@ export function ConwayInfoButton() {
 
     const place = () => {
       const r = btnRef.current!.getBoundingClientRect();
-      const width = PANEL_WIDTH;
+      const width = Math.min(PANEL_WIDTH, window.innerWidth - 2 * GAP);
       const maxLeft = window.innerWidth - width - GAP;
       let left = r.right + GAP;
       if (left > maxLeft) {
-        // Prefer right of button; if clipped, flip to left of button.
         left = Math.max(GAP, r.left - width - GAP);
       }
       const panelH = panelRef.current?.offsetHeight ?? 320;
@@ -36,7 +43,6 @@ export function ConwayInfoButton() {
     };
 
     place();
-    // Re-measure after paint so height is accurate.
     const raf = requestAnimationFrame(place);
     window.addEventListener("resize", place);
     window.addEventListener("scroll", place, true);
@@ -45,7 +51,7 @@ export function ConwayInfoButton() {
       window.removeEventListener("resize", place);
       window.removeEventListener("scroll", place, true);
     };
-  }, [open]);
+  }, [open, kind]);
 
   useEffect(() => {
     if (!open) return;
@@ -69,49 +75,45 @@ export function ConwayInfoButton() {
     open && pos
       ? createPortal(
           <div
-            className="conway-info-panel"
+            className="tool-info-panel"
             id={panelId}
             role="dialog"
-            aria-label="Conway notation"
+            aria-label={info.title}
             ref={panelRef}
             style={{ top: pos.top, left: pos.left }}
           >
-            <header className="conway-info-header">
-              <strong>Conway notation</strong>
+            <header className="tool-info-header">
+              <strong>{info.title}</strong>
               <button
                 type="button"
-                className="conway-info-close"
+                className="tool-info-close"
                 onClick={() => setOpen(false)}
               >
                 ×
               </button>
             </header>
-            <p className="conway-info-intro">
-              Operators (lowercase / symbols) precede an optional capital seed. When this
-              step follows another operation, omit the seed — OFF is piped in.
-            </p>
-
-            <h3>Seeds</h3>
-            <ul className="conway-info-list">
-              {CONWAY_SEEDS.map((s) => (
-                <li key={s.symbol}>
-                  <code>{s.symbol}</code>
-                  <span className="conway-info-name">{s.name}</span>
-                  <span className="conway-info-summary">{s.summary}</span>
-                </li>
-              ))}
-            </ul>
-
-            <h3>Operators</h3>
-            <ul className="conway-info-list">
-              {CONWAY_OPERATORS.map((op) => (
-                <li key={op.symbol}>
-                  <code>{op.symbol}</code>
-                  <span className="conway-info-name">{op.name}</span>
-                  <span className="conway-info-summary">{op.summary}</span>
-                </li>
-              ))}
-            </ul>
+            <p className="tool-info-intro">{info.blurb}</p>
+            {info.sections.map((section) => (
+              <section key={section.heading}>
+                <h3>{section.heading}</h3>
+                {section.body ? <p className="tool-info-body">{section.body}</p> : null}
+                {section.entries ? (
+                  <ul className="tool-info-list">
+                    {section.entries.map((entry) => (
+                      <li key={`${section.heading}-${entry.symbol}-${entry.name ?? ""}`}>
+                        <code>{entry.symbol}</code>
+                        {entry.name ? (
+                          <span className="tool-info-name">{entry.name}</span>
+                        ) : (
+                          <span className="tool-info-name" />
+                        )}
+                        <span className="tool-info-summary">{entry.summary}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </section>
+            ))}
           </div>,
           document.body,
         )
@@ -121,12 +123,15 @@ export function ConwayInfoButton() {
     <>
       <button
         type="button"
-        className="conway-info-btn"
+        className="tool-info-btn"
         ref={btnRef}
         aria-expanded={open}
         aria-controls={panelId}
-        title="Conway notation reference"
-        onClick={() => setOpen((v) => !v)}
+        title={`${info.title} help`}
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpen((v) => !v);
+        }}
       >
         i
       </button>

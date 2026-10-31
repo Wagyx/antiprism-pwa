@@ -9,7 +9,7 @@ import {
   type PipelineOp,
   type PolygonType,
 } from "../pipeline/types";
-import { ConwayInfoButton } from "./ConwayInfoButton";
+import { ToolInfoButton } from "./ToolInfoButton";
 
 type Props = {
   ops: PipelineOp[];
@@ -119,7 +119,6 @@ function OpFields({
           <label className="field field-grow">
             <span className="field-label-row">
               {index === 0 ? "Notation (seed)" : "Operators"}
-              <ConwayInfoButton />
             </span>
             <input
               type="text"
@@ -392,6 +391,7 @@ export function StackPanel({
                     </option>
                   ))}
                 </select>
+                <ToolInfoButton kind={op.kind} />
                 {!open ? (
                   <button
                     type="button"
