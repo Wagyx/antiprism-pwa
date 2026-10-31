@@ -11,6 +11,7 @@ import {
   type PipelineKind,
   type PipelineOp,
 } from "../pipeline/types";
+import { APP_VERSION } from "../version";
 import { MenuSelect } from "./MenuSelect";
 import { ToolInfoButton } from "./ToolInfoButton";
 import { useDismissDetails } from "./useDismissDetails";
@@ -322,6 +323,7 @@ export function StackPanel({
         />
         <div className="brand-text">
           <h1>Antiprism GUI</h1>
+          <p className="brand-version">v{APP_VERSION}</p>
         </div>
       </div>
 

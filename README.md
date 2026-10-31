@@ -62,3 +62,17 @@ npm run dev
 Open the printed local URL. Rebuild Wasm (`bash wasm/build.sh`) whenever you
 change tools under `wasm/` or update the `antiprism/` checkout, then refresh
 the app.
+
+## Versioning
+
+The app version lives in `VERSION` (currently **0.1.5**) and is shown in the UI
+as `v…`. `web/package.json` and `web/src/version.ts` stay in sync.
+
+A **pre-commit** hook bumps the **patch** digit on every git commit
+(`0.1.5` → `0.1.6` → …). After cloning, install the hook once:
+
+```bash
+bash scripts/install-git-hooks.sh
+```
+
+Skip a bump for a single commit with `SKIP_VERSION_BUMP=1 git commit …`.

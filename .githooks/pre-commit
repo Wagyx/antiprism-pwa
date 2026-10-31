@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Auto-increment patch version on every commit (see scripts/bump-version.sh).
+set -euo pipefail
+
+ROOT="$(git rev-parse --show-toplevel)"
+bash "$ROOT/scripts/bump-version.sh"
+git add "$ROOT/VERSION" "$ROOT/web/package.json" "$ROOT/web/src/version.ts"
