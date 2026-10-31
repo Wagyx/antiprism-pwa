@@ -312,8 +312,18 @@ export function StackPanel({
 
   return (
     <aside className="controls">
-      <h1>Antiprism</h1>
-      <p className="tagline">modifier stack · Wasm pipeline</p>
+      <div className="brand">
+        <img
+          className="brand-mark"
+          src="/favicon.svg"
+          width={36}
+          height={36}
+          alt=""
+        />
+        <div className="brand-text">
+          <h1>Antiprism GUI</h1>
+        </div>
+      </div>
 
       <div className="toolbar">
         <details className="add-op toolbar-add">

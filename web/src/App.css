@@ -23,16 +23,36 @@
   overflow: hidden;
 }
 
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.brand-mark {
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 6px;
+  object-fit: contain;
+}
+
+.brand-text {
+  min-width: 0;
+}
+
 .controls h1 {
   margin: 0;
   font-family: "IBM Plex Serif", Georgia, serif;
   font-weight: 600;
   font-size: 1.25rem;
   letter-spacing: 0.02em;
+  line-height: 1.15;
 }
 
 .tagline {
-  margin: -0.25rem 0 0.15rem;
+  margin: 0.1rem 0 0;
   opacity: 0.65;
   font-size: 0.72rem;
 }

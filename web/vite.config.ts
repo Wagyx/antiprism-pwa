@@ -7,7 +7,13 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["wasm/antiprism.wasm", "wasm/antiprism.data", "wasm/antiprism.js"],
+      includeAssets: [
+        "favicon.svg",
+        "favicon.png",
+        "wasm/antiprism.wasm",
+        "wasm/antiprism.data",
+        "wasm/antiprism.js",
+      ],
       manifest: {
         name: "Antiprism GUI",
         short_name: "Antiprism",
@@ -18,14 +24,14 @@ export default defineConfig({
         start_url: "/",
         icons: [
           {
-            src: "/pwa-192.png",
-            sizes: "192x192",
+            src: "/favicon.png",
+            sizes: "128x128",
             type: "image/png",
           },
           {
-            src: "/pwa-512.png",
-            sizes: "512x512",
-            type: "image/png",
+            src: "/favicon.svg",
+            sizes: "any",
+            type: "image/svg+xml",
           },
         ],
       },
