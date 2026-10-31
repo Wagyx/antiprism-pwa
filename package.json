@@ -1,0 +1,12 @@
+{
+  "name": "antiprism-gui",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:wasm": "bash wasm/build.sh",
+    "test:wasm": "node tests/wasm/golden.mjs",
+    "dev": "npm --prefix web run dev",
+    "build": "npm run build:wasm && npm --prefix web run build",
+    "preview": "npm --prefix web run preview"
+  }
+}
