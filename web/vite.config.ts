@@ -2,7 +2,13 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
+// Relative base so the app works under any subdirectory
+// (e.g. https://asliceofcuriosity.fr/app/antiprism-gui/).
+// Override with VITE_BASE_PATH=/ for root deploys if needed.
+const base = process.env.VITE_BASE_PATH ?? "./";
+
 export default defineConfig({
+  base,
   plugins: [
     react(),
     VitePWA({
@@ -21,15 +27,16 @@ export default defineConfig({
         theme_color: "#1a2332",
         background_color: "#1a2332",
         display: "standalone",
-        start_url: "/",
+        start_url: "./",
+        scope: "./",
         icons: [
           {
-            src: "/favicon.png",
+            src: "favicon.png",
             sizes: "128x128",
             type: "image/png",
           },
           {
-            src: "/favicon.svg",
+            src: "favicon.svg",
             sizes: "any",
             type: "image/svg+xml",
           },
@@ -38,7 +45,7 @@ export default defineConfig({
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,wasm,data}"],
         maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
-        navigateFallback: "/index.html",
+        navigateFallback: "index.html",
       },
       // Keep the SW out of `vite dev` — it fights HMR and can look like a UI blink loop.
       devOptions: {

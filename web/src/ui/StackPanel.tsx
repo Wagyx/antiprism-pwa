@@ -320,7 +320,7 @@ export function StackPanel({
       <div className="brand">
         <img
           className="brand-mark"
-          src="/favicon.svg"
+          src={`${import.meta.env.BASE_URL}favicon.svg`}
           width={36}
           height={36}
           alt=""

@@ -63,6 +63,25 @@ Open the printed local URL. Rebuild Wasm (`bash wasm/build.sh`) whenever you
 change tools under `wasm/` or update the `antiprism/` checkout, then refresh
 the app.
 
+## Deploy (static hosting)
+
+The app is a static build under `web/dist/`. The Vite `base` defaults to `./`
+so it works in a subdirectory (e.g. `/app/antiprism-gui/`).
+
+```bash
+bash wasm/build.sh
+cd web && npm install && npm run build
+# upload the contents of web/dist/ to your host path
+```
+
+Serve over HTTPS. Prefer opening
+`…/app/antiprism-gui/` or `…/app/antiprism-gui/index.html` — asset URLs are
+relative to that folder. For a site-root deploy instead:
+
+```bash
+VITE_BASE_PATH=/ npm run build
+```
+
 ## Versioning
 
 The app version lives in `VERSION` (currently **0.1.5**) and is shown in the UI

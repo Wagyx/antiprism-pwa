@@ -43,7 +43,11 @@ function getWorker() {
         }
       };
       worker!.addEventListener("message", onMsg);
-      worker!.postMessage({ type: "init" });
+      const wasmBase = new URL(
+        `${import.meta.env.BASE_URL}wasm/`,
+        window.location.href,
+      ).href;
+      worker!.postMessage({ type: "init", wasmBase });
     });
   }
   return { worker: worker!, ready: ready! };

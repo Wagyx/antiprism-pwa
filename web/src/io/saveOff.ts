@@ -1,6 +1,8 @@
 const DEFAULT_NAME = "polyhedron.off";
 
-let inFlight: Promise<"downloaded" | "cancelled"> | null = null;
+type SaveResult = "downloaded" | "cancelled";
+
+let inFlight: Promise<SaveResult> | null = null;
 
 /**
  * Save OFF text via a browser download (reliable across Chromium embeds).
@@ -8,15 +10,15 @@ let inFlight: Promise<"downloaded" | "cancelled"> | null = null;
 export function saveOffFile(
   offText: string,
   suggestedName = DEFAULT_NAME,
-): Promise<"downloaded" | "cancelled"> {
+): Promise<SaveResult> {
   if (inFlight) return inFlight;
 
   const text = offText;
   if (!text.trim()) {
-    return Promise.resolve("cancelled");
+    return Promise.resolve("cancelled" as const);
   }
 
-  inFlight = (async () => {
+  const run: Promise<SaveResult> = (async (): Promise<SaveResult> => {
     const blob = new Blob([text], { type: "application/off;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     try {
@@ -35,9 +37,11 @@ export function saveOffFile(
       // Delay revoke so the browser can start the download
       window.setTimeout(() => URL.revokeObjectURL(url), 2_000);
     }
-  })().finally(() => {
-    inFlight = null;
-  });
+  })();
 
-  return inFlight;
+  inFlight = run.finally(() => {
+    inFlight = null;
+  }) as Promise<SaveResult>;
+
+  return run;
 }

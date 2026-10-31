@@ -1,6 +1,6 @@
 import { runTool, type AntiprismModule, type AntiprismTool } from "./runTool";
 
-type InitMsg = { type: "init" };
+type InitMsg = { type: "init"; wasmBase: string };
 type RunMsg = {
   type: "run";
   id: number;
@@ -12,16 +12,17 @@ type InMsg = InitMsg | RunMsg;
 
 let Module: AntiprismModule | null = null;
 let initPromise: Promise<void> | null = null;
+let wasmBaseUrl = "";
 
 async function ensureModule() {
   if (Module) return;
   if (!initPromise) {
     initPromise = (async () => {
-      const base = `${self.location.origin}/wasm`;
-      const mod = await import(/* @vite-ignore */ `${base}/antiprism.js`);
+      const base = wasmBaseUrl.replace(/\/?$/, "/");
+      const mod = await import(/* @vite-ignore */ `${base}antiprism.js`);
       const create = mod.default as (opts?: Record<string, unknown>) => Promise<AntiprismModule>;
       Module = await create({
-        locateFile: (file: string) => `${base}/${file}`,
+        locateFile: (file: string) => `${base}${file}`,
       });
       self.postMessage({ type: "ready" });
     })();
@@ -33,6 +34,7 @@ self.onmessage = async (ev: MessageEvent<InMsg>) => {
   const msg = ev.data;
   try {
     if (msg.type === "init") {
+      wasmBaseUrl = msg.wasmBase;
       await ensureModule();
       return;
     }
