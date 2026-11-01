@@ -130,7 +130,8 @@
   opacity: 0.7;
 }
 
-.field input {
+.field input,
+.field textarea {
   font: inherit;
   font-size: 0.78rem;
   text-transform: none;
@@ -140,6 +141,13 @@
   border: 1px solid rgba(255, 255, 255, 0.14);
   background: rgba(0, 0, 0, 0.35);
   color: inherit;
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 8rem;
+  font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, monospace;
+  line-height: 1.45;
 }
 
 .field .menu-select {
@@ -1635,6 +1643,10 @@
   border: 1px solid rgba(255, 255, 255, 0.16);
   background: #121820;
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+}
+
+.modal.modal-cli {
+  width: min(36rem, 100%);
 }
 
 .modal h2 {

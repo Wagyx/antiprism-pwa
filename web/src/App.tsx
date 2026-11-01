@@ -254,6 +254,20 @@ export default function App() {
     );
   };
 
+  const onCreateFromCli = (ops: PipelineOp[]) => {
+    const dest = resolveDestination(library.libraries, library.nav);
+    openSession(
+      {
+        ref: null,
+        name: null,
+        baseline: "",
+        location: dest,
+      },
+      ops,
+      null,
+    );
+  };
+
   const onEditEntry = (ref: EntryRef) => {
     const doc = library.libraries.find((item) => item.id === ref.libraryId);
     if (!doc) throw new Error("Library not found");
@@ -519,6 +533,7 @@ export default function App() {
             });
           }}
           onCreatePolyhedron={onCreatePolyhedron}
+          onCreateFromCli={onCreateFromCli}
         />
       )}
       {resizer}

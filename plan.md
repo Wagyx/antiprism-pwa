@@ -35,6 +35,8 @@ The application has an editor module that lets the user inspect the polyhedron i
 
 
 TODOS:
+- populate an example library based on the examples from the antiprism website
+- move button
 - dropdown buttons have uncecessary down arrow
 - settings panel (nothing yet)
 - undo/redo (history wired; UI buttons hidden)

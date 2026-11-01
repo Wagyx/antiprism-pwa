@@ -17,8 +17,10 @@ import type {
   LibraryLocation,
   LibraryNode,
 } from "../library/types";
+import type { PipelineOp } from "../pipeline/types";
 import { APP_VERSION } from "../version";
 import { AboutButton } from "./AboutButton";
+import { CliPipelineDialog } from "./CliPipelineDialog";
 import { useDismissDetails } from "./useDismissDetails";
 
 type Props = {
@@ -46,6 +48,7 @@ type Props = {
   onDeleteLibrary: (libraryId: string) => Promise<void>;
   onDeleteNodes: (libraryId: string, nodeIds: string[]) => Promise<void>;
   onCreatePolyhedron: () => void;
+  onCreateFromCli: (ops: PipelineOp[]) => void;
 };
 
 type Pick = {
@@ -184,6 +187,7 @@ export function LibraryPanel({
   onDeleteLibrary,
   onDeleteNodes,
   onCreatePolyhedron,
+  onCreateFromCli,
 }: Props) {
   const importRef = useRef<HTMLInputElement>(null);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -195,6 +199,7 @@ export function LibraryPanel({
   const [confirmLibraryId, setConfirmLibraryId] = useState<string | null>(null);
   const [filters, setFilters] = useState<SearchFilters>(EMPTY_SEARCH_FILTERS);
   const [moveOpen, setMoveOpen] = useState(false);
+  const [cliOpen, setCliOpen] = useState(false);
   const renameLock = useRef(false);
   const cancelRename = useRef(false);
   const anchorRef = useRef<string | null>(null);
@@ -647,6 +652,16 @@ export function LibraryPanel({
                 >
                   Polyhedron
                 </button>
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={(event) => {
+                    closeMenu(event.currentTarget);
+                    setCliOpen(true);
+                  }}
+                >
+                  Polyhedron from CLI
+                </button>
               </div>
             </details>
             <details className="add-op lib-drop">
@@ -678,16 +693,7 @@ export function LibraryPanel({
         )}
         {picked.length > 0 ? (
           <>
-            <span className="lib-picked">{picked.length} selected</span>
-            <button
-              type="button"
-              className="tool-btn"
-              disabled={!moveLibraryId}
-              title={moveLibraryId ? "Move the selection" : "Select items from one library"}
-              onClick={() => setMoveOpen(true)}
-            >
-              Move
-            </button>
+            {/* <span className="lib-picked">{picked.length} selected</span> */}
             <button type="button" className="tool-btn" onClick={() => setConfirmDelete(picked)}>
               Delete
             </button>
@@ -1000,6 +1006,15 @@ export function LibraryPanel({
           </>
         )}
       </div>
+      {cliOpen ? (
+        <CliPipelineDialog
+          onClose={() => setCliOpen(false)}
+          onCreate={(ops) => {
+            setCliOpen(false);
+            onCreateFromCli(ops);
+          }}
+        />
+      ) : null}
       {confirmDelete
         ? createPortal(
         <div
