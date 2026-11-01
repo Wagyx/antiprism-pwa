@@ -23,11 +23,18 @@ The application has a library manager module. This module allows the user to sto
 - entries have an edit button that opens it in the editor.
 - the browsing lives on the right panel, the left panel shows a live view of the last selected entry (based on the output OFF, there is no need to rerun the whole pipeline)
 
+TODOS Library
+- Double clicking on an entry opens it in the editor, on a folder enters it instead of single clicking
+- entry and folder can be moved to another folder or to parent folder
+- multiple selection for moving entries and folders
+- multiple selection for deletion (with a confirmation popup in red)
+- Button New : dropdown to "Folder", "Polyhedron"
+- Button Export at the libraries level : dropdown to "Export database", "Zip all OFF files"
+
 The application has an editor module that lets the user inspect the polyhedron in a 3D view and call the programs from antiprism. Some operations from antiprism can be piped like the geometry modifiers from Blender.
 
 
 TODOS:
-- library
 - importer (WRL ?)
 - undo/redo (history wired; UI buttons hidden)
 

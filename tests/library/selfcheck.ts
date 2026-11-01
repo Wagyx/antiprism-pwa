@@ -3,8 +3,13 @@ import { parseSearch, searchLibraries } from "../../web/src/library/search.ts";
 import {
   addFolder,
   createLibraryDocument,
+  findNode,
   insertEntry,
+  moveDestinations,
+  moveNodes,
+  moveNodesUp,
   removeNode,
+  removeNodes,
   renameLibrary,
   renameNode,
 } from "../../web/src/library/tree.ts";
@@ -76,6 +81,63 @@ const missed = searchLibraries([doc], { libraryId: doc.id, folderIds: [folderId]
 assert(missed.hits?.length === 0, "lower bound excludes");
 const bad = parseSearch("n_faces:nope");
 assert(bad.error != null, "bad number");
+
+const boxed = addFolder(doc, [], "box");
+const box = boxed.root.children.find((child) => child.type === "folder" && child.name === "box");
+assert(box?.type === "folder", "box folder");
+const moved = moveNodes(boxed, [inserted.entry.id], [box.id]);
+const boxAfter = findNode(moved, box.id);
+assert(
+  boxAfter?.type === "folder" && boxAfter.children.some((child) => child.id === inserted.entry.id),
+  "entry moved into box",
+);
+const solidsAfter = findNode(moved, folderId);
+assert(solidsAfter?.type === "folder" && solidsAfter.children.length === 0, "source folder emptied");
+const raised = moveNodesUp(moved, [inserted.entry.id]);
+assert(raised.root.children.some((child) => child.id === inserted.entry.id), "moved up to the library");
+const destinations = moveDestinations(boxed, [inserted.entry.id]);
+assert(
+  destinations.parent !== "up" && destinations.parent?.folderIds.length === 0,
+  "parent destination is the library root",
+);
+assert(destinations.folders.some((folder) => folder.folderIds[0] === box.id), "other folder is offered");
+assert(
+  !destinations.folders.some((folder) => folder.folderIds.length === 1 && folder.folderIds[0] === folderId),
+  "current folder is not a destination",
+);
+const duplicate = insertEntry(raised, [box.id], { ...draft, name: "tetrahedron" });
+let clash = false;
+try {
+  moveNodes(duplicate.doc, [duplicate.entry.id], []);
+} catch {
+  clash = true;
+}
+assert(clash, "move rejects a sibling name clash");
+assert(findNode(duplicate.doc, duplicate.entry.id)?.type === "entry", "clash leaves the entry in place");
+let intoSelf = false;
+try {
+  moveNodes(boxed, [folderId], [folderId]);
+} catch {
+  intoSelf = true;
+}
+assert(intoSelf, "folder cannot move into itself");
+const withInner = addFolder(doc, [folderId], "inner");
+const solidsNow = findNode(withInner, folderId);
+const innerId = solidsNow?.type === "folder"
+  ? solidsNow.children.find((child) => child.type === "folder")?.id
+  : undefined;
+assert(innerId, "inner folder");
+let intoChild = false;
+try {
+  moveNodes(withInner, [folderId], [folderId, innerId]);
+} catch {
+  intoChild = true;
+}
+assert(intoChild, "folder cannot move into a child");
+const pruned = removeNodes(doc, [folderId, inserted.entry.id]);
+assert(pruned.id === doc.id, "bulk delete keeps the library");
+assert(findNode(pruned, inserted.entry.id) === null, "nested selection is removed with its folder");
+assert(pruned.root.children.length === 0, "selected folder is removed once");
 
 const removed = removeNode(doc, inserted.entry.id);
 assert(removed.id === doc.id, "delete keeps the library document");

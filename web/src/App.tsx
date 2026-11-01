@@ -381,10 +381,18 @@ export default function App() {
           onImport={library.importLibrary}
           onExportJson={library.exportJson}
           onExportZip={library.exportZip}
+          onExportDatabase={library.exportDatabase}
+          onExportAllOff={library.exportAllOff}
           onCreateFolder={library.createFolder}
           onRenameNode={library.renameItem}
-          onDeleteNode={async (libraryId, nodeId) => {
-            const next = await library.deleteItem(libraryId, nodeId);
+          onMoveNodes={library.moveItems}
+          onMoveUp={library.moveItemsUp}
+          onDeleteLibrary={async (libraryId) => {
+            await library.deleteLibrary(libraryId);
+            setEditing((current) => (current?.libraryId === libraryId ? null : current));
+          }}
+          onDeleteNodes={async (libraryId, nodeIds) => {
+            const next = await library.deleteItems(libraryId, nodeIds);
             setEditing((current) => {
               if (!current || current.libraryId !== next.id) return current;
               return findEntry(next, current.entryId) ? current : null;

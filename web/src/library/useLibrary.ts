@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { saveBlob, saveTextFile } from "../io/saveTextFile";
-import { libraryOffZip } from "./archive";
-import { loadLibraries, readLibraryFile, saveLibrary } from "./store";
+import { librariesDatabaseZip, librariesOffZip, libraryOffZip } from "./archive";
+import { loadLibraries, readLibraryFile, removeLibraryRecord, saveLibrary } from "./store";
 import {
   addFolder,
   createLibraryDocument,
@@ -9,8 +9,10 @@ import {
   findEntry,
   folderByPath,
   insertEntry,
+  moveNodes,
+  moveNodesUp,
   patchEntry,
-  removeNode,
+  removeNodes,
   renameLibrary,
   renameNode,
   resolveDestination,
@@ -154,6 +156,22 @@ export function useLibrary() {
     );
   };
 
+  const exportDatabase = async () => {
+    const bytes = librariesDatabaseZip(librariesRef.current);
+    await saveBlob(
+      new Blob([Uint8Array.from(bytes)], { type: "application/zip" }),
+      "antiprism-libraries.zip",
+    );
+  };
+
+  const exportAllOff = async () => {
+    const bytes = librariesOffZip(librariesRef.current);
+    await saveBlob(
+      new Blob([Uint8Array.from(bytes)], { type: "application/zip" }),
+      "antiprism-off.zip",
+    );
+  };
+
   const createFolder = (name: string) =>
     enqueue(async () => {
       const libraryId = navRef.current.libraryId;
@@ -174,11 +192,41 @@ export function useLibrary() {
       commit(replaceDoc(librariesRef.current, next));
     });
 
-  const deleteItem = (libraryId: string, nodeId: string) =>
+  const moveItems = (libraryId: string, nodeIds: string[], folderIds: string[]) =>
     enqueue(async () => {
       const doc = librariesRef.current.find((library) => library.id === libraryId);
       if (!doc) throw new Error("Library not found");
-      const next = removeNode(doc, nodeId);
+      const next = moveNodes(doc, nodeIds, folderIds);
+      await saveLibrary(next);
+      commit(replaceDoc(librariesRef.current, next));
+    });
+
+  const moveItemsUp = (libraryId: string, nodeIds: string[]) =>
+    enqueue(async () => {
+      const doc = librariesRef.current.find((library) => library.id === libraryId);
+      if (!doc) throw new Error("Library not found");
+      const next = moveNodesUp(doc, nodeIds);
+      await saveLibrary(next);
+      commit(replaceDoc(librariesRef.current, next));
+    });
+
+  const deleteLibrary = (libraryId: string) =>
+    enqueue(async () => {
+      const doc = librariesRef.current.find((library) => library.id === libraryId);
+      if (!doc) throw new Error("Library not found");
+      await removeLibraryRecord(libraryId);
+      commit(librariesRef.current.filter((library) => library.id !== libraryId));
+      setSelected((current) => (current?.libraryId === libraryId ? null : current));
+      updateNav((current) =>
+        current.libraryId === libraryId ? { libraryId: null, folderIds: [] } : current,
+      );
+    });
+
+  const deleteItems = (libraryId: string, nodeIds: string[]) =>
+    enqueue(async () => {
+      const doc = librariesRef.current.find((library) => library.id === libraryId);
+      if (!doc) throw new Error("Library not found");
+      const next = removeNodes(doc, nodeIds);
       await saveLibrary(next);
       commit(replaceDoc(librariesRef.current, next));
       setSelected((current) => {
@@ -232,9 +280,14 @@ export function useLibrary() {
     importLibrary,
     exportJson,
     exportZip,
+    exportDatabase,
+    exportAllOff,
     createFolder,
     renameItem,
-    deleteItem,
+    moveItems,
+    moveItemsUp,
+    deleteLibrary,
+    deleteItems,
     createEntry,
     updateEntry,
   };

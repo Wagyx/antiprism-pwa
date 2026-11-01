@@ -9,9 +9,10 @@ import {
  * One IndexedDB record per library JSON document.
  *
  * Library documents are user data. They must survive app updates and
- * service-worker updates. This module never calls `delete`, `clear`,
- * or `indexedDB.deleteDatabase`. Renames and edits `put` the same id.
+ * service-worker updates. This module never calls `clear` or
+ * `indexedDB.deleteDatabase`. Renames and edits `put` the same id.
  * Import always inserts a new id beside the libraries already stored.
+ * A record is removed only when the user confirms Delete on that library.
  */
 const DB_NAME = "antiprism-gui";
 const DB_VERSION = 1;
@@ -69,13 +70,21 @@ async function readAll(): Promise<LibraryDocument[]> {
   return sortLibraries(rows ?? []);
 }
 
-/** Insert or replace one library document in place. Never removes a library. */
+/** Insert or replace one library document in place. */
 export async function saveLibrary(doc: LibraryDocument): Promise<void> {
   if (!doc?.id || doc.format !== "antiprism-library") {
     throw new Error("Refusing to write an invalid library");
   }
   await withStore("readwrite", (store) => {
     store.put(doc);
+  });
+}
+
+/** Remove one library the user confirmed deleting. Other libraries stay. */
+export async function removeLibraryRecord(id: string): Promise<void> {
+  if (!id) throw new Error("Library not found");
+  await withStore("readwrite", (store) => {
+    store.delete(id);
   });
 }
 

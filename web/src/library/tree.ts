@@ -325,34 +325,212 @@ export function renameNode(
   return touch(doc, root);
 }
 
-/** Remove a folder or entry from inside the library. The library document stays. */
-export function removeNode(doc: LibraryDocument, nodeId: string): LibraryDocument {
-  if (nodeId === doc.root.id) {
-    throw new Error("The library file stays on this device");
-  }
-  let removed = false;
-  const visit = (folder: LibraryFolder): LibraryFolder => {
-    if (folder.children.some((child) => child.id === nodeId)) {
-      removed = true;
-      return {
-        ...folder,
-        modifiedAt: nowIso(),
-        children: folder.children.filter((child) => child.id !== nodeId),
-      };
+export function findNode(doc: LibraryDocument, nodeId: string): LibraryNode | null {
+  const walk = (folder: LibraryFolder): LibraryNode | null => {
+    for (const child of folder.children) {
+      if (child.id === nodeId) return child;
+      if (child.type === "folder") {
+        const found = walk(child);
+        if (found) return found;
+      }
     }
+    return null;
+  };
+  return walk(doc.root);
+}
+
+/** Folder ids of the folder that contains the node. Empty means the library root. */
+export function containerOf(doc: LibraryDocument, nodeId: string): string[] | null {
+  const walk = (folder: LibraryFolder, ids: string[]): string[] | null => {
+    for (const child of folder.children) {
+      if (child.id === nodeId) return ids;
+      if (child.type === "folder") {
+        const found = walk(child, [...ids, child.id]);
+        if (found) return found;
+      }
+    }
+    return null;
+  };
+  return walk(doc.root, []);
+}
+
+function folderSubtreeIds(node: LibraryNode, into: Set<string>) {
+  if (node.type !== "folder") return;
+  into.add(node.id);
+  for (const child of node.children) folderSubtreeIds(child, into);
+}
+
+function sameIds(a: string[], b: string[]): boolean {
+  return a.length === b.length && a.every((id, index) => id === b[index]);
+}
+
+/** Selected nodes that are not inside another selected folder. */
+function topmostIds(doc: LibraryDocument, nodeIds: string[]): string[] {
+  const selected = new Set(nodeIds);
+  const kept: string[] = [];
+  const seen = new Set<string>();
+  for (const id of nodeIds) {
+    if (seen.has(id)) continue;
+    seen.add(id);
+    if (id === doc.root.id) throw new Error("The library file stays on this device");
+    const container = containerOf(doc, id);
+    if (!container) throw new Error("Item not found");
+    if (container.some((folderId) => selected.has(folderId))) continue;
+    kept.push(id);
+  }
+  if (kept.length === 0) throw new Error("Item not found");
+  return kept;
+}
+
+function detachNodes(
+  root: LibraryFolder,
+  nodeIds: Set<string>,
+): { root: LibraryFolder; taken: LibraryNode[] } {
+  const taken: LibraryNode[] = [];
+  const visit = (folder: LibraryFolder): LibraryFolder => {
     let changed = false;
-    const children = folder.children.map((child) => {
-      if (child.type !== "folder") return child;
-      const next = visit(child);
-      if (next !== child) changed = true;
-      return next;
-    });
+    const children: LibraryNode[] = [];
+    for (const child of folder.children) {
+      if (nodeIds.has(child.id)) {
+        taken.push(child);
+        changed = true;
+        continue;
+      }
+      if (child.type === "folder") {
+        const next = visit(child);
+        if (next !== child) changed = true;
+        children.push(next);
+      } else {
+        children.push(child);
+      }
+    }
     if (!changed) return folder;
     return { ...folder, modifiedAt: nowIso(), children };
   };
-  const root = visit(doc.root);
-  if (!removed) throw new Error("Item not found");
+  return { root: visit(root), taken };
+}
+
+/** Remove folders or entries. A selected folder takes its selected descendants with it. */
+export function removeNodes(doc: LibraryDocument, nodeIds: string[]): LibraryDocument {
+  const ids = topmostIds(doc, nodeIds);
+  const { root, taken } = detachNodes(doc.root, new Set(ids));
+  if (taken.length !== ids.length) throw new Error("Item not found");
   return touch(doc, root);
+}
+
+/** Remove a folder or entry from inside the library. The library document stays. */
+export function removeNode(doc: LibraryDocument, nodeId: string): LibraryDocument {
+  return removeNodes(doc, [nodeId]);
+}
+
+function assertMovable(doc: LibraryDocument, ids: string[], folderIds: string[]) {
+  if (!folderByPath(doc, folderIds)) throw new Error("Destination folder was not found");
+  const blocked = new Set<string>();
+  for (const id of ids) {
+    const node = findNode(doc, id);
+    if (!node) throw new Error("Item not found");
+    if (node.type === "folder") folderSubtreeIds(node, blocked);
+  }
+  const destLeaf = folderIds[folderIds.length - 1];
+  if ((destLeaf && blocked.has(destLeaf)) || folderIds.some((id) => ids.includes(id))) {
+    throw new Error("A folder cannot be moved into itself");
+  }
+}
+
+export function moveNodes(
+  doc: LibraryDocument,
+  nodeIds: string[],
+  folderIds: string[],
+): LibraryDocument {
+  const ids = topmostIds(doc, nodeIds);
+  assertMovable(doc, ids, folderIds);
+  const { root, taken } = detachNodes(doc.root, new Set(ids));
+  if (taken.length !== ids.length) throw new Error("Item not found");
+  const dest = folderByPath({ ...doc, root }, folderIds);
+  if (!dest) throw new Error("A folder cannot be moved into itself");
+  const names = siblingNames(dest);
+  for (const node of taken) {
+    requireUnique(names, node.name);
+    names.push(node.name);
+  }
+  const at = nowIso();
+  const moved = taken.map((node) => ({ ...structuredClone(node), modifiedAt: at }));
+  const nextRoot = updateFolder(root, folderIds, (folder) => ({
+    ...folder,
+    modifiedAt: at,
+    children: [...folder.children, ...moved],
+  }));
+  return touch(doc, nextRoot);
+}
+
+/** Move each item up into its own parent. Items already at the library root stay put. */
+export function moveNodesUp(doc: LibraryDocument, nodeIds: string[]): LibraryDocument {
+  const ids = topmostIds(doc, nodeIds);
+  const groups = new Map<string, { folderIds: string[]; ids: string[] }>();
+  for (const id of ids) {
+    const container = containerOf(doc, id);
+    if (!container) throw new Error("Item not found");
+    if (container.length === 0) continue;
+    const folderIds = container.slice(0, -1);
+    const key = folderIds.join("/");
+    const group = groups.get(key) ?? { folderIds, ids: [] };
+    group.ids.push(id);
+    groups.set(key, group);
+  }
+  if (groups.size === 0) throw new Error("These items are already in the top folder");
+  let next = doc;
+  for (const group of groups.values()) next = moveNodes(next, group.ids, group.folderIds);
+  return next;
+}
+
+export type MoveDestination = {
+  folderIds: string[];
+  label: string;
+};
+
+export function moveDestinations(
+  doc: LibraryDocument,
+  nodeIds: string[],
+): { parent: MoveDestination | "up" | null; folders: MoveDestination[] } {
+  const ids = topmostIds(doc, nodeIds);
+  const blocked = new Set<string>();
+  const containers: string[][] = [];
+  for (const id of ids) {
+    const node = findNode(doc, id);
+    const container = containerOf(doc, id);
+    if (!node || !container) continue;
+    containers.push(container);
+    if (node.type === "folder") folderSubtreeIds(node, blocked);
+  }
+  const first = containers[0] ?? [];
+  const same = containers.every((path) => sameIds(path, first));
+  let parent: MoveDestination | "up" | null = null;
+  if (same && first.length > 0) {
+    const folderIds = first.slice(0, -1);
+    const parentId = folderIds[folderIds.length - 1];
+    const label = parentId ? findNode(doc, parentId)?.name || "Parent" : doc.name;
+    parent = { folderIds, label: `Parent · ${label}` };
+  } else if (!same && containers.some((path) => path.length > 0)) {
+    parent = "up";
+  }
+  const skip = same ? first : null;
+  const folders: MoveDestination[] = [];
+  const rootIsParent = parent !== null && parent !== "up" && parent.folderIds.length === 0;
+  const rootIsCurrent = skip !== null && skip.length === 0;
+  if (!rootIsParent && !rootIsCurrent) folders.push({ folderIds: [], label: doc.name });
+  const walk = (folder: LibraryFolder, folderIds: string[], names: string[]) => {
+    for (const child of folder.children) {
+      if (child.type !== "folder" || blocked.has(child.id)) continue;
+      const nextIds = [...folderIds, child.id];
+      const nextNames = [...names, child.name];
+      if (!skip || !sameIds(nextIds, skip)) {
+        folders.push({ folderIds: nextIds, label: nextNames.join(" / ") });
+      }
+      walk(child, nextIds, nextNames);
+    }
+  };
+  walk(doc.root, [], []);
+  return { parent, folders };
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
