@@ -86,6 +86,7 @@ type Props = {
   onRedo: () => void;
   canSave: boolean;
   onSaveOff: () => void;
+  onSaveObj: () => void;
 };
 
 /** Drop redundant "Step N (kind):" prefix when the message sits under that card. */
@@ -393,6 +394,7 @@ function ConwayOpsFields({
               </label>
               {needsN ? (
                 <label className="field conway-op-param">
+                  <span>{needsM ? "n" : optionalN ? "n (opt)" : "n"}</span>
                   <input
                     type="number"
                     min={choice.minN ?? 0}
@@ -727,6 +729,7 @@ export function StackPanel({
   stepText,
   canSave,
   onSaveOff,
+  onSaveObj,
 }: Props) {
   useDismissDetails();
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
@@ -761,21 +764,6 @@ export function StackPanel({
           <h1>Antiprism GUI</h1>
           <p className="brand-version">v{APP_VERSION}</p>
         </div>
-      </div>
-
-      <div className="toolbar">
-        <button
-          type="button"
-          disabled={!canSave || busy}
-          onClick={onSaveOff}
-          title="Save pipeline result as OFF"
-        >
-          Save as OFF
-        </button>
-        {/* Undo/Redo buttons hidden for now; stack history still wired in App */}
-        <span className={`busy-hint${busy ? " is-on" : ""}`} aria-live="polite">
-          Running…
-        </span>
       </div>
 
       <div className="stack">
@@ -921,6 +909,29 @@ export function StackPanel({
           variant="end"
           onPick={(kind) => addKind(kind, ops.length)}
         />
+      </div>
+
+      <div className="toolbar save-toolbar">
+        <button
+          type="button"
+          disabled={!canSave || busy}
+          onClick={onSaveOff}
+          title="Save pipeline result as OFF"
+        >
+          Save as OFF
+        </button>
+        <button
+          type="button"
+          disabled={!canSave || busy}
+          onClick={onSaveObj}
+          title="Convert pipeline result with off2obj and download"
+        >
+          Save as OBJ
+        </button>
+        {/* Undo/Redo buttons hidden for now; stack history still wired in App */}
+        <span className={`busy-hint${busy ? " is-on" : ""}`} aria-live="polite">
+          Running…
+        </span>
       </div>
 
       {error && failedStep == null ? (

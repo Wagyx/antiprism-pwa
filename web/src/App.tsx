@@ -15,10 +15,12 @@ import {
 } from "./pipeline/types";
 import { useUndoable } from "./pipeline/useUndoable";
 import { saveOffFile } from "./io/saveOff";
+import { saveTextFile } from "./io/saveTextFile";
 import { DisplayPanel } from "./ui/DisplayPanel";
 import { StackPanel } from "./ui/StackPanel";
 import { StatsPanel } from "./ui/StatsPanel";
 import { PolyhedronViewer } from "./viewer/PolyhedronViewer";
+import { runAntiprism } from "./wasm/client";
 import "./App.css";
 
 const DEBOUNCE_MS = 200;
@@ -176,6 +178,32 @@ export default function App() {
     });
   }, [offText]);
 
+  const onSaveObj = useCallback(() => {
+    if (saveLock.current) return;
+    const text = offText ?? offTextRef.current;
+    if (!text?.trim()) return;
+    saveLock.current = true;
+    void (async () => {
+      try {
+        const result = await runAntiprism("off2obj", ["-d", "8"], text);
+        if (!result.ok || !result.stdout.trim()) {
+          setError(
+            result.stderr.trim() ||
+              `off2obj exited with code ${result.code}`,
+          );
+          setFailedStep(null);
+          return;
+        }
+        await saveTextFile(result.stdout, "polyhedron.obj", "model/obj");
+      } catch (e) {
+        setError(e instanceof Error ? e.message : String(e));
+        setFailedStep(null);
+      } finally {
+        saveLock.current = false;
+      }
+    })();
+  }, [offText]);
+
   return (
     <div className="app" style={{ ["--panel-width" as string]: `${panelWidth}px` }}>
       <StackPanel
@@ -192,6 +220,7 @@ export default function App() {
         onRedo={redo}
         canSave={Boolean(offText?.trim())}
         onSaveOff={onSaveOff}
+        onSaveObj={onSaveObj}
       />
       <div
         className="panel-resizer"

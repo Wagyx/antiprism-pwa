@@ -168,6 +168,28 @@
   align-items: center;
 }
 
+.save-toolbar {
+  position: relative;
+  margin-top: 0.15rem;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.3rem;
+  width: 100%;
+}
+
+.save-toolbar > button {
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: center;
+}
+
+.save-toolbar > .busy-hint {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.15rem);
+  margin-left: 0;
+}
+
 .toolbar button,
 .stack-card-actions button,
 .stack-card-toggle {

@@ -473,9 +473,10 @@ export function flagsOpSummary(op: FlagsOp): string {
   return paramsSummary(TOOL_PARAM_SCHEMAS[op.kind], op.params);
 }
 
+/** Default: U27 rhombicosidodecahedron via Conway eD. */
 export const defaultStack: PipelineOp[] = [
-  createPolygonOp({ polygonType: "prism", numSides: 5 }),
-  createConwayOp(),
+  createConwaySeedOp({ family: "D" }),
+  createConwayOp([{ id: newId(), op: "e" }]),
 ];
 
 export const defaultDisplay: DisplayOptions = {
