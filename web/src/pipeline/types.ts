@@ -1,9 +1,16 @@
 import {
+  conwayNotationFromSteps,
+  newConwayOpStep,
+  type ConwayOpStep,
+} from "./conwayInfo";
+import {
   defaultParams,
   paramsSummary,
   paramsToArgs,
   TOOL_PARAM_SCHEMAS,
 } from "./toolParams";
+
+export type { ConwayOpStep } from "./conwayInfo";
 
 export const POLYGON_TYPES = [
   "prism",
@@ -169,7 +176,8 @@ export type ConwaySeedOp = OpBase & {
 /** Operators-only Conway transform; pipes previous OFF. */
 export type ConwayOp = OpBase & {
   kind: "conway";
-  notation: string;
+  /** Applied top→bottom (`conway -r` + joined tokens). */
+  steps: ConwayOpStep[];
 };
 
 export type GeodesicOp = OpBase & {
@@ -283,14 +291,14 @@ export function createConwaySeedOp(
 }
 
 export function createConwayOp(
-  notation = "a",
-  partial?: Partial<Omit<ConwayOp, "id" | "kind" | "notation">>,
+  steps?: ConwayOpStep[],
+  partial?: Partial<Omit<ConwayOp, "id" | "kind" | "steps">>,
 ): ConwayOp {
   return {
     id: newId(),
     kind: "conway",
     enabled: partial?.enabled ?? true,
-    notation,
+    steps: steps ?? [newConwayOpStep("a")],
   };
 }
 
@@ -341,7 +349,7 @@ export function createOp(kind: PipelineKind, _isFirst: boolean): PipelineOp {
     case "conway_seed":
       return createConwaySeedOp();
     case "conway":
-      return createConwayOp("a");
+      return createConwayOp();
     case "geodesic":
       return createGeodesicOp();
     case "off_color":
@@ -359,8 +367,11 @@ export function opToArgs(op: PipelineOp): string[] {
       return op.fileName ? [op.fileName] : [];
     case "conway_seed":
       return [conwaySeedToken(op)];
-    case "conway":
-      return [op.notation.trim()];
+    case "conway": {
+      const notation = conwayNotationFromSteps(op.steps);
+      // -r: apply tokens left→right so stack order matches apply order
+      return notation ? ["-r", notation] : [];
+    }
     case "geodesic":
       return ["-f", String(op.frequency), "-c", op.faceClass, "-M", op.method];
     case "off_color": {
@@ -391,7 +402,7 @@ export function flagsOpSummary(op: FlagsOp): string {
 
 export const defaultStack: PipelineOp[] = [
   createPolygonOp({ polygonType: "prism", numSides: 5 }),
-  createConwayOp("a"),
+  createConwayOp(),
 ];
 
 export const defaultDisplay: DisplayOptions = {

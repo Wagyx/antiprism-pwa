@@ -5,7 +5,14 @@ import {
   type ParamField,
   type ParamValue,
 } from "../pipeline/toolParams";
-import { CONWAY_SEEDS } from "../pipeline/conwayInfo";
+import {
+  CONWAY_OP_CHOICES,
+  CONWAY_OP_CHOICE_BY_ID,
+  CONWAY_SEEDS,
+  conwayNotationFromSteps,
+  newConwayOpStep,
+  type ConwayOpStep,
+} from "../pipeline/conwayInfo";
 import {
   CONWAY_PARAMETRIC_SEEDS,
   CONWAY_SEED_FAMILIES,
@@ -17,6 +24,7 @@ import {
   opToCommandLine,
   PIPELINE_CATEGORIES,
   POLYGON_TYPES,
+  type ConwayOp,
   type ConwaySeedFamily,
   type ConwaySeedOp,
   type FlagsOp,
@@ -40,6 +48,11 @@ const CONWAY_SEED_FAMILY_OPTIONS = CONWAY_SEED_FAMILIES.map((family) => {
     label: info ? `${family} — ${info.name}` : family,
   };
 });
+
+const CONWAY_OP_OPTIONS = CONWAY_OP_CHOICES.map((c) => ({
+  value: c.id,
+  label: `${c.letter} — ${c.name}`,
+}));
 
 const GEODESIC_CLASS_OPTIONS = [
   { value: "1", label: "I (1)" },
@@ -92,7 +105,7 @@ function opSummary(op: PipelineOp): string {
     case "conway_seed":
       return conwaySeedToken(op);
     case "conway":
-      return op.notation || "…";
+      return conwayNotationFromSteps(op.steps) || "…";
     case "geodesic":
       return `f=${op.frequency} ${op.faceClass} ${op.method}`;
     case "off_color":
@@ -293,6 +306,177 @@ function ImportOffFields({
   );
 }
 
+function ConwayOpsFields({
+  op,
+  ops,
+  onCommit,
+  onPatch,
+}: {
+  op: ConwayOp;
+  ops: PipelineOp[];
+  onCommit: (ops: PipelineOp[]) => void;
+  onPatch: (ops: PipelineOp[]) => void;
+}) {
+  const setSteps = (steps: ConwayOpStep[], commit: boolean) => {
+    const next = updateOp(ops, op.id, { steps });
+    if (commit) onCommit(next);
+    else onPatch(next);
+  };
+
+  const patchStep = (stepId: string, patch: Partial<ConwayOpStep>, commit: boolean) => {
+    setSteps(
+      op.steps.map((s) => (s.id === stepId ? { ...s, ...patch } : s)),
+      commit,
+    );
+  };
+
+  const changeOp = (stepId: string, opId: string) => {
+    const fresh = newConwayOpStep(opId);
+    setSteps(
+      op.steps.map((s) =>
+        s.id === stepId ? { ...fresh, id: s.id } : s,
+      ),
+      true,
+    );
+  };
+
+  const moveStep = (index: number, dir: -1 | 1) => {
+    const j = index + dir;
+    if (j < 0 || j >= op.steps.length) return;
+    const steps = op.steps.slice();
+    [steps[index], steps[j]] = [steps[j], steps[index]];
+    setSteps(steps, true);
+  };
+
+  const notation = conwayNotationFromSteps(op.steps);
+
+  return (
+    <div className="stack-card-body">
+      <div className="conway-ops-stack">
+        {op.steps.map((step, i) => {
+          const choice = CONWAY_OP_CHOICE_BY_ID[step.op];
+          const needsN =
+            choice &&
+            (choice.param === "suffix" ||
+              choice.param === "usuffix" ||
+              choice.param === "n_m");
+          const needsM = choice?.param === "n_m";
+          const optionalN =
+            choice &&
+            (choice.param === "suffix" || choice.param === "usuffix") &&
+            choice.defaultN == null;
+
+          return (
+            <div key={step.id} className="conway-op-row">
+              <label className="field field-grow">
+                <MenuSelect
+                  aria-label={`Conway operator ${i + 1}`}
+                  value={step.op}
+                  options={CONWAY_OP_OPTIONS}
+                  onChange={(v) => changeOp(step.id, v)}
+                />
+              </label>
+              {needsN ? (
+                <label className="field conway-op-param">
+                  <input
+                    type="number"
+                    min={choice.minN ?? 0}
+                    max={48}
+                    value={step.n ?? ""}
+                    placeholder={optionalN ? "all" : undefined}
+                    onChange={(e) => {
+                      const raw = e.target.value;
+                      if (raw === "") {
+                        patchStep(step.id, { n: undefined }, false);
+                        return;
+                      }
+                      const n = Number(raw);
+                      patchStep(
+                        step.id,
+                        { n: Number.isFinite(n) ? n : choice.defaultN },
+                        false,
+                      );
+                    }}
+                    onBlur={() => onCommit(ops)}
+                  />
+                </label>
+              ) : null}
+              {needsM ? (
+                <label className="field conway-op-param">
+                  <span>m</span>
+                  <input
+                    type="number"
+                    min={0}
+                    max={48}
+                    value={step.m ?? 0}
+                    onChange={(e) => {
+                      const m = Number(e.target.value);
+                      patchStep(
+                        step.id,
+                        { m: Number.isFinite(m) ? m : 0 },
+                        false,
+                      );
+                    }}
+                    onBlur={() => onCommit(ops)}
+                  />
+                </label>
+              ) : null}
+              <div className="conway-op-row-actions">
+                <button
+                  type="button"
+                  aria-label="Move operator up"
+                  disabled={i === 0}
+                  onClick={() => moveStep(i, -1)}
+                >
+                  ↑
+                </button>
+                <button
+                  type="button"
+                  aria-label="Move operator down"
+                  disabled={i === op.steps.length - 1}
+                  onClick={() => moveStep(i, 1)}
+                >
+                  ↓
+                </button>
+                <button
+                  type="button"
+                  aria-label="Remove operator"
+                  disabled={op.steps.length <= 1}
+                  onClick={() =>
+                    setSteps(
+                      op.steps.filter((s) => s.id !== step.id),
+                      true,
+                    )
+                  }
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <button
+        type="button"
+        className="conway-op-add"
+        onClick={() => setSteps([...op.steps, newConwayOpStep("a")], true)}
+      >
+        Add operator
+      </button>
+      <p className="hint">
+        Applied top → bottom
+        {notation ? (
+          <>
+            {" "}
+            (<code>conway -r {notation}</code>)
+          </>
+        ) : null}
+        . Pipes previous OFF in.
+      </p>
+    </div>
+  );
+}
+
 function OpFields({
   op,
   index,
@@ -403,23 +587,12 @@ function OpFields({
 
   if (op.kind === "conway") {
     return (
-      <div className="stack-card-body">
-        <label className="field field-grow">
-          <span>Operators</span>
-          <input
-            type="text"
-            value={op.notation}
-            placeholder="e.g. a, kd, ta"
-            onChange={(e) =>
-              onPatch(updateOp(ops, op.id, { notation: e.target.value }))
-            }
-            onBlur={() => onCommit(ops)}
-          />
-        </label>
-        <p className="hint">
-          Operators only — pipes previous OFF in (use conway_seed for a seed).
-        </p>
-      </div>
+      <ConwayOpsFields
+        op={op}
+        ops={ops}
+        onCommit={onCommit}
+        onPatch={onPatch}
+      />
     );
   }
 

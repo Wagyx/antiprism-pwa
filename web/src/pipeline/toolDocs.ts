@@ -130,7 +130,7 @@ export const TOOL_DOCS: Record<PipelineKind, ToolDoc> = {
   conway: {
     title: "conway",
     blurb:
-      "Apply Conway operators to the previous stack OFF (stdin). Use lowercase operators only — put seeds in a separate conway_seed step.",
+      "Apply a stack of Conway operators to the previous OFF (stdin). Operators run top→bottom via `conway -r`. Put seeds in a separate conway_seed step.",
     sections: [
       {
         heading: "Operators",

@@ -356,6 +356,65 @@
   align-items: flex-start;
 }
 
+.conway-ops-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.conway-op-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  align-items: flex-end;
+  padding: 0.35rem;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.conway-op-param {
+  width: 3.6rem;
+  flex: 0 0 auto;
+}
+
+.conway-op-param input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.conway-op-row-actions {
+  display: flex;
+  gap: 0.15rem;
+  margin-left: auto;
+}
+
+.conway-op-row-actions button,
+.conway-op-add {
+  font: inherit;
+  font-size: 0.72rem;
+  padding: 0.28rem 0.45rem;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(0, 0, 0, 0.3);
+  color: inherit;
+  cursor: pointer;
+}
+
+.conway-op-row-actions button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.conway-op-row-actions button:hover:not(:disabled),
+.conway-op-add:hover {
+  border-color: rgba(196, 163, 90, 0.55);
+}
+
+.conway-op-add {
+  align-self: flex-start;
+}
+
 .import-pick-btn,
 .import-clear-btn {
   font: inherit;
