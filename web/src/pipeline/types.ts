@@ -97,9 +97,11 @@ export const CONWAY_PARAMETRIC_SEEDS = new Set<ConwaySeedFamily>([
   "R",
 ]);
 
+export type PipelineCategoryId = "seed" | "transform" | "refine" | "utility";
+
 /** Grouped catalog for the Add operation menu. */
 export const PIPELINE_CATEGORIES: {
-  id: string;
+  id: PipelineCategoryId;
   label: string;
   tools: { kind: PipelineKind; blurb: string }[];
 }[] = [
@@ -163,6 +165,16 @@ export const PIPELINE_CATEGORIES: {
     ],
   },
 ];
+
+const KIND_TO_CATEGORY = new Map<PipelineKind, PipelineCategoryId>(
+  PIPELINE_CATEGORIES.flatMap((cat) =>
+    cat.tools.map(({ kind }) => [kind, cat.id] as const),
+  ),
+);
+
+export function categoryIdForKind(kind: PipelineKind): PipelineCategoryId {
+  return KIND_TO_CATEGORY.get(kind) ?? "utility";
+}
 
 type OpBase = {
   id: string;

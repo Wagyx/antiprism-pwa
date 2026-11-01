@@ -18,12 +18,12 @@ import {
   CONWAY_PARAMETRIC_SEEDS,
   CONWAY_SEED_FAMILIES,
   conwaySeedToken,
+  categoryIdForKind,
   createOp,
   flagsOpSummary,
   isFlagsTool,
   OFF_COLOR_PRESETS,
   opToCommandLine,
-  PIPELINE_CATEGORIES,
   POLYGON_TYPES,
   type ConwayOp,
   type ConwaySeedFamily,
@@ -34,6 +34,8 @@ import {
   type PipelineOp,
 } from "../pipeline/types";
 import { APP_VERSION } from "../version";
+import { AddOpButton } from "./AddOpButton";
+import { CategoryIcon } from "./CategoryIcon";
 import { MenuSelect } from "./MenuSelect";
 import { ToolInfoButton } from "./ToolInfoButton";
 import { useDismissDetails } from "./useDismissDetails";
@@ -81,6 +83,12 @@ type Props = {
   canSave: boolean;
   onSaveOff: () => void;
 };
+
+/** Drop redundant "Step N (kind):" prefix when the message sits under that card. */
+function formatStepError(error: string, kind: string, index: number): string {
+  const prefix = `Step ${index + 1} (${kind}): `;
+  return error.startsWith(prefix) ? error.slice(prefix.length) : error;
+}
 
 function updateOp(ops: PipelineOp[], id: string, patch: Partial<PipelineOp>): PipelineOp[] {
   return ops.map((op) => {
@@ -727,11 +735,11 @@ export function StackPanel({
     }));
   };
 
-  const addKind = (kind: PipelineKind, detailsEl: HTMLElement | null) => {
+  const addKind = (kind: PipelineKind, insertAt: number) => {
     const op = createOp(kind, ops.length === 0);
-    onCommit([...ops, op]);
+    const next = [...ops.slice(0, insertAt), op, ...ops.slice(insertAt)];
+    onCommit(next);
     setExpanded((prev) => ({ ...prev, [op.id]: true }));
-    detailsEl?.closest("details")?.removeAttribute("open");
   };
 
   return (
@@ -751,29 +759,6 @@ export function StackPanel({
       </div>
 
       <div className="toolbar">
-        <details className="add-op toolbar-add">
-          <summary className="add-op-btn">Add operation</summary>
-          <div className="add-op-menu add-op-menu-catalog" role="menu">
-            {PIPELINE_CATEGORIES.map((cat) => (
-              <section key={cat.id} className="add-op-category">
-                <h3 className="add-op-category-label">{cat.label}</h3>
-                <div className="add-op-category-grid">
-                  {cat.tools.map(({ kind, blurb }) => (
-                    <button
-                      key={kind}
-                      type="button"
-                      role="menuitem"
-                      onClick={(e) => addKind(kind, e.currentTarget)}
-                    >
-                      <span className="add-op-tool-name">{kind}</span>
-                      <span className="add-op-tool-blurb">{blurb}</span>
-                    </button>
-                  ))}
-                </div>
-              </section>
-            ))}
-          </div>
-        </details>
         <button
           type="button"
           disabled={!canSave || busy}
@@ -796,92 +781,125 @@ export function StackPanel({
         {ops.map((op, index) => {
           const open = isExpanded(op.id) || failedStep === index;
           return (
-            <div
-              key={op.id}
-              className={`stack-card${failedStep === index ? " is-error" : ""}${open ? " is-open" : ""}${op.enabled ? "" : " is-off"}`}
-            >
-              <div className="stack-card-head">
-                <button
-                  type="button"
-                  className="stack-card-toggle"
-                  aria-expanded={open}
-                  aria-label={open ? "Collapse step" : "Expand step"}
-                  onClick={() => toggleExpanded(op.id)}
-                >
-                  {open ? "▾" : "▸"}
-                </button>
-                <label
-                  className={`op-enable${op.enabled ? "" : " is-off"}`}
-                  title={op.enabled ? "On — included in pipeline" : "Off — skipped"}
-                >
-                  <input
-                    type="checkbox"
-                    checked={op.enabled}
-                    aria-label={op.enabled ? "Disable step" : "Enable step"}
-                    onChange={() =>
-                      onCommit(updateOp(ops, op.id, { enabled: !op.enabled }))
-                    }
-                  />
-                </label>
-                <span className="op-kind-name">{op.kind}</span>
-                <ToolInfoButton kind={op.kind} />
-                {!open ? (
-                  <button
-                    type="button"
-                    className="stack-card-summary"
-                    onClick={() => toggleExpanded(op.id)}
-                    title={opSummary(op)}
-                  >
-                    {opSummary(op)}
-                  </button>
-                ) : null}
-                <div className="stack-card-actions">
-                  <button
-                    type="button"
-                    aria-label="Move up"
-                    disabled={index === 0}
-                    onClick={() => onCommit(moveOp(ops, index, -1))}
-                  >
-                    ↑
-                  </button>
-                  <button
-                    type="button"
-                    aria-label="Move down"
-                    disabled={index === ops.length - 1}
-                    onClick={() => onCommit(moveOp(ops, index, 1))}
-                  >
-                    ↓
-                  </button>
-                  <button
-                    type="button"
-                    aria-label="Remove step"
-                    onClick={() => onCommit(ops.filter((o) => o.id !== op.id))}
-                  >
-                    ×
-                  </button>
-                </div>
-              </div>
-
-              {open ? (
-                <>
-                  <OpFields
-                    op={op}
-                    index={index}
-                    ops={ops}
-                    onCommit={onCommit}
-                    onPatch={onPatch}
-                  />
-                  <p className="op-cmdline" title="Equivalent command line">
-                    <code>{opToCommandLine(op)}</code>
-                  </p>
-                </>
+            <div key={op.id} className="stack-item">
+              {index > 0 ? (
+                <AddOpButton
+                  variant="between"
+                  onPick={(kind) => addKind(kind, index)}
+                />
               ) : null}
+              <div
+                className={`stack-card${failedStep === index ? " is-error" : ""}${open ? " is-open" : ""}${op.enabled ? "" : " is-off"}`}
+              >
+                <div className="stack-card-head">
+                  <button
+                    type="button"
+                    className="stack-card-toggle"
+                    aria-expanded={open}
+                    aria-label={open ? "Collapse step" : "Expand step"}
+                    onClick={() => toggleExpanded(op.id)}
+                  >
+                    {open ? "▾" : "▸"}
+                  </button>
+                  <label
+                    className={`op-enable${op.enabled ? "" : " is-off"}`}
+                    title={
+                      op.enabled
+                        ? "On — included in pipeline"
+                        : "Off — skipped"
+                    }
+                  >
+                    <input
+                      type="checkbox"
+                      checked={op.enabled}
+                      aria-label={op.enabled ? "Disable step" : "Enable step"}
+                      onChange={() =>
+                        onCommit(
+                          updateOp(ops, op.id, { enabled: !op.enabled }),
+                        )
+                      }
+                    />
+                  </label>
+                  <CategoryIcon
+                    category={categoryIdForKind(op.kind)}
+                    className="op-kind-icon"
+                  />
+                  <span className="op-kind-name">{op.kind}</span>
+                  <ToolInfoButton kind={op.kind} />
+                  {!open ? (
+                    <button
+                      type="button"
+                      className="stack-card-summary"
+                      onClick={() => toggleExpanded(op.id)}
+                      title={opSummary(op)}
+                    >
+                      {opSummary(op)}
+                    </button>
+                  ) : null}
+                  <div className="stack-card-actions">
+                    <button
+                      type="button"
+                      aria-label="Move up"
+                      disabled={index === 0}
+                      onClick={() => onCommit(moveOp(ops, index, -1))}
+                    >
+                      ↑
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Move down"
+                      disabled={index === ops.length - 1}
+                      onClick={() => onCommit(moveOp(ops, index, 1))}
+                    >
+                      ↓
+                    </button>
+                    <button
+                      type="button"
+                      aria-label="Remove step"
+                      onClick={() =>
+                        onCommit(ops.filter((o) => o.id !== op.id))
+                      }
+                    >
+                      ×
+                    </button>
+                  </div>
+                </div>
+
+                {open ? (
+                  <>
+                    <OpFields
+                      op={op}
+                      index={index}
+                      ops={ops}
+                      onCommit={onCommit}
+                      onPatch={onPatch}
+                    />
+                    <p className="op-cmdline" title="Equivalent command line">
+                      <code>{opToCommandLine(op)}</code>
+                    </p>
+                  </>
+                ) : null}
+
+                {failedStep === index && error ? (
+                  <p className="op-error" role="alert">
+                    {formatStepError(error, op.kind, index)}
+                  </p>
+                ) : null}
+              </div>
             </div>
           );
         })}
+        <AddOpButton
+          variant="end"
+          onPick={(kind) => addKind(kind, ops.length)}
+        />
       </div>
 
-      {error ? <p className="error">{error}</p> : null}
+      {error && failedStep == null ? (
+        <p className="error" role="alert">
+          {error}
+        </p>
+      ) : null}
     </aside>
   );
 }
