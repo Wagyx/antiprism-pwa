@@ -3,7 +3,7 @@ import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
 // Relative base so the app works under any subdirectory
-// (e.g. https://asliceofcuriosity.fr/app/antiprism-gui/).
+// (e.g. https://asliceofcuriosity.fr/app/antiprism-pwa/).
 // Override with VITE_BASE_PATH=/ for root deploys if needed.
 const base = process.env.VITE_BASE_PATH ?? "./";
 
@@ -21,7 +21,7 @@ export default defineConfig({
         "wasm/antiprism.js",
       ],
       manifest: {
-        name: "Antiprism GUI",
+        name: "Antiprism PWA",
         short_name: "Antiprism",
         description: "Offline polyhedra generator and viewer powered by Antiprism Wasm",
         theme_color: "#1a2332",

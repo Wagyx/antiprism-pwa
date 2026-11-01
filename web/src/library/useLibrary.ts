@@ -15,7 +15,6 @@ import {
   removeNodes,
   renameLibrary,
   renameNode,
-  resolveDestination,
   sortLibraries,
 } from "./tree";
 import type {
@@ -242,12 +241,15 @@ export function useLibrary() {
       return next;
     });
 
-  const createEntry = (draft: EntryDraft) =>
+  const createEntry = (
+    draft: EntryDraft,
+    location: { libraryId: string; folderIds: string[] },
+  ) =>
     enqueue(async () => {
-      const dest = resolveDestination(librariesRef.current, navRef.current);
-      const doc = librariesRef.current.find((library) => library.id === dest.libraryId);
+      const doc = librariesRef.current.find((library) => library.id === location.libraryId);
       if (!doc) throw new Error("Library not found");
-      const { doc: next, entry } = insertEntry(doc, dest.folderIds, draft);
+      if (!folderByPath(doc, location.folderIds)) throw new Error("Folder not found");
+      const { doc: next, entry } = insertEntry(doc, location.folderIds, draft);
       await saveLibrary(next);
       commit(replaceDoc(librariesRef.current, next));
       const ref = { libraryId: next.id, entryId: entry.id };

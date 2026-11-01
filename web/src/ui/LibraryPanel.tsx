@@ -18,12 +18,9 @@ import type {
   LibraryNode,
 } from "../library/types";
 import { APP_VERSION } from "../version";
-import { ModeSwitch, type Mode } from "./ModeSwitch";
 import { useDismissDetails } from "./useDismissDetails";
 
 type Props = {
-  mode: Mode;
-  onModeChange: (mode: Mode) => void;
   libraries: LibraryDocument[];
   ready: boolean;
   loadError: string | null;
@@ -47,8 +44,7 @@ type Props = {
   onMoveUp: (libraryId: string, nodeIds: string[]) => Promise<void>;
   onDeleteLibrary: (libraryId: string) => Promise<void>;
   onDeleteNodes: (libraryId: string, nodeIds: string[]) => Promise<void>;
-  canSaveCurrent: boolean;
-  onSaveCurrent: () => void;
+  onCreatePolyhedron: () => void;
 };
 
 type Pick = {
@@ -97,8 +93,6 @@ function shortDate(iso: string): string {
 }
 
 export function LibraryPanel({
-  mode,
-  onModeChange,
   libraries,
   ready,
   loadError,
@@ -122,8 +116,7 @@ export function LibraryPanel({
   onMoveUp,
   onDeleteLibrary,
   onDeleteNodes,
-  canSaveCurrent,
-  onSaveCurrent,
+  onCreatePolyhedron,
 }: Props) {
   const importRef = useRef<HTMLInputElement>(null);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -456,8 +449,6 @@ export function LibraryPanel({
           <p className="brand-version">v{APP_VERSION}</p>
         </div>
       </div>
-      <ModeSwitch mode={mode} onChange={onModeChange} />
-
       <label className="field">
         <span>Search</span>
         <input
@@ -540,11 +531,11 @@ export function LibraryPanel({
                 <button
                   type="button"
                   role="menuitem"
-                  disabled={!canSaveCurrent}
-                  title={canSaveCurrent ? "Save the editor result here" : "Nothing to save yet"}
                   onClick={(event) => {
                     closeMenu(event.currentTarget);
-                    onSaveCurrent();
+                    void run(async () => {
+                      onCreatePolyhedron();
+                    });
                   }}
                 >
                   Polyhedron
@@ -895,7 +886,7 @@ export function LibraryPanel({
 
             {openLibrary && openFolder && openFolder.children.length === 0 ? (
               <p className="lib-empty">
-                This folder is empty. Use New, then Polyhedron, to save the editor result here.
+                This folder is empty. Use New, then Polyhedron, to create one.
               </p>
             ) : null}
           </>
@@ -1340,7 +1331,7 @@ function EntryCard({
       ) : null}
       {path ? <p className="lib-path">{path}</p> : null}
       <p className="lib-counts">
-        v:{entry.counts.nVertices}, e:{entry.counts.nEdges}, f:{entry.counts.nFaces}
+        v:{entry.counts.nVertices} e:{entry.counts.nEdges} f:{entry.counts.nFaces}
       </p>
     </article>
   );

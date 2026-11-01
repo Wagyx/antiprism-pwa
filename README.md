@@ -66,7 +66,7 @@ the app.
 ## Deploy (static hosting)
 
 The app is a static build under `web/dist/`. The Vite `base` defaults to `./`
-so it works in a subdirectory (e.g. `/app/antiprism-gui/`).
+so it works in a subdirectory (e.g. `/app/antiprism-pwa/`).
 
 ```bash
 bash wasm/build.sh
@@ -75,7 +75,7 @@ cd web && npm install && npm run build
 ```
 
 Serve over HTTPS. Prefer opening
-`…/app/antiprism-gui/` or `…/app/antiprism-gui/index.html` — asset URLs are
+`…/app/antiprism-pwa/` or `…/app/antiprism-pwa/index.html` — asset URLs are
 relative to that folder. For a site-root deploy instead:
 
 ```bash

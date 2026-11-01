@@ -9,8 +9,8 @@ import {
 } from "react";
 import { runPipeline } from "./pipeline/runPipeline";
 import {
+  createImportFileOp,
   defaultDisplay,
-  defaultStack,
   saveAsOption,
   type DisplayOptions,
   type PipelineOp,
@@ -19,15 +19,14 @@ import {
 import { useUndoable } from "./pipeline/useUndoable";
 import { countsFromOff } from "./library/counts";
 import { clonePipeline, inputFromPipeline, pipelineForEditor } from "./library/snapshot";
-import { findEntry, locationLabel, resolveDestination } from "./library/tree";
-import type { EntryRef } from "./library/types";
+import { findEntry, folderByPath, requireUnique, resolveDestination } from "./library/tree";
+import type { EntryRef, PolyCounts } from "./library/types";
 import { useLibrary } from "./library/useLibrary";
 import { saveOffFile } from "./io/saveOff";
 import { saveTextFile } from "./io/saveTextFile";
 import { DisplayPanel } from "./ui/DisplayPanel";
 import { LibraryPanel } from "./ui/LibraryPanel";
-import type { Mode } from "./ui/ModeSwitch";
-import { SaveToLibraryDialog } from "./ui/SaveToLibraryDialog";
+import { SavePolyhedronDialog, UnsavedChangesDialog } from "./ui/SaveToLibraryDialog";
 import { StackPanel } from "./ui/StackPanel";
 import { StatsPanel } from "./ui/StatsPanel";
 import { PolyhedronViewer } from "./viewer/PolyhedronViewer";
@@ -37,7 +36,14 @@ import "./App.css";
 const DEBOUNCE_MS = 200;
 const PANEL_MIN = 200;
 const PANEL_MAX = 680;
-const PANEL_DEFAULT = 280;
+const PANEL_DEFAULT = 420;
+
+type EditorSession = {
+  ref: EntryRef | null;
+  name: string | null;
+  baseline: string;
+  location: { libraryId: string; folderIds: string[] };
+};
 
 function opsKey(ops: PipelineOp[]): string {
   return JSON.stringify(ops);
@@ -89,12 +95,14 @@ export default function App() {
     redo,
     canUndo,
     canRedo,
-  } = useUndoable<PipelineOp[]>(defaultStack);
+  } = useUndoable<PipelineOp[]>([]);
 
   const library = useLibrary();
-  const [mode, setMode] = useState<Mode>("editor");
-  const [editing, setEditing] = useState<EntryRef | null>(null);
-  const [saveOpen, setSaveOpen] = useState(false);
+  const [session, setSession] = useState<EditorSession | null>(null);
+  const [saveMode, setSaveMode] = useState<null | "save" | "save-as">(null);
+  const [leaveOpen, setLeaveOpen] = useState(false);
+  const [leaveError, setLeaveError] = useState<string | null>(null);
+  const [leavePending, setLeavePending] = useState(false);
 
   const [display, setDisplay] = useState<DisplayOptions>(defaultDisplay);
   const [cameraResetKey, setCameraResetKey] = useState(0);
@@ -110,7 +118,10 @@ export default function App() {
   const offTextRef = useRef<string | null>(null);
   const busyTimer = useRef<number | null>(null);
   const dragRef = useRef<{ startX: number; startW: number } | null>(null);
-  const widenedRef = useRef(false);
+  const exitAfterSave = useRef(false);
+  const sessionRef = useRef(session);
+  const presentRef = useRef(present);
+  const saveCurrentRef = useRef<() => void>(() => {});
 
   const clearBusyTimer = () => {
     if (busyTimer.current != null) {
@@ -165,7 +176,16 @@ export default function App() {
     }
   });
 
+  const editorOpen = session !== null;
+  const dirty = session !== null && opsKey(present) !== session.baseline;
+
   useEffect(() => {
+    sessionRef.current = session;
+    presentRef.current = present;
+  }, [session, present]);
+
+  useEffect(() => {
+    if (!editorOpen) return;
     const key = opsKey(present);
     const t = window.setTimeout(() => {
       if (key === lastRunKey.current) return;
@@ -174,13 +194,156 @@ export default function App() {
       void evaluate(present, runId);
     }, DEBOUNCE_MS);
     return () => window.clearTimeout(t);
-  }, [present]);
+  }, [present, editorOpen]);
+
+  const countsFor = (off: string): PolyCounts => {
+    if (!off.trim()) return { nVertices: 0, nEdges: 0, nFaces: 0 };
+    try {
+      return countsFromOff(off);
+    } catch {
+      return { nVertices: 0, nEdges: 0, nFaces: 0 };
+    }
+  };
+
+  const buildDraft = (name: string) => {
+    const off = offTextRef.current ?? "";
+    return {
+      name,
+      offText: off,
+      pipeline: clonePipeline(presentRef.current),
+      inputFile: inputFromPipeline(presentRef.current),
+      counts: countsFor(off),
+    };
+  };
+
+  const closeEditor = () => {
+    exitAfterSave.current = false;
+    setLeaveOpen(false);
+    setLeaveError(null);
+    setLeavePending(false);
+    setSaveMode(null);
+    setSession(null);
+    setCameraResetKey((key) => key + 1);
+  };
+
+  const openSession = (next: EditorSession, ops: PipelineOp[], off: string | null) => {
+    lastRunKey.current = "";
+    presentRef.current = ops;
+    loadStack(ops);
+    offTextRef.current = off;
+    setOffText(off);
+    setError(null);
+    setFailedStep(null);
+    setStepText({});
+    setSession(next);
+    setCameraResetKey((key) => key + 1);
+  };
+
+  const onCreatePolyhedron = () => {
+    const dest = resolveDestination(library.libraries, library.nav);
+    const ops = [createImportFileOp()];
+    openSession(
+      {
+        ref: null,
+        name: null,
+        baseline: "",
+        location: dest,
+      },
+      ops,
+      null,
+    );
+  };
+
+  const onEditEntry = (ref: EntryRef) => {
+    const doc = library.libraries.find((item) => item.id === ref.libraryId);
+    if (!doc) throw new Error("Library not found");
+    const hit = findEntry(doc, ref.entryId);
+    if (!hit) throw new Error("Entry not found");
+    const ops = pipelineForEditor(hit.entry);
+    library.setSelected(ref);
+    openSession(
+      {
+        ref,
+        name: hit.entry.name,
+        baseline: opsKey(ops),
+        location: { libraryId: doc.id, folderIds: hit.folderIds },
+      },
+      ops,
+      hit.entry.offText,
+    );
+  };
+
+  const onRenamePolyhedron = async (name: string) => {
+    const current = sessionRef.current;
+    if (!current) return;
+    if (current.ref) {
+      await library.renameItem(current.ref.libraryId, current.ref.entryId, name);
+    } else {
+      const doc = library.libraries.find((item) => item.id === current.location.libraryId);
+      const folder = doc ? folderByPath(doc, current.location.folderIds) : null;
+      if (!folder) throw new Error("Folder not found");
+      requireUnique(
+        folder.children.map((child) => child.name),
+        name,
+      );
+    }
+    setSession((value) => (value ? { ...value, name } : value));
+  };
+
+  const saveExisting = async () => {
+    const current = sessionRef.current;
+    if (!current?.ref || !current.name) return false;
+    const draft = buildDraft(current.name);
+    await library.updateEntry(current.ref, draft);
+    const baseline = opsKey(draft.pipeline);
+    setSession((value) => (value ? { ...value, baseline } : value));
+    return true;
+  };
+
+  const requestExit = () => {
+    const current = sessionRef.current;
+    if (!current) return;
+    if (opsKey(presentRef.current) !== current.baseline) {
+      setLeaveError(null);
+      setLeaveOpen(true);
+      return;
+    }
+    closeEditor();
+  };
+
+  const saveCurrent = () => {
+    const current = sessionRef.current;
+    if (!current) return;
+    if (!current.ref || !current.name) {
+      exitAfterSave.current = false;
+      setSaveMode("save");
+      return;
+    }
+    void saveExisting().catch((reason) => {
+      setError(reason instanceof Error ? reason.message : String(reason));
+      setFailedStep(null);
+    });
+  };
+
+  useEffect(() => {
+    saveCurrentRef.current = saveCurrent;
+  });
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const mod = e.ctrlKey || e.metaKey;
-      if (!mod) return;
+      if (!mod || !sessionRef.current) return;
       const key = e.key.toLowerCase();
+      if (key === "s" && !e.shiftKey) {
+        e.preventDefault();
+        if (leaveOpen) return;
+        if (saveMode) {
+          document.querySelector<HTMLFormElement>(".modal form")?.requestSubmit();
+          return;
+        }
+        saveCurrentRef.current();
+        return;
+      }
       if (key === "z" && !e.shiftKey) {
         e.preventDefault();
         undo();
@@ -191,7 +354,7 @@ export default function App() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [undo, redo]);
+  }, [undo, redo, saveMode, leaveOpen]);
 
   const selectedHit = useMemo(() => {
     if (!library.selected) return null;
@@ -201,28 +364,8 @@ export default function App() {
     return hit ? { doc, ...hit } : null;
   }, [library.libraries, library.selected]);
 
-  const editingHit = useMemo(() => {
-    if (!editing) return null;
-    const doc = library.libraries.find((item) => item.id === editing.libraryId);
-    if (!doc) return null;
-    const hit = findEntry(doc, editing.entryId);
-    return hit ? { doc, ...hit } : null;
-  }, [library.libraries, editing]);
-
-  const onModeChange = (next: Mode) => {
-    if (next === "library" && mode !== "library") {
-      setCameraResetKey((key) => key + 1);
-      if (!widenedRef.current) {
-        widenedRef.current = true;
-        setPanelWidth((width) => Math.max(width, 420));
-      }
-    }
-    setMode(next);
-  };
-
   const onSelectEntry = (ref: EntryRef | null) => {
     library.setSelected(ref);
-    if (ref) setCameraResetKey((key) => key + 1);
   };
 
   const onResizePointerDown = useCallback(
@@ -285,62 +428,14 @@ export default function App() {
     })();
   }, [offText]);
 
-  const buildDraft = (name: string) => {
-    const text = offTextRef.current ?? offText;
-    if (!text?.trim()) throw new Error("Nothing to save yet");
-    return {
-      name,
-      offText: text,
-      pipeline: clonePipeline(present),
-      inputFile: inputFromPipeline(present),
-      counts: countsFromOff(text),
-    };
-  };
-
-  const onEditEntry = (ref: EntryRef) => {
-    const doc = library.libraries.find((item) => item.id === ref.libraryId);
-    if (!doc) throw new Error("Library not found");
-    const hit = findEntry(doc, ref.entryId);
-    if (!hit) throw new Error("Entry not found");
-    const ops = pipelineForEditor(hit.entry);
-    lastRunKey.current = "";
-    loadStack(ops);
-    offTextRef.current = hit.entry.offText;
-    setOffText(hit.entry.offText);
-    setError(null);
-    setFailedStep(null);
-    setEditing(ref);
-    library.setSelected(ref);
-    setMode("editor");
-  };
-
-  const destination = (() => {
-    try {
-      return resolveDestination(library.libraries, library.nav);
-    } catch {
-      return null;
-    }
-  })();
-
-  const createLabel = destination
-    ? locationLabel(library.libraries, destination.libraryId, destination.folderIds)
-    : "MyLibrary";
-  const updateLabel = editingHit
-    ? locationLabel(library.libraries, editingHit.doc.id, editingHit.folderIds)
-    : null;
-
   const stage = (
     <Stage
-      offText={mode === "library" ? selectedHit?.entry.offText ?? null : offText}
+      offText={editorOpen ? offText : selectedHit?.entry.offText ?? null}
       display={display}
       onDisplay={setDisplay}
       onResetCamera={() => setCameraResetKey((key) => key + 1)}
       cameraResetKey={cameraResetKey}
-      caption={
-        mode === "library"
-          ? selectedHit?.entry.name ?? "Select an entry"
-          : null
-      }
+      caption={editorOpen ? null : selectedHit?.entry.name ?? "Select an entry"}
     />
   );
 
@@ -362,10 +457,33 @@ export default function App() {
 
   return (
     <div className="app" style={{ ["--panel-width" as string]: `${panelWidth}px` }}>
-      {mode === "library" ? (
+      {editorOpen && session ? (
+        <StackPanel
+          ops={present}
+          onCommit={commitStack}
+          onPatch={patchStack}
+          busy={busy}
+          error={error}
+          failedStep={failedStep}
+          stepText={stepText}
+          canUndo={canUndo}
+          canRedo={canRedo}
+          onUndo={undo}
+          onRedo={redo}
+          canSave={Boolean(offText?.trim())}
+          onExport={onSaveAs}
+          editingName={session.name}
+          dirty={dirty}
+          onRename={onRenamePolyhedron}
+          onSave={saveCurrent}
+          onSaveAsNew={() => {
+            exitAfterSave.current = false;
+            setSaveMode("save-as");
+          }}
+          onExit={requestExit}
+        />
+      ) : (
         <LibraryPanel
-          mode={mode}
-          onModeChange={onModeChange}
           libraries={library.libraries}
           ready={library.ready}
           loadError={library.loadError}
@@ -389,56 +507,77 @@ export default function App() {
           onMoveUp={library.moveItemsUp}
           onDeleteLibrary={async (libraryId) => {
             await library.deleteLibrary(libraryId);
-            setEditing((current) => (current?.libraryId === libraryId ? null : current));
+            setSession((current) =>
+              current?.ref?.libraryId === libraryId ? null : current,
+            );
           }}
           onDeleteNodes={async (libraryId, nodeIds) => {
             const next = await library.deleteItems(libraryId, nodeIds);
-            setEditing((current) => {
-              if (!current || current.libraryId !== next.id) return current;
-              return findEntry(next, current.entryId) ? current : null;
+            setSession((current) => {
+              if (!current?.ref || current.ref.libraryId !== next.id) return current;
+              return findEntry(next, current.ref.entryId) ? current : null;
             });
           }}
-          canSaveCurrent={!busy && Boolean(offText?.trim())}
-          onSaveCurrent={() => setSaveOpen(true)}
-        />
-      ) : (
-        <StackPanel
-          ops={present}
-          onCommit={commitStack}
-          onPatch={patchStack}
-          busy={busy}
-          error={error}
-          failedStep={failedStep}
-          stepText={stepText}
-          canUndo={canUndo}
-          canRedo={canRedo}
-          onUndo={undo}
-          onRedo={redo}
-          canSave={Boolean(offText?.trim())}
-          onSaveAs={onSaveAs}
-          mode={mode}
-          onModeChange={onModeChange}
-          editingName={editingHit?.entry.name ?? null}
-          onSaveToLibrary={() => setSaveOpen(true)}
+          onCreatePolyhedron={onCreatePolyhedron}
         />
       )}
       {resizer}
       {stage}
-      {saveOpen ? (
-        <SaveToLibraryDialog
-          defaultName={editingHit?.entry.name ?? "polyhedron"}
-          canUpdate={editingHit != null}
-          updateLabel={updateLabel}
-          createLabel={createLabel}
-          onUpdate={async (name) => {
-            if (!editing) throw new Error("No library entry is open");
-            await library.updateEntry(editing, buildDraft(name));
+      {saveMode && session ? (
+        <SavePolyhedronDialog
+          libraries={library.libraries}
+          initialLocation={session.location}
+          defaultName={session.name ?? "polyhedron"}
+          title={saveMode === "save-as" ? "Save as" : "Save"}
+          onSave={async (name, location) => {
+            const draft = buildDraft(name);
+            const ref = await library.createEntry(draft, location);
+            const baseline = opsKey(draft.pipeline);
+            const leaving = exitAfterSave.current;
+            exitAfterSave.current = false;
+            setSaveMode(null);
+            if (leaving) {
+              setSession(null);
+              setCameraResetKey((key) => key + 1);
+              return;
+            }
+            setSession({ ref, name, baseline, location });
           }}
-          onCreate={async (name) => {
-            const ref = await library.createEntry(buildDraft(name));
-            if (!editing) setEditing(ref);
+          onClose={() => {
+            exitAfterSave.current = false;
+            setSaveMode(null);
           }}
-          onClose={() => setSaveOpen(false)}
+        />
+      ) : null}
+      {leaveOpen ? (
+        <UnsavedChangesDialog
+          name={session?.name ?? null}
+          pending={leavePending}
+          error={leaveError}
+          onCancel={() => {
+            setLeaveError(null);
+            setLeaveOpen(false);
+          }}
+          onDiscard={closeEditor}
+          onSave={() => {
+            const current = sessionRef.current;
+            if (!current) return;
+            if (!current.ref || !current.name) {
+              exitAfterSave.current = true;
+              setLeaveOpen(false);
+              setLeaveError(null);
+              setSaveMode("save");
+              return;
+            }
+            setLeavePending(true);
+            setLeaveError(null);
+            void saveExisting()
+              .then(() => closeEditor())
+              .catch((reason) => {
+                setLeaveError(reason instanceof Error ? reason.message : String(reason));
+                setLeavePending(false);
+              });
+          }}
         />
       ) : null}
     </div>

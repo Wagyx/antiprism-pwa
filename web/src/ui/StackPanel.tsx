@@ -43,7 +43,6 @@ import { APP_VERSION } from "../version";
 import { AddOpButton } from "./AddOpButton";
 import { CategoryIcon } from "./CategoryIcon";
 import { MenuSelect } from "./MenuSelect";
-import { ModeSwitch, type Mode } from "./ModeSwitch";
 import { ToolInfoButton } from "./ToolInfoButton";
 import { useDismissDetails } from "./useDismissDetails";
 
@@ -89,11 +88,13 @@ type Props = {
   onUndo: () => void;
   onRedo: () => void;
   canSave: boolean;
-  onSaveAs: (format: SaveAsFormatId) => void;
-  mode: Mode;
-  onModeChange: (mode: Mode) => void;
+  onExport: (format: SaveAsFormatId) => void;
   editingName: string | null;
-  onSaveToLibrary: () => void;
+  dirty: boolean;
+  onRename: (name: string) => Promise<void>;
+  onSave: () => void;
+  onSaveAsNew: () => void;
+  onExit: () => void;
 };
 
 /** Drop redundant "Step N (kind):" prefix when the message sits under that card. */
@@ -802,6 +803,108 @@ function OpFields({
   return null;
 }
 
+function EditorTitle({
+  name,
+  dirty,
+  onRename,
+  onExit,
+}: {
+  name: string | null;
+  dirty: boolean;
+  onRename: (name: string) => Promise<void>;
+  onExit: () => void;
+}) {
+  const [draft, setDraft] = useState<string | null>(null);
+  const [renameError, setRenameError] = useState<string | null>(null);
+  const cancelRef = useRef(false);
+  const lockRef = useRef(false);
+  const shown = name ?? "New polyhedron";
+
+  const finish = (value: string) => {
+    if (lockRef.current || cancelRef.current) return;
+    const next = value.trim();
+    if (!next || next === shown) {
+      setDraft(null);
+      setRenameError(null);
+      return;
+    }
+    lockRef.current = true;
+    void onRename(next)
+      .then(() => {
+        setDraft(null);
+        setRenameError(null);
+      })
+      .catch((reason: unknown) => {
+        setRenameError(reason instanceof Error ? reason.message : String(reason));
+      })
+      .finally(() => {
+        lockRef.current = false;
+      });
+  };
+
+  return (
+    <div className="editor-heading">
+      <div className="editor-titlebar">
+        <h2 className="editor-title">
+          {draft !== null ? (
+            <input
+              className="editor-title-input"
+              autoFocus
+              aria-label="Polyhedron name"
+              value={draft}
+              onChange={(event) => setDraft(event.target.value)}
+              onFocus={(event) => event.currentTarget.select()}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  finish(draft);
+                } else if (event.key === "Escape") {
+                  event.preventDefault();
+                  cancelRef.current = true;
+                  setDraft(null);
+                  setRenameError(null);
+                }
+              }}
+              onBlur={() => {
+                if (cancelRef.current) {
+                  cancelRef.current = false;
+                  return;
+                }
+                finish(draft);
+              }}
+            />
+          ) : (
+            <span
+              className="editor-title-name"
+              title="Double-click to rename"
+              onDoubleClick={() => {
+                cancelRef.current = false;
+                setRenameError(null);
+                setDraft(shown);
+              }}
+            >
+              {shown}
+            </span>
+          )}
+          {dirty ? (
+            <span className="editor-dirty" title="Unsaved changes">
+              *
+            </span>
+          ) : null}
+        </h2>
+        <button type="button" className="editor-back" onClick={onExit}>
+          Back to Library
+        </button>
+      </div>
+      {renameError ? (
+        <p className="error" role="alert">
+          {renameError}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
 export function StackPanel({
   ops,
   onCommit,
@@ -811,11 +914,13 @@ export function StackPanel({
   failedStep,
   stepText,
   canSave,
-  onSaveAs,
-  mode,
-  onModeChange,
+  onExport,
   editingName,
-  onSaveToLibrary,
+  dirty,
+  onRename,
+  onSave,
+  onSaveAsNew,
+  onExit,
 }: Props) {
   useDismissDetails();
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
@@ -847,15 +952,24 @@ export function StackPanel({
           alt=""
         />
         <div className="brand-text">
-          <h1>Antiprism GUI</h1>
+          <h1>Antiprism PWA</h1>
           <p className="brand-version">v{APP_VERSION}</p>
         </div>
       </div>
-      <ModeSwitch mode={mode} onChange={onModeChange} />
-      {editingName ? <p className="hint">Library entry: {editingName}</p> : null}
+      <EditorTitle
+        name={editingName}
+        dirty={dirty}
+        onRename={onRename}
+        onExit={onExit}
+      />
 
       <div className="stack">
-        <div className="stack-heading">Operations</div>
+        <div className="stack-heading">
+          <span>Operations</span>
+          {busy ? (
+            <span className="busy-spinner" role="status" aria-label="Running" />
+          ) : null}
+        </div>
         {ops.length === 0 ? (
           <p className="stack-empty">Add a seed to begin.</p>
         ) : null}
@@ -1024,7 +1138,7 @@ export function StackPanel({
                 onClick={(e) => {
                   const host = e.currentTarget.closest("details");
                   host?.removeAttribute("open");
-                  onSaveAs(opt.id);
+                  onExport(opt.id);
                 }}
               >
                 <span className="save-as-label">{opt.label}</span>
@@ -1038,16 +1152,20 @@ export function StackPanel({
         <button
           type="button"
           className="tool-btn"
-          disabled={!canSave || busy}
-          title="Save the current polyhedron into the library"
-          onClick={onSaveToLibrary}
+          title="Save (Ctrl+S)"
+          onClick={onSave}
         >
-          To library
+          Save
+        </button>
+        <button
+          type="button"
+          className="tool-btn"
+          title="Save a new polyhedron in the library"
+          onClick={onSaveAsNew}
+        >
+          Save as
         </button>
         {/* Undo/Redo buttons hidden for now; stack history still wired in App */}
-        <span className={`busy-hint${busy ? " is-on" : ""}`} aria-live="polite">
-          Running…
-        </span>
       </div>
 
       {error && failedStep == null ? (

@@ -14,7 +14,7 @@ import {
  * Import always inserts a new id beside the libraries already stored.
  * A record is removed only when the user confirms Delete on that library.
  */
-const DB_NAME = "antiprism-gui";
+const DB_NAME = "antiprism-pwa";
 const DB_VERSION = 1;
 const STORE = "libraries";
 
