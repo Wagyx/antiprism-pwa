@@ -34,6 +34,11 @@ extern int miller_main(int argc, char **argv);
 extern int iso_delta_main(int argc, char **argv);
 extern int iso_kite_main(int argc, char **argv);
 extern int symmetro_main(int argc, char **argv);
+extern int sph_rings_main(int argc, char **argv);
+extern int waterman_main(int argc, char **argv);
+extern int tetra59_main(int argc, char **argv);
+extern int bravais_main(int argc, char **argv);
+extern int unitile2d_main(int argc, char **argv);
 
 namespace {
 
@@ -141,6 +146,16 @@ int call_tool(const std::string &tool, const std::vector<std::string> &args)
     return iso_kite_main(argc, g_argv_ptrs.data());
   if (tool == "symmetro")
     return symmetro_main(argc, g_argv_ptrs.data());
+  if (tool == "sph_rings")
+    return sph_rings_main(argc, g_argv_ptrs.data());
+  if (tool == "waterman")
+    return waterman_main(argc, g_argv_ptrs.data());
+  if (tool == "tetra59")
+    return tetra59_main(argc, g_argv_ptrs.data());
+  if (tool == "bravais")
+    return bravais_main(argc, g_argv_ptrs.data());
+  if (tool == "unitile2d")
+    return unitile2d_main(argc, g_argv_ptrs.data());
   fprintf(stderr, "unknown tool: %s\n", tool.c_str());
   return 1;
 }

@@ -48,6 +48,11 @@ export const FLAGS_TOOL_KINDS = [
   "iso_delta",
   "iso_kite",
   "symmetro",
+  "sph_rings",
+  "waterman",
+  "tetra59",
+  "bravais",
+  "unitile2d",
 ] as const;
 
 export type FlagsToolKind = (typeof FLAGS_TOOL_KINDS)[number];
@@ -108,6 +113,11 @@ export const PIPELINE_CATEGORIES: {
       { kind: "iso_delta", blurb: "Isohedral deltas" },
       { kind: "iso_kite", blurb: "Isohedral kites" },
       { kind: "symmetro", blurb: "Symmetrohedra" },
+      { kind: "sph_rings", blurb: "Points on sphere rings" },
+      { kind: "waterman", blurb: "Waterman polyhedra" },
+      { kind: "tetra59", blurb: "Rational tetrahedra" },
+      { kind: "bravais", blurb: "Bravais lattices" },
+      { kind: "unitile2d", blurb: "Uniform tilings" },
     ],
   },
   {
@@ -215,6 +225,11 @@ const GENERATOR_SEED_KINDS = new Set<string>([
   "iso_delta",
   "iso_kite",
   "symmetro",
+  "sph_rings",
+  "waterman",
+  "tetra59",
+  "bravais",
+  "unitile2d",
 ]);
 
 /** Ops that produce OFF without reading previous stdin. */

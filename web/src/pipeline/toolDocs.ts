@@ -718,4 +718,85 @@ export const TOOL_DOCS: Record<PipelineKind, ToolDoc> = {
       },
     ],
   },
+
+  sph_rings: {
+    title: "sph_rings",
+    blurb: "Distribute points on latitude rings of a sphere (optionally stagger, omit poles).",
+    sections: [
+      {
+        heading: "Args",
+        entries: [
+          { symbol: "num_rings", summary: "Rings between the poles." },
+          { symbol: "num_divs", summary: "Points on each ring." },
+          { symbol: "-s / -x", summary: "Stagger rings / omit polar points." },
+        ],
+      },
+    ],
+  },
+
+  waterman: {
+    title: "waterman",
+    blurb: "Waterman polyhedra from SC / FCC / BCC lattice sphere clips. Cap -r in the browser.",
+    sections: [
+      {
+        heading: "Options",
+        entries: [
+          { symbol: "lattice", summary: "SC, FCC, or BCC." },
+          { symbol: "-r", summary: "Clip radius (optional root n as r,n)." },
+          { symbol: "-M 1|2", summary: "Sphere-ray or z-guess method." },
+          { symbol: "-C c|i|s", summary: "Hull only / keep interior / suppress." },
+          { symbol: "-f", summary: "Fill interior lattice points." },
+        ],
+      },
+    ],
+  },
+
+  tetra59: {
+    title: "tetra59",
+    blurb:
+      "59 sporadic tetrahedra with rational dihedral angles (Kedlaya et al.), from `tetra59 -L i`.",
+    sections: [
+      {
+        heading: "Options",
+        entries: [
+          { symbol: "1…59", summary: "Sporadic tetrahedron list number." },
+          { symbol: "-d a…f", summary: "Dihedral-angle permutation." },
+          { symbol: "-r / -z", summary: "Reflect / scale volume to 1." },
+          { symbol: "-s / -a", summary: "Special infinite families + angle (advanced)." },
+        ],
+      },
+    ],
+  },
+
+  bravais: {
+    title: "bravais",
+    blurb: "Generate Bravais lattices (14 types from `bravais -B`) as OFF point/cell models.",
+    sections: [
+      {
+        heading: "Options",
+        entries: [
+          { symbol: "1…14", summary: "Lattice index (or crystal system + centering)." },
+          { symbol: "-g", summary: "Cell grid size (N or I,J,K)." },
+          { symbol: "-u", summary: "Add cubic cell struts before transform." },
+          { symbol: "-v / -a", summary: "Vector lengths / angles (advanced)." },
+        ],
+      },
+    ],
+  },
+
+  unitile2d: {
+    title: "unitile2d",
+    blurb: "Uniform tilings mapped onto a plane, torus, Klein bottle, and other surfaces.",
+    sections: [
+      {
+        heading: "Options",
+        entries: [
+          { symbol: "pattern 1…11", summary: "Archimedean tiling pattern." },
+          { symbol: "-s", summary: "Surface: plane, torus, Möbius, Klein, …" },
+          { symbol: "-w / -l", summary: "Tiling width / height (keep small in-browser)." },
+          { symbol: "-g", summary: "Use exact width×height (do not expand to tile)." },
+        ],
+      },
+    ],
+  },
 };

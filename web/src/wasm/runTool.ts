@@ -22,7 +22,12 @@ export type AntiprismTool =
   | "miller"
   | "iso_delta"
   | "iso_kite"
-  | "symmetro";
+  | "symmetro"
+  | "sph_rings"
+  | "waterman"
+  | "tetra59"
+  | "bravais"
+  | "unitile2d";
 
 export type ToolResult = {
   ok: boolean;

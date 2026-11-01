@@ -14,6 +14,10 @@ The application has an editor module that lets the user inspect the polyhedron i
 
 
 TODOS:
+- github repo
+- change logo
+- Antiview Web
+- library
 - exporter (OBJ, …)
 - importer (OBJ, WRL ?)
 - undo/redo (history wired; UI buttons hidden)
@@ -61,14 +65,14 @@ App-only seeds are listed separately.
 | `miller` | Miller stellations (icosahedron) | Done | |
 | `iso_delta` | Isohedral deltahedra | Done | |
 | `iso_kite` | Isohedral kite-faced | Done | |
-| `kcycle` | Kaleidocycle rings | Todo | |
+| `kcycle` | Kaleidocycle rings | Todo | Needs input + indices |
 | `lat_util` | Lattice utilities | Todo | |
-| `bravais` | Bravais / lattice models | Todo | |
-| `unitile2d` | Uniform tilings on a surface | Todo | |
-| `sph_rings` | Rings of points on a sphere | Todo | |
-| `n_icons` | n-icons | Todo | |
-| `waterman` | Waterman polyhedra | Todo | |
-| `tetra59` | Tetra59 models | Todo | |
+| `bravais` | Bravais / lattice models | Done | |
+| `unitile2d` | Uniform tilings on a surface | Done | Keep -w/-l modest |
+| `sph_rings` | Rings of points on a sphere | Done | |
+| `n_icons` | n-icons | Todo | Large TU |
+| `waterman` | Waterman polyhedra | Done | Cap -r in UI |
+| `tetra59` | Tetra59 models | Done | List from `-L i` |
 | `off_query` | List element data | Todo | Diagnostic / text-oriented |
 | `off_report` | Global measures / counts | Todo | Diagnostic / text-oriented |
 
@@ -84,4 +88,4 @@ App-only seeds are listed separately.
 | `off2dae` | OFF → Collada | Todo | |
 | `antiview` | Native OpenGL viewer | N/A | Replaced by Three.js viewer |
 
-**Counts:** Done **25** Antiprism CLIs (+ `import_off`) · Todo **17** · N/A **1**
+**Counts:** Done **30** Antiprism CLIs (+ `import_off`) · Todo **12** · N/A **1**

@@ -1,4 +1,6 @@
+import { BRAVAIS_MODEL_OPTIONS } from "./bravaisModels";
 import { ISO_DELTA_MODEL_OPTIONS } from "./isoDeltaModels";
+import { TETRA59_MODEL_OPTIONS } from "./tetra59Models";
 import type { FlagsToolKind } from "./types";
 
 export type ParamValue = string | number | boolean;
@@ -850,6 +852,208 @@ export const TOOL_PARAM_SCHEMAS: Record<FlagsToolKind, ToolParamSchema> = {
         type: "bool",
         label: "Remove free faces (-x)",
         flag: "-x",
+        default: false,
+      },
+    ],
+  },
+
+  sph_rings: {
+    fields: [
+      {
+        key: "rings",
+        type: "number",
+        label: "Rings",
+        default: 4,
+        min: 1,
+        max: 64,
+        hint: "Number of rings between the poles (positional).",
+      },
+      {
+        key: "divs",
+        type: "number",
+        label: "Points per ring",
+        default: 8,
+        min: 1,
+        max: 128,
+        hint: "Positional; omit-like by using a small value for sparse rings.",
+      },
+      { key: "stagger", type: "bool", label: "Stagger (-s)", flag: "-s", default: false },
+      { key: "noPoles", type: "bool", label: "No poles (-x)", flag: "-x", default: false },
+    ],
+  },
+
+  waterman: {
+    fields: [
+      {
+        key: "lattice",
+        type: "select",
+        label: "Lattice",
+        default: "FCC",
+        options: [
+          { value: "SC", label: "SC — simple cubic" },
+          { value: "FCC", label: "FCC — face-centred" },
+          { value: "BCC", label: "BCC — body-centred" },
+        ],
+      },
+      {
+        key: "radius",
+        type: "number",
+        label: "Clip radius (-r)",
+        flag: "-r",
+        default: 3,
+        min: 1,
+        max: 20,
+        step: 0.5,
+        hint: "Keep modest in the browser; larger radii get slow.",
+      },
+      {
+        key: "method",
+        type: "select",
+        label: "Method (-M)",
+        flag: "-M",
+        default: "1",
+        options: [
+          { value: "1", label: "1 — sphere-ray" },
+          { value: "2", label: "2 — z guess" },
+        ],
+      },
+      {
+        key: "hull",
+        type: "select",
+        label: "Convex hull (-C)",
+        flag: "-C",
+        default: "c",
+        options: [
+          { value: "c", label: "c — hull only" },
+          { value: "i", label: "i — keep interior" },
+          { value: "s", label: "s — suppress" },
+        ],
+      },
+      { key: "fill", type: "bool", label: "Fill interior (-f)", flag: "-f", default: false },
+    ],
+  },
+
+  tetra59: {
+    fields: [
+      {
+        key: "tetrahedron",
+        type: "select",
+        label: "Tetrahedron",
+        default: "1",
+        options: [...TETRA59_MODEL_OPTIONS],
+        hint: "From `tetra59 -L i` (59 sporadic cases).",
+      },
+      {
+        key: "dihedralOrder",
+        type: "select",
+        label: "Dihedral order (-d)",
+        flag: "-d",
+        default: "a",
+        options: [
+          { value: "a", label: "a — 1,2,3" },
+          { value: "b", label: "b — 1,3,2" },
+          { value: "c", label: "c — 2,1,3" },
+          { value: "d", label: "d — 2,3,1" },
+          { value: "e", label: "e — 3,1,2" },
+          { value: "f", label: "f — 3,2,1" },
+        ],
+      },
+      { key: "reflect", type: "bool", label: "Reflect (-r)", flag: "-r", default: false },
+      { key: "unitVolume", type: "bool", label: "Unit volume (-z)", flag: "-z", default: false },
+    ],
+  },
+
+  bravais: {
+    fields: [
+      {
+        key: "lattice",
+        type: "select",
+        label: "Lattice",
+        default: "12",
+        options: [...BRAVAIS_MODEL_OPTIONS],
+        hint: "From `bravais -B` (index or name+centering).",
+      },
+      {
+        key: "grid",
+        type: "text",
+        label: "Grid (-g)",
+        flag: "-g",
+        default: "3",
+        placeholder: "3  or  3,3,3",
+      },
+      {
+        key: "cellStruts",
+        type: "bool",
+        label: "Cell struts (-u)",
+        flag: "-u",
+        default: false,
+      },
+    ],
+  },
+
+  unitile2d: {
+    fields: [
+      {
+        key: "pattern",
+        type: "select",
+        label: "Pattern",
+        default: "1",
+        options: [
+          { value: "1", label: "1 — 4,4,4,4 {4,4}" },
+          { value: "2", label: "2 — 3,3,3,3,3,3 {3,6}" },
+          { value: "3", label: "3 — 6,6,6 {6,3}" },
+          { value: "4", label: "4 — 3,6,3,6" },
+          { value: "5", label: "5 — 3,3,3,4,4" },
+          { value: "6", label: "6 — 3,3,4,3,4" },
+          { value: "7", label: "7 — 3,3,3,3,6" },
+          { value: "8", label: "8 — 3,12,12" },
+          { value: "9", label: "9 — 4,8,8" },
+          { value: "10", label: "10 — 3,4,6,4" },
+          { value: "11", label: "11 — 4,6,12" },
+        ],
+      },
+      {
+        key: "surface",
+        type: "select",
+        label: "Surface (-s)",
+        flag: "-s",
+        default: "p",
+        options: [
+          { value: "p", label: "p — plane" },
+          { value: "c", label: "c — conical frustum" },
+          { value: "m", label: "m — Möbius strip" },
+          { value: "t", label: "t — torus" },
+          { value: "T", label: "T — trefoil" },
+          { value: "k", label: "k — Klein bottle" },
+          { value: "K", label: "K — figure-8 Klein" },
+          { value: "C", label: "C — cross-cap" },
+          { value: "r", label: "r — Roman" },
+          { value: "b", label: "b — Boy’s" },
+        ],
+      },
+      {
+        key: "width",
+        type: "number",
+        label: "Width (-w)",
+        flag: "-w",
+        default: 6,
+        min: 2,
+        max: 40,
+      },
+      {
+        key: "height",
+        type: "number",
+        label: "Height (-l)",
+        flag: "-l",
+        default: 6,
+        min: 2,
+        max: 40,
+      },
+      {
+        key: "exactSize",
+        type: "bool",
+        label: "Exact w×h (-g)",
+        flag: "-g",
         default: false,
       },
     ],
