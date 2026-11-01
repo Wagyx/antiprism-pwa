@@ -41,6 +41,7 @@ export default function App() {
   } = useUndoable<PipelineOp[]>(defaultStack);
 
   const [display, setDisplay] = useState<DisplayOptions>(defaultDisplay);
+  const [cameraResetKey, setCameraResetKey] = useState(0);
   const [offText, setOffText] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -200,12 +201,17 @@ export default function App() {
         onPointerCancel={onResizePointerUp}
       />
       <main className="stage">
-        <DisplayPanel display={display} onChange={setDisplay} />
+        <DisplayPanel
+          display={display}
+          onChange={setDisplay}
+          onResetCamera={() => setCameraResetKey((k) => k + 1)}
+        />
         <PolyhedronViewer
           offText={offText}
           verticesActive={display.verticesActive}
           edgesActive={display.edgesActive}
           facesActive={display.facesActive}
+          cameraResetKey={cameraResetKey}
         />
       </main>
     </div>

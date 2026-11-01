@@ -45,7 +45,21 @@ type Props = {
   facesActive?: boolean;
   vertexRadius?: number;
   edgeRadius?: number;
+  /** Increment to restore the default camera/orbit view. */
+  cameraResetKey?: number;
 };
+
+const DEFAULT_CAMERA_POS = new THREE.Vector3(0, 0, 40);
+
+function resetCameraView(
+  camera: THREE.PerspectiveCamera,
+  controls: OrbitControls,
+) {
+  camera.position.copy(DEFAULT_CAMERA_POS);
+  controls.target.set(0, 0, 0);
+  controls.update();
+  controls.saveState();
+}
 
 function groupByAlpha(colors: (Rgba | undefined)[]): Map<number, number[]> {
   const map = new Map<number, number[]>();
@@ -234,6 +248,7 @@ export function PolyhedronViewer({
   facesActive = true,
   vertexRadius = 0.03,
   edgeRadius = 0.02,
+  cameraResetKey = 0,
 }: Props) {
   const mountRef = useRef<HTMLDivElement>(null);
   const [glError, setGlError] = useState<string | null>(null);
@@ -266,7 +281,6 @@ export function PolyhedronViewer({
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 1000);
-    camera.position.set(0, 0, 40);
     scene.add(camera);
 
     const light = new THREE.DirectionalLight(0xffffff, 0.7);
@@ -276,6 +290,7 @@ export function PolyhedronViewer({
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.rotateSpeed = 1.2;
     controls.enablePan = true;
+    resetCameraView(camera, controls);
 
     const state = {
       renderer,
@@ -343,12 +358,16 @@ export function PolyhedronViewer({
       });
       state.scene.add(mesh);
       state.content = mesh;
-      state.controls.reset();
-      state.camera.position.set(0, 0, 40);
     } catch (e) {
       console.error(e);
     }
   }, [offText, verticesActive, edgesActive, facesActive, vertexRadius, edgeRadius]);
+
+  useEffect(() => {
+    const state = sceneRef.current;
+    if (!state) return;
+    resetCameraView(state.camera, state.controls);
+  }, [cameraResetKey]);
 
   return (
     <div className="viewer-mount" ref={mountRef}>

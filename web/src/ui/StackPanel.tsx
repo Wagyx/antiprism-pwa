@@ -1,14 +1,19 @@
 import { useRef, useState } from "react";
 import { readOffFile } from "../io/loadOff";
 import {
+  TOOL_PARAM_SCHEMAS,
+  type ParamField,
+  type ParamValue,
+} from "../pipeline/toolParams";
+import {
   createOp,
-  FLAG_PRESETS,
+  flagsOpSummary,
   isFlagsTool,
   OFF_COLOR_PRESETS,
   opToCommandLine,
   PIPELINE_KINDS,
   POLYGON_TYPES,
-  type FlagsToolKind,
+  type FlagsOp,
   type ImportOffOp,
   type PipelineKind,
   type PipelineOp,
@@ -82,8 +87,122 @@ function opSummary(op: PipelineOp): string {
         .filter(Boolean)
         .join(" ") || "…";
     default:
-      return op.flags || "(default)";
+      return flagsOpSummary(op);
   }
+}
+
+function setParam(
+  ops: PipelineOp[],
+  op: FlagsOp,
+  key: string,
+  value: ParamValue,
+): PipelineOp[] {
+  return updateOp(ops, op.id, {
+    params: { ...op.params, [key]: value },
+  });
+}
+
+function FlagsParamFields({
+  op,
+  ops,
+  onCommit,
+  onPatch,
+}: {
+  op: FlagsOp;
+  ops: PipelineOp[];
+  onCommit: (ops: PipelineOp[]) => void;
+  onPatch: (ops: PipelineOp[]) => void;
+}) {
+  const schema = TOOL_PARAM_SCHEMAS[op.kind];
+
+  const renderField = (field: ParamField) => {
+    const value = op.params[field.key] ?? field.default;
+
+    if (field.type === "bool") {
+      return (
+        <label key={field.key} className="field field-check">
+          <span>{field.label}</span>
+          <input
+            type="checkbox"
+            checked={value === true}
+            aria-label={field.label}
+            onChange={(e) =>
+              onCommit(setParam(ops, op, field.key, e.target.checked))
+            }
+          />
+        </label>
+      );
+    }
+
+    if (field.type === "number") {
+      const n = typeof value === "number" ? value : Number(value);
+      return (
+        <label key={field.key} className="field">
+          <span>{field.label}</span>
+          <input
+            type="number"
+            min={field.min}
+            max={field.max}
+            step={field.step ?? 1}
+            value={Number.isFinite(n) ? n : field.default}
+            aria-label={field.label}
+            onChange={(e) => {
+              const next = Number(e.target.value);
+              onPatch(
+                setParam(
+                  ops,
+                  op,
+                  field.key,
+                  Number.isFinite(next) ? next : field.default,
+                ),
+              );
+            }}
+            onBlur={() => onCommit(ops)}
+          />
+          {field.hint ? <p className="hint">{field.hint}</p> : null}
+        </label>
+      );
+    }
+
+    if (field.type === "select") {
+      return (
+        <label key={field.key} className="field">
+          <span>{field.label}</span>
+          <MenuSelect
+            aria-label={field.label}
+            value={String(value ?? "")}
+            options={field.options}
+            onChange={(v) => onCommit(setParam(ops, op, field.key, v))}
+          />
+          {field.hint ? <p className="hint">{field.hint}</p> : null}
+        </label>
+      );
+    }
+
+    return (
+      <label key={field.key} className="field">
+        <span>{field.label}</span>
+        <input
+          type="text"
+          value={String(value ?? "")}
+          placeholder={field.placeholder}
+          aria-label={field.label}
+          onChange={(e) =>
+            onPatch(setParam(ops, op, field.key, e.target.value))
+          }
+          onBlur={() => onCommit(ops)}
+        />
+        {field.hint ? <p className="hint">{field.hint}</p> : null}
+      </label>
+    );
+  };
+
+  return (
+    <div className="stack-card-body">
+      {schema.fields.map(renderField)}
+      <p className="hint">Pipes previous OFF in as input.</p>
+    </div>
+  );
 }
 
 function ImportOffFields({
@@ -340,35 +459,13 @@ function OpFields({
   }
 
   if (isFlagsTool(op.kind)) {
-    const kind = op.kind as FlagsToolKind;
-    const presets = FLAG_PRESETS[kind];
-    const matched = presets.some((p) => p.value === op.flags);
     return (
-      <div className="stack-card-body">
-        <label className="field">
-          <span>Preset</span>
-          <MenuSelect
-            aria-label={`${kind} preset`}
-            value={op.flags}
-            options={presets}
-            fallbackLabel={matched ? "custom…" : `custom… (${op.flags || "empty"})`}
-            onChange={(flags) => onCommit(updateOp(ops, op.id, { flags }))}
-          />
-        </label>
-        <label className="field">
-          <span>Flags</span>
-          <input
-            type="text"
-            value={op.flags}
-            placeholder="CLI flags (space-separated)"
-            onChange={(e) =>
-              onPatch(updateOp(ops, op.id, { flags: e.target.value }))
-            }
-            onBlur={() => onCommit(ops)}
-          />
-        </label>
-        <p className="hint">Pipes previous OFF in as input.</p>
-      </div>
+      <FlagsParamFields
+        op={op}
+        ops={ops}
+        onCommit={onCommit}
+        onPatch={onPatch}
+      />
     );
   }
 

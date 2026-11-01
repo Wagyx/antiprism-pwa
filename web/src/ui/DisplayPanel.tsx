@@ -3,9 +3,10 @@ import type { DisplayOptions } from "../pipeline/types";
 type Props = {
   display: DisplayOptions;
   onChange: (d: DisplayOptions) => void;
+  onResetCamera: () => void;
 };
 
-export function DisplayPanel({ display, onChange }: Props) {
+export function DisplayPanel({ display, onChange, onResetCamera }: Props) {
   const set = <K extends keyof DisplayOptions>(key: K, v: DisplayOptions[K]) =>
     onChange({ ...display, [key]: v });
 
@@ -36,6 +37,14 @@ export function DisplayPanel({ display, onChange }: Props) {
         />
         Vertices
       </label>
+      <button
+        type="button"
+        className="display-reset-camera"
+        onClick={onResetCamera}
+        title="Reset camera to default view"
+      >
+        Reset camera
+      </button>
     </fieldset>
   );
 }

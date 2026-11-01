@@ -112,6 +112,30 @@
   font-size: 0.78rem;
 }
 
+.field-check {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.field-check input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  padding: 0;
+  accent-color: #c4a35a;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.field-check span {
+  text-transform: none;
+  letter-spacing: normal;
+  font-size: 0.78rem;
+  opacity: 0.9;
+}
+
 .toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -621,6 +645,23 @@
   gap: 0.35rem;
   font-size: 0.75rem;
   cursor: pointer;
+}
+
+.display-reset-camera {
+  margin-top: 0.2rem;
+  padding: 0.25rem 0.4rem;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.35);
+  color: inherit;
+  font: inherit;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.display-reset-camera:hover {
+  border-color: rgba(196, 163, 90, 0.45);
+  background: rgba(196, 163, 90, 0.12);
 }
 
 .viewer-mount {
