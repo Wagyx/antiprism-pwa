@@ -601,6 +601,62 @@
   background: rgba(196, 163, 90, 0.18);
 }
 
+.add-op-menu-catalog {
+  right: auto;
+  width: min(18.5rem, calc(100vw - 2rem));
+  max-height: min(70vh, 28rem);
+  overflow-y: auto;
+  gap: 0.45rem;
+  padding: 0.4rem;
+}
+
+.add-op-category {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.add-op-category-label {
+  margin: 0;
+  padding: 0.1rem 0.25rem;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.add-op-category-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.15rem;
+}
+
+.add-op-menu-catalog button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.05rem;
+  padding: 0.3rem 0.4rem;
+  line-height: 1.2;
+}
+
+.add-op-tool-name {
+  font-size: 0.72rem;
+  color: #e8eef6;
+}
+
+.add-op-tool-blurb {
+  font-size: 0.6rem;
+  opacity: 0.55;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
 .error {
   color: #ffb4a8;
   font-size: 0.75rem;

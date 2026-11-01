@@ -50,6 +50,57 @@ export const PIPELINE_KINDS = [
 
 export type PipelineKind = (typeof PIPELINE_KINDS)[number];
 
+/** Grouped catalog for the Add operation menu. */
+export const PIPELINE_CATEGORIES: {
+  id: string;
+  label: string;
+  tools: { kind: PipelineKind; blurb: string }[];
+}[] = [
+  {
+    id: "seed",
+    label: "Seed",
+    tools: [
+      { kind: "polygon", blurb: "Prism, pyramid, …" },
+      { kind: "import_off", blurb: "Load OFF file" },
+      { kind: "conway", blurb: "Conway notation" },
+      { kind: "geodesic", blurb: "Frequency spheres" },
+      { kind: "zono", blurb: "Zonohedra" },
+      { kind: "wythoff", blurb: "Wythoff tilings" },
+    ],
+  },
+  {
+    id: "transform",
+    label: "Transform",
+    tools: [
+      { kind: "off_trans", blurb: "Scale, rotate, …" },
+      { kind: "pol_recip", blurb: "Dual / reciprocal" },
+      { kind: "to_nfold", blurb: "Change axial fold" },
+      { kind: "poly_kscope", blurb: "Kaleidoscope" },
+      { kind: "stellate", blurb: "Stellations" },
+      { kind: "leonardo", blurb: "Panel borders" },
+    ],
+  },
+  {
+    id: "refine",
+    label: "Refine",
+    tools: [
+      { kind: "canonical", blurb: "Planarize" },
+      { kind: "planar", blurb: "Coplanar faces" },
+      { kind: "conv_hull", blurb: "Convex hull" },
+      { kind: "repel", blurb: "Repel points" },
+    ],
+  },
+  {
+    id: "utility",
+    label: "Utility",
+    tools: [
+      { kind: "off_util", blurb: "Orient, sphere, …" },
+      { kind: "off_color", blurb: "Colour V/E/F" },
+      { kind: "off_normals", blurb: "Normals as geom" },
+    ],
+  },
+];
+
 type OpBase = {
   id: string;
   /** When false, step is skipped in the pipeline. */

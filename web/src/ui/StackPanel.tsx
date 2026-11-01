@@ -11,6 +11,7 @@ import {
   isFlagsTool,
   OFF_COLOR_PRESETS,
   opToCommandLine,
+  PIPELINE_CATEGORIES,
   PIPELINE_KINDS,
   POLYGON_TYPES,
   type FlagsOp,
@@ -520,16 +521,24 @@ export function StackPanel({
       <div className="toolbar">
         <details className="add-op toolbar-add">
           <summary className="add-op-btn">Add operation</summary>
-          <div className="add-op-menu" role="menu">
-            {PIPELINE_KINDS.map((kind) => (
-              <button
-                key={kind}
-                type="button"
-                role="menuitem"
-                onClick={(e) => addKind(kind, e.currentTarget)}
-              >
-                {kind}
-              </button>
+          <div className="add-op-menu add-op-menu-catalog" role="menu">
+            {PIPELINE_CATEGORIES.map((cat) => (
+              <section key={cat.id} className="add-op-category">
+                <h3 className="add-op-category-label">{cat.label}</h3>
+                <div className="add-op-category-grid">
+                  {cat.tools.map(({ kind, blurb }) => (
+                    <button
+                      key={kind}
+                      type="button"
+                      role="menuitem"
+                      onClick={(e) => addKind(kind, e.currentTarget)}
+                    >
+                      <span className="add-op-tool-name">{kind}</span>
+                      <span className="add-op-tool-blurb">{blurb}</span>
+                    </button>
+                  ))}
+                </div>
+              </section>
             ))}
           </div>
         </details>
