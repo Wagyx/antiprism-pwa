@@ -1,4 +1,4 @@
-# Antiprism GUI
+# Antiprism PWA
 
 Client-only progressive web app for building and viewing polyhedra with a
 [Antiprism](https://antiprism.com/)-backed Wasm pipeline and a Three.js viewer.
