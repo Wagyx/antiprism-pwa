@@ -17,6 +17,7 @@ import { useUndoable } from "./pipeline/useUndoable";
 import { saveOffFile } from "./io/saveOff";
 import { DisplayPanel } from "./ui/DisplayPanel";
 import { StackPanel } from "./ui/StackPanel";
+import { StatsPanel } from "./ui/StatsPanel";
 import { PolyhedronViewer } from "./viewer/PolyhedronViewer";
 import "./App.css";
 
@@ -206,6 +207,7 @@ export default function App() {
           onChange={setDisplay}
           onResetCamera={() => setCameraResetKey((k) => k + 1)}
         />
+        <StatsPanel offText={offText} />
         <PolyhedronViewer
           offText={offText}
           verticesActive={display.verticesActive}
