@@ -48,6 +48,7 @@ export type FlagsToolKind = (typeof FLAGS_TOOL_KINDS)[number];
 export const PIPELINE_KINDS = [
   "polygon",
   "import_off",
+  "conway_seed",
   "conway",
   "geodesic",
   "off_color",
@@ -55,6 +56,30 @@ export const PIPELINE_KINDS = [
 ] as const;
 
 export type PipelineKind = (typeof PIPELINE_KINDS)[number];
+
+/** Conway seed families; parametric ones append n (e.g. P5). */
+export const CONWAY_SEED_FAMILIES = [
+  "T",
+  "C",
+  "O",
+  "I",
+  "D",
+  "P",
+  "A",
+  "Y",
+  "Z",
+  "R",
+] as const;
+
+export type ConwaySeedFamily = (typeof CONWAY_SEED_FAMILIES)[number];
+
+export const CONWAY_PARAMETRIC_SEEDS = new Set<ConwaySeedFamily>([
+  "P",
+  "A",
+  "Y",
+  "Z",
+  "R",
+]);
 
 /** Grouped catalog for the Add operation menu. */
 export const PIPELINE_CATEGORIES: {
@@ -68,7 +93,7 @@ export const PIPELINE_CATEGORIES: {
     tools: [
       { kind: "polygon", blurb: "Prism, pyramid, …" },
       { kind: "import_off", blurb: "Load OFF file" },
-      { kind: "conway", blurb: "Conway notation" },
+      { kind: "conway_seed", blurb: "Conway seed" },
       { kind: "geodesic", blurb: "Frequency spheres" },
       { kind: "zono", blurb: "Zonohedra" },
       { kind: "wythoff", blurb: "Wythoff tilings" },
@@ -82,6 +107,7 @@ export const PIPELINE_CATEGORIES: {
     id: "transform",
     label: "Transform",
     tools: [
+      { kind: "conway", blurb: "Conway operators" },
       { kind: "off_trans", blurb: "Scale, rotate, …" },
       { kind: "pol_recip", blurb: "Dual / reciprocal" },
       { kind: "to_nfold", blurb: "Change axial fold" },
@@ -132,6 +158,15 @@ export type ImportOffOp = OpBase & {
   offText: string;
 };
 
+/** Seed-only Conway step (capital letter / Pn…); calls Wasm `conway`. */
+export type ConwaySeedOp = OpBase & {
+  kind: "conway_seed";
+  family: ConwaySeedFamily;
+  /** Used when family is P/A/Y/Z/R. */
+  numSides: number;
+};
+
+/** Operators-only Conway transform; pipes previous OFF. */
 export type ConwayOp = OpBase & {
   kind: "conway";
   notation: string;
@@ -160,14 +195,41 @@ export type FlagsOp = OpBase & {
 export type PipelineOp =
   | PolygonOp
   | ImportOffOp
+  | ConwaySeedOp
   | ConwayOp
   | GeodesicOp
   | OffColorOp
   | FlagsOp;
 
+const GENERATOR_SEED_KINDS = new Set<string>([
+  "conway_seed",
+  "miller",
+  "iso_delta",
+  "iso_kite",
+  "symmetro",
+]);
+
 /** Ops that produce OFF without reading previous stdin. */
 export function isSeedOp(op: PipelineOp): boolean {
-  return op.kind === "polygon" || op.kind === "import_off";
+  return (
+    op.kind === "polygon" ||
+    op.kind === "import_off" ||
+    GENERATOR_SEED_KINDS.has(op.kind)
+  );
+}
+
+/** Notation token for a Conway seed step (e.g. T, P5). */
+export function conwaySeedToken(op: ConwaySeedOp): string {
+  if (CONWAY_PARAMETRIC_SEEDS.has(op.family)) {
+    return `${op.family}${Math.max(3, Math.floor(op.numSides))}`;
+  }
+  return op.family;
+}
+
+/** Wasm CLI name for a pipeline kind (aliases like conway_seed → conway). */
+export function wasmToolForOp(op: PipelineOp): string {
+  if (op.kind === "conway_seed") return "conway";
+  return op.kind;
 }
 
 export type DisplayOptions = {
@@ -205,6 +267,18 @@ export function createImportOffOp(
     enabled: partial?.enabled ?? true,
     fileName: partial?.fileName ?? "",
     offText: partial?.offText ?? "",
+  };
+}
+
+export function createConwaySeedOp(
+  partial?: Partial<Omit<ConwaySeedOp, "id" | "kind">>,
+): ConwaySeedOp {
+  return {
+    id: newId(),
+    kind: "conway_seed",
+    enabled: partial?.enabled ?? true,
+    family: partial?.family ?? "T",
+    numSides: partial?.numSides ?? 5,
   };
 }
 
@@ -258,14 +332,16 @@ export function createFlagsOp(
   };
 }
 
-export function createOp(kind: PipelineKind, isFirst: boolean): PipelineOp {
+export function createOp(kind: PipelineKind, _isFirst: boolean): PipelineOp {
   switch (kind) {
     case "polygon":
       return createPolygonOp();
     case "import_off":
       return createImportOffOp();
+    case "conway_seed":
+      return createConwaySeedOp();
     case "conway":
-      return createConwayOp(isFirst ? "T" : "a");
+      return createConwayOp("a");
     case "geodesic":
       return createGeodesicOp();
     case "off_color":
@@ -281,6 +357,8 @@ export function opToArgs(op: PipelineOp): string[] {
       return [op.polygonType, String(op.numSides)];
     case "import_off":
       return op.fileName ? [op.fileName] : [];
+    case "conway_seed":
+      return [conwaySeedToken(op)];
     case "conway":
       return [op.notation.trim()];
     case "geodesic":
@@ -302,8 +380,9 @@ export function opToCommandLine(op: PipelineOp): string {
   if (op.kind === "import_off") {
     return op.fileName ? `import_off ${op.fileName}` : "import_off (no file)";
   }
+  const tool = wasmToolForOp(op);
   const args = opToArgs(op).filter((a) => a.length > 0);
-  return [op.kind, ...args].join(" ");
+  return [tool, ...args].join(" ");
 }
 
 export function flagsOpSummary(op: FlagsOp): string {

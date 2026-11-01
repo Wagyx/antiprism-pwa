@@ -5,15 +5,20 @@ import {
   type ParamField,
   type ParamValue,
 } from "../pipeline/toolParams";
+import { CONWAY_SEEDS } from "../pipeline/conwayInfo";
 import {
+  CONWAY_PARAMETRIC_SEEDS,
+  CONWAY_SEED_FAMILIES,
+  conwaySeedToken,
   createOp,
   flagsOpSummary,
   isFlagsTool,
   OFF_COLOR_PRESETS,
   opToCommandLine,
   PIPELINE_CATEGORIES,
-  PIPELINE_KINDS,
   POLYGON_TYPES,
+  type ConwaySeedFamily,
+  type ConwaySeedOp,
   type FlagsOp,
   type ImportOffOp,
   type PipelineKind,
@@ -26,6 +31,16 @@ import { useDismissDetails } from "./useDismissDetails";
 
 const POLYGON_TYPE_OPTIONS = POLYGON_TYPES.map((t) => ({ value: t, label: t }));
 
+const CONWAY_SEED_FAMILY_OPTIONS = CONWAY_SEED_FAMILIES.map((family) => {
+  const info = CONWAY_SEEDS.find(
+    (s) => s.symbol === family || s.symbol === `${family}n`,
+  );
+  return {
+    value: family,
+    label: info ? `${family} — ${info.name}` : family,
+  };
+});
+
 const GEODESIC_CLASS_OPTIONS = [
   { value: "1", label: "I (1)" },
   { value: "2", label: "II (2)" },
@@ -37,11 +52,6 @@ const GEODESIC_METHOD_OPTIONS = [
   { value: "s", label: "sphere" },
   { value: "p", label: "planar" },
 ] as const;
-
-const PIPELINE_KIND_OPTIONS = PIPELINE_KINDS.map((k) => ({
-  value: k,
-  label: k,
-}));
 
 type Props = {
   ops: PipelineOp[];
@@ -79,6 +89,8 @@ function opSummary(op: PipelineOp): string {
       return `${op.polygonType} ${op.numSides}`;
     case "import_off":
       return op.fileName || "(no file)";
+    case "conway_seed":
+      return conwaySeedToken(op);
     case "conway":
       return op.notation || "…";
     case "geodesic":
@@ -343,26 +355,70 @@ function OpFields({
     );
   }
 
-  if (op.kind === "conway") {
+  if (op.kind === "conway_seed") {
+    const seedOp = op as ConwaySeedOp;
+    const parametric = CONWAY_PARAMETRIC_SEEDS.has(seedOp.family);
     return (
       <div className="stack-card-body">
-        <div className="field-row">
-          <label className="field field-grow">
-            <span className="field-label-row">
-              {index === 0 ? "Notation (seed)" : "Operators"}
-            </span>
+        <label className="field">
+          <span>Seed</span>
+          <MenuSelect
+            aria-label="Conway seed"
+            value={seedOp.family}
+            options={CONWAY_SEED_FAMILY_OPTIONS}
+            onChange={(family) =>
+              onCommit(
+                updateOp(ops, op.id, {
+                  family: family as ConwaySeedFamily,
+                }),
+              )
+            }
+          />
+        </label>
+        {parametric ? (
+          <label className="field">
+            <span>Sides (n)</span>
             <input
-              type="text"
-              value={op.notation}
-              placeholder={index === 0 ? "e.g. oT, aC" : "e.g. a, k, t"}
+              type="number"
+              min={3}
+              max={48}
+              value={seedOp.numSides}
               onChange={(e) =>
-                onPatch(updateOp(ops, op.id, { notation: e.target.value }))
+                onPatch(
+                  updateOp(ops, op.id, {
+                    numSides: Math.max(3, Number(e.target.value) || 3),
+                  }),
+                )
               }
               onBlur={() => onCommit(ops)}
             />
           </label>
-        </div>
-        {index > 0 ? <p className="hint">Pipes previous OFF in as input.</p> : null}
+        ) : null}
+        <p className="hint">
+          Seed only — equivalent to <code>conway {conwaySeedToken(seedOp)}</code>
+        </p>
+      </div>
+    );
+  }
+
+  if (op.kind === "conway") {
+    return (
+      <div className="stack-card-body">
+        <label className="field field-grow">
+          <span>Operators</span>
+          <input
+            type="text"
+            value={op.notation}
+            placeholder="e.g. a, kd, ta"
+            onChange={(e) =>
+              onPatch(updateOp(ops, op.id, { notation: e.target.value }))
+            }
+            onBlur={() => onCommit(ops)}
+          />
+        </label>
+        <p className="hint">
+          Operators only — pipes previous OFF in (use conway_seed for a seed).
+        </p>
       </div>
     );
   }
@@ -591,30 +647,7 @@ export function StackPanel({
                     }
                   />
                 </label>
-                <div
-                  className="kind-select-wrap"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <MenuSelect
-                    className="kind-select"
-                    aria-label="Operation kind"
-                    value={op.kind}
-                    options={PIPELINE_KIND_OPTIONS}
-                    onChange={(kind) => {
-                      const k = kind as PipelineKind;
-                      if (k === op.kind) return;
-                      const replacement = createOp(k, index === 0);
-                      onCommit(
-                        ops.map((o, i) =>
-                          i === index
-                            ? { ...replacement, id: o.id, enabled: o.enabled }
-                            : o,
-                        ),
-                      );
-                      setExpanded((prev) => ({ ...prev, [op.id]: true }));
-                    }}
-                  />
-                </div>
+                <span className="op-kind-name">{op.kind}</span>
                 <ToolInfoButton kind={op.kind} />
                 {!open ? (
                   <button

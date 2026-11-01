@@ -1,6 +1,7 @@
 import { looksLikeOff } from "../io/loadOff";
 import { runAntiprism } from "../wasm/client";
-import { isSeedOp, opToArgs, type PipelineOp } from "./types";
+import type { AntiprismTool } from "../wasm/runTool";
+import { isSeedOp, opToArgs, wasmToolForOp, type PipelineOp } from "./types";
 
 export type PipelineResult = {
   ok: boolean;
@@ -52,7 +53,11 @@ export async function runPipeline(ops: PipelineOp[]): Promise<PipelineResult> {
 
     const args = opToArgs(op);
     const stdin = isSeedOp(op) ? "" : off;
-    const result = await runAntiprism(op.kind, args, stdin);
+    const result = await runAntiprism(
+      wasmToolForOp(op) as AntiprismTool,
+      args,
+      stdin,
+    );
 
     if (!result.ok) {
       const msg =

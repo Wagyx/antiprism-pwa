@@ -111,10 +111,10 @@ export const TOOL_DOCS: Record<PipelineKind, ToolDoc> = {
     ],
   },
 
-  conway: {
-    title: "conway",
+  conway_seed: {
+    title: "conway_seed",
     blurb:
-      "Conway polyhedron notation. Operators (usually lowercase) precede an optional capital seed. In a pipeline after another step, omit the seed — previous OFF is read from stdin.",
+      "Start from a Conway seed only (T/C/O/I/D or Pn/An/Yn/Zn/Rn). Runs the Antiprism `conway` CLI with that seed and no operators.",
     sections: [
       {
         heading: "Seeds",
@@ -124,6 +124,14 @@ export const TOOL_DOCS: Record<PipelineKind, ToolDoc> = {
           summary: s.summary,
         })),
       },
+    ],
+  },
+
+  conway: {
+    title: "conway",
+    blurb:
+      "Apply Conway operators to the previous stack OFF (stdin). Use lowercase operators only — put seeds in a separate conway_seed step.",
+    sections: [
       {
         heading: "Operators",
         entries: CONWAY_OPERATORS.map((op) => ({

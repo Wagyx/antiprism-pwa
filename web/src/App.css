@@ -290,27 +290,18 @@
   background: rgba(255, 255, 255, 0.05);
 }
 
-.kind-select-wrap {
+.op-kind-name {
   flex: 0 1 auto;
-  max-width: 7.5rem;
   min-width: 0;
-}
-
-.stack-card.is-open .kind-select-wrap {
-  flex: 1;
-  max-width: none;
-}
-
-.kind-select > .add-op-btn {
-  padding: 0.2rem 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.kind-select > .add-op-menu {
-  min-width: 8.5rem;
-  right: auto;
+.stack-card.is-open .op-kind-name {
+  flex: 1;
 }
 
 .add-op-menu button.is-active {
