@@ -799,4 +799,73 @@ export const TOOL_DOCS: Record<PipelineKind, ToolDoc> = {
       },
     ],
   },
+
+  n_icons: {
+    title: "n_icons",
+    blurb: "Sphericon / streptohedron models. Keep -M longitudes modest in the browser.",
+    sections: [
+      {
+        heading: "Options",
+        entries: [
+          { symbol: "-n n|/d", summary: "Order n (≥ 3); optional star denominator." },
+          { symbol: "-t", summary: "Number of twists (can be negative)." },
+          { symbol: "-M", summary: "Longitude resolution of the model." },
+          { symbol: "-s / -H", summary: "Side-cut / hybrid (even order)." },
+          { symbol: "-z 1|2|3", summary: "Construction method." },
+        ],
+      },
+    ],
+  },
+
+  kcycle: {
+    title: "kcycle",
+    blurb:
+      "Make a kaleidocycle from a polyhedron using two hinge edges (four vertex indexes).",
+    sections: [
+      {
+        heading: "Options",
+        entries: [
+          { symbol: "u,v,w,x", summary: "Hinge vertex indexes (positional)." },
+          { symbol: "-i -", summary: "Read previous OFF from stdin (default in UI)." },
+          { symbol: "-n", summary: "Number of polyhedron pairs in the cycle." },
+          { symbol: "-a", summary: "Rotate first hinge from horizontal (degrees)." },
+        ],
+      },
+    ],
+  },
+
+  lat_util: {
+    title: "lat_util",
+    blurb:
+      "Lattice-style processing of OFF geometry: strip/keep faces, clip, struts, hull, Voronoi cells.",
+    sections: [
+      {
+        heading: "Options",
+        entries: [
+          { symbol: "-z", summary: "Keep faces (default UI on; native strips faces)." },
+          { symbol: "-C c|i", summary: "Convex hull only / keep interior." },
+          { symbol: "-c / -r", summary: "Cube/sphere container and radius." },
+          { symbol: "-s", summary: "Add struts of given length." },
+          { symbol: "-D c|i", summary: "Voronoi cells." },
+        ],
+      },
+    ],
+  },
+
+  col_util: {
+    title: "col_util",
+    blurb: "Visualise colour maps as 3D plots, wheels, or grids (OFF geometry).",
+    sections: [
+      {
+        heading: "Options",
+        entries: [
+          { symbol: "-m", summary: "Colour map name(s)." },
+          { symbol: "-Z", summary: "Cap entries from open-ended maps (UI default 32)." },
+          { symbol: "-d 1|2|3", summary: "Plot / wheel / grid output." },
+          { symbol: "-M 1|2|3", summary: "HSV / HSL / RGB colour system." },
+          { symbol: "-y / -c", summary: "RYB blend / CMY complementary mode." },
+        ],
+      },
+    ],
+  },
 };

@@ -53,6 +53,10 @@ export const FLAGS_TOOL_KINDS = [
   "tetra59",
   "bravais",
   "unitile2d",
+  "n_icons",
+  "kcycle",
+  "lat_util",
+  "col_util",
 ] as const;
 
 export type FlagsToolKind = (typeof FLAGS_TOOL_KINDS)[number];
@@ -118,6 +122,8 @@ export const PIPELINE_CATEGORIES: {
       { kind: "tetra59", blurb: "Rational tetrahedra" },
       { kind: "bravais", blurb: "Bravais lattices" },
       { kind: "unitile2d", blurb: "Uniform tilings" },
+      { kind: "n_icons", blurb: "Sphericons / n-icons" },
+      { kind: "col_util", blurb: "Colour map plots" },
     ],
   },
   {
@@ -131,6 +137,8 @@ export const PIPELINE_CATEGORIES: {
       { kind: "poly_kscope", blurb: "Kaleidoscope" },
       { kind: "stellate", blurb: "Stellations" },
       { kind: "leonardo", blurb: "Panel borders" },
+      { kind: "kcycle", blurb: "Kaleidocycle" },
+      { kind: "lat_util", blurb: "Lattice utilities" },
     ],
   },
   {
@@ -230,6 +238,8 @@ const GENERATOR_SEED_KINDS = new Set<string>([
   "tetra59",
   "bravais",
   "unitile2d",
+  "n_icons",
+  "col_util",
 ]);
 
 /** Ops that produce OFF without reading previous stdin. */

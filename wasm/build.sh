@@ -114,7 +114,7 @@ done
 echo "==> Compiling editor tools (renamed main + disambiguated locals)"
 # Tool .cc files reuse short names (pr_opts, cn_opts, make_skeleton, …).
 # Prefix those with -D so multiple tools can link into one Wasm module.
-rm -f "$OBJ_DIR/src"/{polygon,conway,geodesic,off_color,off_util,off_trans,pol_recip,canonical,conv_hull,planar,zono,poly_kscope,stellate,leonardo,wythoff,to_nfold,off_normals,repel,poly_form,off_color_radial,miller,iso_delta,iso_kite,symmetro,sph_rings,waterman,tetra59,bravais,unitile2d}.o
+rm -f "$OBJ_DIR/src"/{polygon,conway,geodesic,off_color,off_util,off_trans,pol_recip,canonical,conv_hull,planar,zono,poly_kscope,stellate,leonardo,wythoff,to_nfold,off_normals,repel,poly_form,off_color_radial,miller,iso_delta,iso_kite,symmetro,sph_rings,waterman,tetra59,bravais,unitile2d,n_icons,kcycle,lat_util,col_util}.o
 compile_one "$ANTI/src/polygon.cc" "$OBJ_DIR/src/polygon.o" -Dmain=polygon_main
 compile_one "$ANTI/src/conway.cc" "$OBJ_DIR/src/conway.o" \
   -Dmain=conway_main -Dcn_opts=conway_cn_opts -Dextended_help=conway_extended_help
@@ -155,6 +155,12 @@ compile_one "$ANTI/src/tetra59.cc" "$OBJ_DIR/src/tetra59.o" \
 compile_one "$ANTI/src/bravais.cc" "$OBJ_DIR/src/bravais.o" \
   -Dmain=bravais_main -Dextended_help=bravais_extended_help
 compile_one "$ANTI/src/unitile2d.cc" "$OBJ_DIR/src/unitile2d.o" -Dmain=unitile2d_main
+compile_one "$ANTI/src/n_icons.cc" "$OBJ_DIR/src/n_icons.o" \
+  -Dmain=n_icons_main -Dfilter=n_icons_filter
+compile_one "$ANTI/src/kcycle.cc" "$OBJ_DIR/src/kcycle.o" -Dmain=kcycle_main
+compile_one "$ANTI/src/lat_util.cc" "$OBJ_DIR/src/lat_util.o" \
+  -Dmain=lat_util_main -Dmake_skeleton=lat_util_make_skeleton
+compile_one "$ANTI/src/col_util.cc" "$OBJ_DIR/src/col_util.o" -Dmain=col_util_main
 compile_one "$ANTI/src/canonical_common.cc" "$OBJ_DIR/src/canonical_common.o"
 compile_one "$ANTI/src/color_common.cc" "$OBJ_DIR/src/color_common.o"
 compile_one "$ANTI/src/lat_util_common.cc" "$OBJ_DIR/src/lat_util_common.o"
@@ -199,6 +205,10 @@ em++ -O2 \
   "$OBJ_DIR/src/tetra59.o" \
   "$OBJ_DIR/src/bravais.o" \
   "$OBJ_DIR/src/unitile2d.o" \
+  "$OBJ_DIR/src/n_icons.o" \
+  "$OBJ_DIR/src/kcycle.o" \
+  "$OBJ_DIR/src/lat_util.o" \
+  "$OBJ_DIR/src/col_util.o" \
   "$OBJ_DIR/src/canonical_common.o" \
   "$OBJ_DIR/src/color_common.o" \
   "$OBJ_DIR/src/lat_util_common.o" \

@@ -39,6 +39,10 @@ extern int waterman_main(int argc, char **argv);
 extern int tetra59_main(int argc, char **argv);
 extern int bravais_main(int argc, char **argv);
 extern int unitile2d_main(int argc, char **argv);
+extern int n_icons_main(int argc, char **argv);
+extern int kcycle_main(int argc, char **argv);
+extern int lat_util_main(int argc, char **argv);
+extern int col_util_main(int argc, char **argv);
 
 namespace {
 
@@ -156,6 +160,14 @@ int call_tool(const std::string &tool, const std::vector<std::string> &args)
     return bravais_main(argc, g_argv_ptrs.data());
   if (tool == "unitile2d")
     return unitile2d_main(argc, g_argv_ptrs.data());
+  if (tool == "n_icons")
+    return n_icons_main(argc, g_argv_ptrs.data());
+  if (tool == "kcycle")
+    return kcycle_main(argc, g_argv_ptrs.data());
+  if (tool == "lat_util")
+    return lat_util_main(argc, g_argv_ptrs.data());
+  if (tool == "col_util")
+    return col_util_main(argc, g_argv_ptrs.data());
   fprintf(stderr, "unknown tool: %s\n", tool.c_str());
   return 1;
 }

@@ -27,7 +27,11 @@ export type AntiprismTool =
   | "waterman"
   | "tetra59"
   | "bravais"
-  | "unitile2d";
+  | "unitile2d"
+  | "n_icons"
+  | "kcycle"
+  | "lat_util"
+  | "col_util";
 
 export type ToolResult = {
   ok: boolean;
