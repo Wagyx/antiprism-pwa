@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { readOffFile } from "../io/loadOff";
 import {
   createOp,
   FLAG_PRESETS,
@@ -8,6 +9,7 @@ import {
   PIPELINE_KINDS,
   POLYGON_TYPES,
   type FlagsToolKind,
+  type ImportOffOp,
   type PipelineKind,
   type PipelineOp,
 } from "../pipeline/types";
@@ -69,6 +71,8 @@ function opSummary(op: PipelineOp): string {
   switch (op.kind) {
     case "polygon":
       return `${op.polygonType} ${op.numSides}`;
+    case "import_off":
+      return op.fileName || "(no file)";
     case "conway":
       return op.notation || "…";
     case "geodesic":
@@ -80,6 +84,81 @@ function opSummary(op: PipelineOp): string {
     default:
       return op.flags || "(default)";
   }
+}
+
+function ImportOffFields({
+  op,
+  ops,
+  onCommit,
+}: {
+  op: ImportOffOp;
+  ops: PipelineOp[];
+  onCommit: (ops: PipelineOp[]) => void;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  const onPick = async (file: File | undefined) => {
+    if (!file) return;
+    try {
+      const loaded = await readOffFile(file);
+      setLoadError(null);
+      onCommit(
+        updateOp(ops, op.id, {
+          fileName: loaded.name,
+          offText: loaded.text,
+        }),
+      );
+    } catch (e) {
+      setLoadError(e instanceof Error ? e.message : String(e));
+    }
+  };
+
+  return (
+    <div className="stack-card-body">
+      <input
+        ref={inputRef}
+        type="file"
+        accept=".off,text/plain"
+        hidden
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          e.target.value = "";
+          void onPick(file);
+        }}
+      />
+      <div className="field-row">
+        <button
+          type="button"
+          className="import-pick-btn"
+          onClick={() => inputRef.current?.click()}
+        >
+          {op.fileName ? "Replace OFF…" : "Choose OFF…"}
+        </button>
+        {op.fileName ? (
+          <button
+            type="button"
+            className="import-clear-btn"
+            aria-label="Clear file"
+            onClick={() =>
+              onCommit(updateOp(ops, op.id, { fileName: "", offText: "" }))
+            }
+          >
+            Clear
+          </button>
+        ) : null}
+      </div>
+      <p className="import-file-name" title={op.fileName || undefined}>
+        {op.fileName
+          ? `${op.fileName} · ${(op.offText.length / 1024).toFixed(1)} KB`
+          : "No file loaded"}
+      </p>
+      {loadError ? <p className="error">{loadError}</p> : null}
+      <p className="hint">
+        Seed step: loads an OFF file into the pipeline (replaces previous geometry).
+      </p>
+    </div>
+  );
 }
 
 function OpFields({
@@ -131,6 +210,16 @@ function OpFields({
           />
         </label>
       </div>
+    );
+  }
+
+  if (op.kind === "import_off") {
+    return (
+      <ImportOffFields
+        op={op}
+        ops={ops}
+        onCommit={onCommit}
+      />
     );
   }
 

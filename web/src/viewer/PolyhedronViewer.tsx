@@ -1,7 +1,42 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { fillMissingColors, parseOff, type ParsedOff, type Rgba } from "./parseOff";
+
+/** Try several WebGL context configs — soft GL (llvmpipe) often rejects antialias. */
+function createRenderer(): THREE.WebGLRenderer {
+  const attempts: WebGLContextAttributes[] = [
+    { alpha: true, antialias: true, depth: true, stencil: false, powerPreference: "high-performance" },
+    { alpha: true, antialias: false, depth: true, stencil: false, powerPreference: "default" },
+    { alpha: true, antialias: false, depth: true, stencil: false, powerPreference: "low-power" },
+    { alpha: true, antialias: false, depth: true, failIfMajorPerformanceCaveat: false },
+  ];
+
+  let lastError: unknown;
+  for (const attrs of attempts) {
+    const canvas = document.createElement("canvas");
+    for (const api of ["webgl2", "webgl"] as const) {
+      try {
+        const gl = canvas.getContext(api, attrs);
+        if (!gl) continue;
+        const renderer = new THREE.WebGLRenderer({
+          canvas,
+          context: gl as WebGLRenderingContext,
+          alpha: true,
+          antialias: Boolean(attrs.antialias),
+          powerPreference: attrs.powerPreference,
+        });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        return renderer;
+      } catch (e) {
+        lastError = e;
+      }
+    }
+  }
+  throw lastError instanceof Error
+    ? lastError
+    : new Error("Could not create a WebGL context");
+}
 
 type Props = {
   offText: string | null;
@@ -201,6 +236,7 @@ export function PolyhedronViewer({
   edgeRadius = 0.02,
 }: Props) {
   const mountRef = useRef<HTMLDivElement>(null);
+  const [glError, setGlError] = useState<string | null>(null);
   const sceneRef = useRef<{
     renderer: THREE.WebGLRenderer;
     scene: THREE.Scene;
@@ -214,8 +250,17 @@ export function PolyhedronViewer({
     const mount = mountRef.current;
     if (!mount) return;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(window.devicePixelRatio);
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = createRenderer();
+      setGlError(null);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      setGlError(msg);
+      console.error("WebGL init failed:", e);
+      return;
+    }
+
     renderer.setClearColor(0x000000, 0);
     mount.appendChild(renderer.domElement);
 
@@ -265,7 +310,9 @@ export function PolyhedronViewer({
       ro.disconnect();
       controls.dispose();
       renderer.dispose();
-      mount.removeChild(renderer.domElement);
+      if (renderer.domElement.parentElement === mount) {
+        mount.removeChild(renderer.domElement);
+      }
       sceneRef.current = null;
     };
   }, []);
@@ -303,5 +350,21 @@ export function PolyhedronViewer({
     }
   }, [offText, verticesActive, edgesActive, facesActive, vertexRadius, edgeRadius]);
 
-  return <div className="viewer-mount" ref={mountRef} />;
+  return (
+    <div className="viewer-mount" ref={mountRef}>
+      {glError ? (
+        <div className="viewer-gl-error" role="alert">
+          <p>
+            <strong>WebGL unavailable</strong>
+          </p>
+          <p>
+            The browser could not create a GPU context (often Mesa llvmpipe /
+            disabled hardware acceleration). Try another browser, enable
+            hardware acceleration, or update GPU drivers.
+          </p>
+          <p className="viewer-gl-error-detail">{glError}</p>
+        </div>
+      ) : null}
+    </div>
+  );
 }

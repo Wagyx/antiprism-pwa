@@ -15,5 +15,73 @@ The application has an editor module that lets the user inspect the polyhedron i
 
 TODOS:
 - exporter (OBJ, …)
-- importer (OBJ, OFF, WRL ?)
-- undo/redo
+- importer (OBJ, WRL ?)
+- undo/redo (history wired; UI buttons hidden)
+
+## Antiprism tool support
+
+Status of Antiprism CLIs (from `antiprism/src/*.1`) in the Wasm editor pipeline.
+App-only seeds are listed separately.
+
+| Status | Meaning |
+|---|---|
+| Done | Compiled into Wasm, wired in the stack UI (presets + docs) |
+| Partial | Wasm and/or UI incomplete |
+| Todo | Not started |
+| N/A | Out of scope for the editor (viewer / format I/O handled elsewhere) |
+
+### Seeds & pipeline tools
+
+| Tool | Role | Status | Notes |
+|---|---|---|---|
+| `polygon` | Polygon-based polyhedra | Done | Seed |
+| `import_off` | Load OFF from disk as seed | Done | App-native (not an Antiprism CLI) |
+| `conway` | Conway notation | Done | |
+| `geodesic` | Geodesic spheres / frequency | Done | |
+| `off_color` | Colour V/E/F | Done | |
+| `off_util` | OFF utilities (orient, sphere, …) | Done | |
+| `off_trans` | Transforms | Done | |
+| `pol_recip` | Duals / polar reciprocal | Done | |
+| `canonical` | Planarize / canonicalize | Done | Iteration caps in UI |
+| `conv_hull` | Convex hull (Qhull) | Done | Exit code = dimension |
+| `planar` | Coplanar face tiling | Done | |
+| `zono` | Zonohedra | Done | |
+| `poly_kscope` | Polyhedral kaleidoscope | Done | |
+| `stellate` | Stellations | Done | Prefer rich seeds (e.g. `conway D`) |
+| `leonardo` | Leonardo-style panels | Done | |
+| `wythoff` | Wythoff-style tilings | Done | |
+| `to_nfold` | Change axial fold | Done | Positional `n` / `n/d` |
+| `off_normals` | Normals as geometry | Done | |
+| `repel` | Repelling points | Done | Caps `-n`; quiet `-z -1` |
+| `poly_form` | Face-regular / unscramble | Todo | |
+| `off_color_radial` | Radial colouring | Todo | |
+| `off_align` | Align / brick compound | Todo | Needs two geometries |
+| `col_util` | Colour plots / blends | Todo | |
+| `symmetro` | Regular polygons at axes | Todo | |
+| `miller` | Miller stellations (icosahedron) | Todo | |
+| `iso_delta` | Isohedral deltahedra | Todo | |
+| `iso_kite` | Isohedral kite-faced | Todo | |
+| `kcycle` | Kaleidocycle rings | Todo | |
+| `lat_util` | Lattice utilities | Todo | |
+| `bravais` | Bravais / lattice models | Todo | |
+| `unitile2d` | Uniform tilings on a surface | Todo | |
+| `sph_rings` | Rings of points on a sphere | Todo | |
+| `n_icons` | n-icons | Todo | |
+| `waterman` | Waterman polyhedra | Todo | |
+| `tetra59` | Tetra59 models | Todo | |
+| `off_query` | List element data | Todo | Diagnostic / text-oriented |
+| `off_report` | Global measures / counts | Todo | Diagnostic / text-oriented |
+
+### Format converters & viewer
+
+| Tool | Role | Status | Notes |
+|---|---|---|---|
+| `obj2off` | OBJ → OFF | Todo | Future importer |
+| `off2obj` | OFF → OBJ | Todo | Future exporter |
+| `off2crds` | OFF → coordinates | Todo | |
+| `off2pov` | OFF → POV-Ray | Todo | |
+| `off2vrml` | OFF → VRML | Todo | |
+| `off2dae` | OFF → Collada | Todo | |
+| `antiview` | Native OpenGL viewer | N/A | Replaced by Three.js viewer |
+
+**Counts:** Done **19** Antiprism CLIs (+ `import_off`) · Todo **23** · N/A **1**

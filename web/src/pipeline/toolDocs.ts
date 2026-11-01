@@ -86,6 +86,31 @@ export const TOOL_DOCS: Record<PipelineKind, ToolDoc> = {
     ],
   },
 
+  import_off: {
+    title: "import_off",
+    blurb:
+      "Seed the pipeline from an OFF file on disk. The loaded geometry replaces any previous OFF in the stack (like polygon, it does not read stdin).",
+    sections: [
+      {
+        heading: "Usage",
+        entries: [
+          {
+            symbol: "Choose OFF…",
+            summary: "Pick a local .off file; contents are stored on this step.",
+          },
+          {
+            symbol: "Clear",
+            summary: "Remove the loaded file from this step.",
+          },
+        ],
+      },
+      {
+        heading: "Format",
+        body: "Plain-text OFF (Geomview / Antiprism). Header line must start with OFF. OBJ and other formats are not supported yet.",
+      },
+    ],
+  },
+
   conway: {
     title: "conway",
     blurb:
@@ -419,6 +444,152 @@ export const TOOL_DOCS: Record<PipelineKind, ToolDoc> = {
             symbol: "-e / -E",
             summary: "Blend / rebuild explicit edges from face colours.",
           },
+        ],
+      },
+    ],
+  },
+
+  zono: {
+    title: "zono",
+    blurb:
+      "Make a zonohedron from a star of vectors (from the input model), or a polar zonohedron (-P).",
+    sections: [
+      {
+        heading: "Star / polar",
+        entries: [
+          { symbol: "-m v|e|i|a", summary: "Star from vertices / edges / implicit / all pairs." },
+          { symbol: "-c", summary: "Centre for method v (default origin; C = centroid)." },
+          { symbol: "-u", summary: "Unit-length star vectors." },
+          { symbol: "-P n|/d", summary: "Polar zonohedron from an offset polygon." },
+          { symbol: "-S poly", summary: "Add zones onto a convex seed." },
+        ],
+      },
+    ],
+  },
+
+  poly_kscope: {
+    title: "poly_kscope",
+    blurb:
+      "Polyhedral kaleidoscope: repeat the input in a symmetric arrangement. Requires -s symmetry.",
+    sections: [
+      {
+        heading: "Options",
+        entries: [
+          {
+            symbol: "-s",
+            summary: "Symmetry (Schoenflies), e.g. Ih, Oh, Th, D5h; optional subgroup/conjugation.",
+          },
+          { symbol: "-c vef", summary: "Colour elements per kaleidoscope part." },
+          { symbol: "-y", summary: "Compound alignment to a subsymmetry (advanced)." },
+        ],
+      },
+    ],
+  },
+
+  stellate: {
+    title: "stellate",
+    blurb:
+      "Stellate a polyhedron using stellation diagram facelets. Works best on fullerenes / regular solids (e.g. after conway D).",
+    sections: [
+      {
+        heading: "Options",
+        entries: [
+          {
+            symbol: "-f",
+            summary: "Base face index, then stellation-diagram face indexes (comma-separated).",
+          },
+          { symbol: "-s", summary: "Symmetry subgroup (Schoenflies)." },
+          { symbol: "-R / -D", summary: "Resolve facelets / remove multiples." },
+          { symbol: "-M / -I / -S", summary: "Skip merge / inline cleanup / pinched split." },
+        ],
+      },
+    ],
+  },
+
+  leonardo: {
+    title: "leonardo",
+    blurb:
+      "Thicken faces and cut centre holes (Leonardo-style panels). Width/height accept % of max.",
+    sections: [
+      {
+        heading: "Options",
+        entries: [
+          { symbol: "-w", summary: "Perimeter border width (default 30%)." },
+          { symbol: "-l", summary: "Extrusion height (default 100% of width)." },
+          { symbol: "-p", summary: "Solid panels without holes." },
+          { symbol: "-m", summary: "Distribute height equally on both sides." },
+          { symbol: "-x / -e", summary: "Hide join edges / take colours from edges." },
+        ],
+      },
+    ],
+  },
+
+  wythoff: {
+    title: "wythoff",
+    blurb:
+      "Tile the meta-triangulated surface with a Wythoff-style path pattern (-p).",
+    sections: [
+      {
+        heading: "Pattern",
+        entries: [
+          {
+            symbol: "-p",
+            summary: "[Coords…]Path… — barycentric V/E/F points and triangle steps (v/e/f).",
+          },
+          { symbol: "-a", summary: "Also add the meta-transformed base." },
+          { symbol: "-u", summary: "One example of each tile type only." },
+          { symbol: "-f ht", summary: "Lift face centres by height." },
+        ],
+      },
+    ],
+  },
+
+  to_nfold: {
+    title: "to_nfold",
+    blurb:
+      "Change rotational symmetry about z from m-fold to n-fold (or n/d). Pass the fraction as the first argument (e.g. 5 or 7/2).",
+    sections: [
+      {
+        heading: "Args",
+        entries: [
+          { symbol: "n or n/d", summary: "Required positional fraction after flags." },
+          { symbol: "-x idxs", summary: "Rings to flip 180° before/after processing." },
+          { symbol: "-p", summary: "Transform a ring only (scale/translate); skips normal mode." },
+        ],
+      },
+    ],
+  },
+
+  off_normals: {
+    title: "off_normals",
+    blurb: "Visualise face / edge / vertex normals as geometry (useful for debugging orientation).",
+    sections: [
+      {
+        heading: "Options",
+        entries: [
+          { symbol: "-u", summary: "Unit normals." },
+          { symbol: "-e", summary: "Connect normals to element centroids." },
+          { symbol: "-s vef", summary: "Which elements to show normals for." },
+          { symbol: "-p o|i|r", summary: "Force outward / inward / reverse polarity." },
+          { symbol: "-i oih", summary: "Include outward / inward / hemispherical." },
+        ],
+      },
+    ],
+  },
+
+  repel: {
+    title: "repel",
+    blurb:
+      "Relax vertices under mutual repulsion. Always cap -n in the browser; use -z -1 to hide status.",
+    sections: [
+      {
+        heading: "Options",
+        entries: [
+          { symbol: "-n", summary: "Max iterations (UI default 80; native default unlimited)." },
+          { symbol: "-z", summary: "Status/termination reporting; -1 = quiet." },
+          { symbol: "-r", summary: "Force exponent: 1/distance^exp (default 2)." },
+          { symbol: "-s", summary: "Shorten travel distance (%)." },
+          { symbol: "-N", summary: "Ignore input; start from N random points." },
         ],
       },
     ],

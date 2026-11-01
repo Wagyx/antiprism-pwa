@@ -114,7 +114,7 @@ done
 echo "==> Compiling editor tools (renamed main + disambiguated locals)"
 # Tool .cc files reuse short names (pr_opts, cn_opts, make_skeleton, …).
 # Prefix those with -D so multiple tools can link into one Wasm module.
-rm -f "$OBJ_DIR/src"/{polygon,conway,geodesic,off_color,off_util,off_trans,pol_recip,canonical,conv_hull,planar}.o
+rm -f "$OBJ_DIR/src"/{polygon,conway,geodesic,off_color,off_util,off_trans,pol_recip,canonical,conv_hull,planar,zono,poly_kscope,stellate,leonardo,wythoff,to_nfold,off_normals,repel}.o
 compile_one "$ANTI/src/polygon.cc" "$OBJ_DIR/src/polygon.o" -Dmain=polygon_main
 compile_one "$ANTI/src/conway.cc" "$OBJ_DIR/src/conway.o" \
   -Dmain=conway_main -Dcn_opts=conway_cn_opts -Dextended_help=conway_extended_help
@@ -130,6 +130,14 @@ compile_one "$ANTI/src/canonical.cc" "$OBJ_DIR/src/canonical.o" \
 compile_one "$ANTI/src/conv_hull.cc" "$OBJ_DIR/src/conv_hull.o" -Dmain=conv_hull_main
 compile_one "$ANTI/src/planar.cc" "$OBJ_DIR/src/planar.o" \
   -Dmain=planar_main -Dmake_skeleton=planar_make_skeleton
+compile_one "$ANTI/src/zono.cc" "$OBJ_DIR/src/zono.o" -Dmain=zono_main
+compile_one "$ANTI/src/poly_kscope.cc" "$OBJ_DIR/src/poly_kscope.o" -Dmain=poly_kscope_main
+compile_one "$ANTI/src/stellate.cc" "$OBJ_DIR/src/stellate.o" -Dmain=stellate_main
+compile_one "$ANTI/src/leonardo.cc" "$OBJ_DIR/src/leonardo.o" -Dmain=leonardo_main
+compile_one "$ANTI/src/wythoff.cc" "$OBJ_DIR/src/wythoff.o" -Dmain=wythoff_main
+compile_one "$ANTI/src/to_nfold.cc" "$OBJ_DIR/src/to_nfold.o" -Dmain=to_nfold_main
+compile_one "$ANTI/src/off_normals.cc" "$OBJ_DIR/src/off_normals.o" -Dmain=off_normals_main
+compile_one "$ANTI/src/repel.cc" "$OBJ_DIR/src/repel.o" -Dmain=repel_main
 compile_one "$ANTI/src/canonical_common.cc" "$OBJ_DIR/src/canonical_common.o"
 compile_one "$ANTI/src/color_common.cc" "$OBJ_DIR/src/color_common.o"
 
@@ -154,6 +162,14 @@ em++ -O2 \
   "$OBJ_DIR/src/canonical.o" \
   "$OBJ_DIR/src/conv_hull.o" \
   "$OBJ_DIR/src/planar.o" \
+  "$OBJ_DIR/src/zono.o" \
+  "$OBJ_DIR/src/poly_kscope.o" \
+  "$OBJ_DIR/src/stellate.o" \
+  "$OBJ_DIR/src/leonardo.o" \
+  "$OBJ_DIR/src/wythoff.o" \
+  "$OBJ_DIR/src/to_nfold.o" \
+  "$OBJ_DIR/src/off_normals.o" \
+  "$OBJ_DIR/src/repel.o" \
   "$OBJ_DIR/src/canonical_common.o" \
   "$OBJ_DIR/src/color_common.o" \
   "$OBJ_DIR/bindings.o" \

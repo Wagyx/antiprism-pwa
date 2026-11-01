@@ -8,7 +8,15 @@ export type AntiprismTool =
   | "pol_recip"
   | "canonical"
   | "conv_hull"
-  | "planar";
+  | "planar"
+  | "zono"
+  | "poly_kscope"
+  | "stellate"
+  | "leonardo"
+  | "wythoff"
+  | "to_nfold"
+  | "off_normals"
+  | "repel";
 
 export type ToolResult = {
   ok: boolean;

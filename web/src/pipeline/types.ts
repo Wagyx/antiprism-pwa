@@ -20,12 +20,21 @@ export const FLAGS_TOOL_KINDS = [
   "canonical",
   "conv_hull",
   "planar",
+  "zono",
+  "poly_kscope",
+  "stellate",
+  "leonardo",
+  "wythoff",
+  "to_nfold",
+  "off_normals",
+  "repel",
 ] as const;
 
 export type FlagsToolKind = (typeof FLAGS_TOOL_KINDS)[number];
 
 export const PIPELINE_KINDS = [
   "polygon",
+  "import_off",
   "conway",
   "geodesic",
   "off_color",
@@ -44,6 +53,13 @@ export type PolygonOp = OpBase & {
   kind: "polygon";
   polygonType: PolygonType;
   numSides: number;
+};
+
+/** Seed that injects a loaded OFF file into the pipeline. */
+export type ImportOffOp = OpBase & {
+  kind: "import_off";
+  fileName: string;
+  offText: string;
 };
 
 export type ConwayOp = OpBase & {
@@ -72,10 +88,16 @@ export type FlagsOp = OpBase & {
 
 export type PipelineOp =
   | PolygonOp
+  | ImportOffOp
   | ConwayOp
   | GeodesicOp
   | OffColorOp
   | FlagsOp;
+
+/** Ops that produce OFF without reading previous stdin. */
+export function isSeedOp(op: PipelineOp): boolean {
+  return op.kind === "polygon" || op.kind === "import_off";
+}
 
 export type DisplayOptions = {
   verticesActive: boolean;
@@ -100,6 +122,18 @@ export function createPolygonOp(
     enabled: partial?.enabled ?? true,
     polygonType: partial?.polygonType ?? "prism",
     numSides: partial?.numSides ?? 5,
+  };
+}
+
+export function createImportOffOp(
+  partial?: Partial<Omit<ImportOffOp, "id" | "kind">>,
+): ImportOffOp {
+  return {
+    id: newId(),
+    kind: "import_off",
+    enabled: partial?.enabled ?? true,
+    fileName: partial?.fileName ?? "",
+    offText: partial?.offText ?? "",
   };
 }
 
@@ -158,12 +192,23 @@ export const DEFAULT_FLAGS: Record<FlagsToolKind, string> = {
   canonical: "-p p -n 80 -i 80",
   conv_hull: "",
   planar: "-d 1",
+  zono: "-m v",
+  poly_kscope: "-s Ih",
+  stellate: "-f 0,1",
+  leonardo: "-w 30%",
+  wythoff: "-p [V]0e,0e,0e",
+  to_nfold: "5",
+  off_normals: "-u -e",
+  // Cap iterations; -z -1 suppresses status spam on stderr
+  repel: "-n 80 -z -1",
 };
 
 export function createOp(kind: PipelineKind, isFirst: boolean): PipelineOp {
   switch (kind) {
     case "polygon":
       return createPolygonOp();
+    case "import_off":
+      return createImportOffOp();
     case "conway":
       return createConwayOp(isFirst ? "T" : "a");
     case "geodesic":
@@ -179,6 +224,8 @@ export function opToArgs(op: PipelineOp): string[] {
   switch (op.kind) {
     case "polygon":
       return [op.polygonType, String(op.numSides)];
+    case "import_off":
+      return op.fileName ? [op.fileName] : [];
     case "conway":
       return [op.notation.trim()];
     case "geodesic":
@@ -197,6 +244,9 @@ export function opToArgs(op: PipelineOp): string[] {
 
 /** Shell-like argv for display (tool name + args). */
 export function opToCommandLine(op: PipelineOp): string {
+  if (op.kind === "import_off") {
+    return op.fileName ? `import_off ${op.fileName}` : "import_off (no file)";
+  }
   const args = opToArgs(op).filter((a) => a.length > 0);
   return [op.kind, ...args].join(" ");
 }
@@ -267,5 +317,65 @@ export const FLAG_PRESETS: Record<FlagsToolKind, { value: string; label: string 
     { value: "-d 1 -S", label: "tile + stitch seams" },
     { value: "-d 1 -R", label: "tile + split pinched" },
     { value: "-p 2 -d 1", label: "tile (modulo2 fill)" },
+  ],
+  zono: [
+    { value: "-m v", label: "star: centre→vertices" },
+    { value: "-m e", label: "star: explicit edges" },
+    { value: "-m i", label: "star: implicit edges" },
+    { value: "-m a", label: "star: all vertex pairs" },
+    { value: "-m v -u", label: "vertices, unit vectors" },
+    { value: "-P 5", label: "polar zonohedron 5" },
+    { value: "-P 7/2", label: "polar zonohedron 7/2" },
+  ],
+  poly_kscope: [
+    { value: "-s Ih", label: "icosahedral (Ih)" },
+    { value: "-s Oh", label: "octahedral (Oh)" },
+    { value: "-s Th", label: "tetrahedral (Th)" },
+    { value: "-s I", label: "icosahedral rotational (I)" },
+    { value: "-s O", label: "octahedral rotational (O)" },
+    { value: "-s D5h", label: "D5h prismatic" },
+    { value: "-s Ih -c vef", label: "Ih + colour parts" },
+  ],
+  stellate: [
+    { value: "-f 0,1", label: "face 0, cell 1" },
+    { value: "-f 0,2", label: "face 0, cell 2" },
+    { value: "-f 0,1,2", label: "face 0, cells 1+2" },
+    { value: "-f 0,1 -R", label: "cell 1 + resolve" },
+    { value: "-f 0,1 -D", label: "cell 1 + dedupe" },
+  ],
+  leonardo: [
+    { value: "-w 30%", label: "border 30% max width" },
+    { value: "-w 20%", label: "border 20%" },
+    { value: "-w 40% -l 50%", label: "border 40%, height 50%" },
+    { value: "-p", label: "panels (no holes)" },
+    { value: "-w 30% -m", label: "border + mid-plane" },
+    { value: "-w 30% -x", label: "border + hide join edges" },
+  ],
+  wythoff: [
+    { value: "-p [V]0e,0e,0e", label: "circuit on V via e" },
+    { value: "-p [VE]0v", label: "point on VE via v" },
+    { value: "-p [E]0f,0f", label: "circuit on E via f" },
+    { value: "-p [V]0e,0e,0e -a", label: "V circuit + meta base" },
+    { value: "-p [V]0e,0e,0e -u", label: "V circuit, unique tiles" },
+  ],
+  to_nfold: [
+    { value: "5", label: "5-fold" },
+    { value: "7", label: "7-fold" },
+    { value: "7/2", label: "7/2 star" },
+    { value: "8", label: "8-fold" },
+    { value: "9/2", label: "9/2 star" },
+  ],
+  off_normals: [
+    { value: "-u -e", label: "unit normals + centroids" },
+    { value: "-u -s f", label: "unit face normals" },
+    { value: "-u -s vef", label: "unit V/E/F normals" },
+    { value: "-u -p o", label: "force outward" },
+    { value: "-u -p i", label: "force inward" },
+  ],
+  repel: [
+    { value: "-n 80 -z -1", label: "80 iters, quiet" },
+    { value: "-n 40 -z -1", label: "40 iters, quiet" },
+    { value: "-n 120 -z -1 -r 2", label: "120 iters, 1/d²" },
+    { value: "-n 80 -z -1 -r 1", label: "80 iters, 1/d" },
   ],
 };

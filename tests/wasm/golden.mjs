@@ -113,6 +113,26 @@ const cases = [
   { tool: "conv_hull", args: [], stdin: nativeRun("polygon", ["prism", "5"]).stdout },
   { tool: "conv_hull", args: ["-a"], stdin: nativeRun("polygon", ["prism", "5"]).stdout },
   { tool: "planar", args: ["-d", "1"], stdin: amboOff },
+  { tool: "zono", args: ["-m", "v"], stdin: nativeRun("conway", ["C"]).stdout },
+  { tool: "poly_kscope", args: ["-s", "Oh"], stdin: seedOff },
+  {
+    tool: "stellate",
+    args: ["-f", "0,1"],
+    stdin: nativeRun("conway", ["D"]).stdout,
+  },
+  { tool: "leonardo", args: ["-w", "30%"], stdin: nativeRun("conway", ["C"]).stdout },
+  {
+    tool: "wythoff",
+    args: ["-p", "[V]0e,0e,0e"],
+    stdin: nativeRun("conway", ["C"]).stdout,
+  },
+  { tool: "to_nfold", args: ["5"], stdin: seedOff },
+  { tool: "off_normals", args: ["-u", "-e"], stdin: seedOff },
+  {
+    tool: "repel",
+    args: ["-n", "20", "-z", "-1"],
+    stdin: nativeRun("conway", ["C"]).stdout,
+  },
 ];
 
 const Module = await createAntiprismModule({

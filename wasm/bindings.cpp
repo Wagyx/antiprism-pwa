@@ -20,6 +20,14 @@ extern int pol_recip_main(int argc, char **argv);
 extern int canonical_main(int argc, char **argv);
 extern int conv_hull_main(int argc, char **argv);
 extern int planar_main(int argc, char **argv);
+extern int zono_main(int argc, char **argv);
+extern int poly_kscope_main(int argc, char **argv);
+extern int stellate_main(int argc, char **argv);
+extern int leonardo_main(int argc, char **argv);
+extern int wythoff_main(int argc, char **argv);
+extern int to_nfold_main(int argc, char **argv);
+extern int off_normals_main(int argc, char **argv);
+extern int repel_main(int argc, char **argv);
 
 namespace {
 
@@ -99,6 +107,22 @@ int call_tool(const std::string &tool, const std::vector<std::string> &args)
     return conv_hull_main(argc, g_argv_ptrs.data());
   if (tool == "planar")
     return planar_main(argc, g_argv_ptrs.data());
+  if (tool == "zono")
+    return zono_main(argc, g_argv_ptrs.data());
+  if (tool == "poly_kscope")
+    return poly_kscope_main(argc, g_argv_ptrs.data());
+  if (tool == "stellate")
+    return stellate_main(argc, g_argv_ptrs.data());
+  if (tool == "leonardo")
+    return leonardo_main(argc, g_argv_ptrs.data());
+  if (tool == "wythoff")
+    return wythoff_main(argc, g_argv_ptrs.data());
+  if (tool == "to_nfold")
+    return to_nfold_main(argc, g_argv_ptrs.data());
+  if (tool == "off_normals")
+    return off_normals_main(argc, g_argv_ptrs.data());
+  if (tool == "repel")
+    return repel_main(argc, g_argv_ptrs.data());
   fprintf(stderr, "unknown tool: %s\n", tool.c_str());
   return 1;
 }
