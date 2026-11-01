@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { readOffFile } from "../io/loadOff";
 import {
+  isFieldVisible,
   TOOL_PARAM_SCHEMAS,
   type ParamField,
   type ParamValue,
@@ -225,7 +226,9 @@ function FlagsParamFields({
 
   return (
     <div className="stack-card-body">
-      {schema.fields.map(renderField)}
+      {schema.fields
+        .filter((field) => isFieldVisible(field, op.params))
+        .map(renderField)}
       <p className="hint">Pipes previous OFF in as input.</p>
     </div>
   );

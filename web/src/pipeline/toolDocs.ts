@@ -647,8 +647,8 @@ export const TOOL_DOCS: Record<PipelineKind, ToolDoc> = {
       {
         heading: "Args",
         entries: [
-          { symbol: "1…75", summary: "Miller list number." },
-          { symbol: "m_…", summary: "Cell string (A–H, e1, f1, …), optional ,I / ,Ih." },
+          { symbol: "1…75", summary: "Miller list number (number mode)." },
+          { symbol: "m_…", summary: "Cell string mode (A–H, e1, f1, …), optional ,I / ,Ih." },
           { symbol: "-M", summary: "Merge stellation facelets (cell strings)." },
           { symbol: "-r", summary: "Rebuild compound to separate vertices." },
           { symbol: "-O s|d", summary: "Output stellation or diagram." },
@@ -664,8 +664,11 @@ export const TOOL_DOCS: Record<PipelineKind, ToolDoc> = {
       {
         heading: "Options",
         entries: [
-          { symbol: "polyhedron", summary: "List number 1–44 or start of the name." },
-          { symbol: "-L", summary: "List models." },
+          {
+            symbol: "polyhedron",
+            summary: "Pick from the `iso_delta -L` list (1–44) in the dropdown.",
+          },
+          { symbol: "-L", summary: "List models (source of the UI dropdown)." },
           { symbol: "-c a…q", summary: "Compound / special cases." },
           { symbol: "-d / -n", summary: "Dipyramid set with n/d (6/5 ≤ n/d ≤ 6)." },
           { symbol: "-t", summary: "Output a single triangle only." },

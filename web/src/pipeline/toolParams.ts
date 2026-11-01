@@ -1,3 +1,4 @@
+import { ISO_DELTA_MODEL_OPTIONS } from "./isoDeltaModels";
 import type { FlagsToolKind } from "./types";
 
 export type ParamValue = string | number | boolean;
@@ -8,6 +9,10 @@ type FieldBase = {
   key: string;
   label: string;
   hint?: string;
+  /** Show in UI only when params[key] === equals. */
+  visibleWhen?: { key: string; equals: string | number | boolean };
+  /** UI control only — never serialized to argv. */
+  uiOnly?: boolean;
 };
 
 export type ParamField =
@@ -19,7 +24,8 @@ export type ParamField =
     })
   | (FieldBase & {
       type: "number";
-      flag: string;
+      /** If set, emit `flag value`; if omitted, value is positional. */
+      flag?: string;
       default: number;
       min?: number;
       max?: number;
@@ -51,6 +57,15 @@ export function defaultParams(schema: ToolParamSchema): Record<string, ParamValu
   return out;
 }
 
+export function isFieldVisible(
+  field: ParamField,
+  params: Record<string, ParamValue>,
+): boolean {
+  if (!field.visibleWhen) return true;
+  const cur = params[field.visibleWhen.key];
+  return cur === field.visibleWhen.equals;
+}
+
 /** Build argv from structured params + schema. */
 export function paramsToArgs(
   schema: ToolParamSchema,
@@ -58,6 +73,8 @@ export function paramsToArgs(
 ): string[] {
   const args: string[] = [];
   for (const f of schema.fields) {
+    if (f.uiOnly) continue;
+    if (!isFieldVisible(f, params)) continue;
     const raw = params[f.key] ?? f.default;
     switch (f.type) {
       case "bool":
@@ -69,7 +86,8 @@ export function paramsToArgs(
       case "number": {
         const n = typeof raw === "number" ? raw : Number(raw);
         if (!Number.isFinite(n)) break;
-        args.push(f.flag, String(n));
+        if (f.flag) args.push(f.flag, String(n));
+        else args.push(String(n));
         break;
       }
       case "text": {
@@ -655,12 +673,33 @@ export const TOOL_PARAM_SCHEMAS: Record<FlagsToolKind, ToolParamSchema> = {
   miller: {
     fields: [
       {
-        key: "model",
+        key: "modelMode",
+        type: "select",
+        label: "Model mode",
+        uiOnly: true,
+        default: "number",
+        options: [
+          { value: "number", label: "List number (1–75)" },
+          { value: "cells", label: "Cell string (m_…)" },
+        ],
+      },
+      {
+        key: "listNum",
+        type: "number",
+        label: "List number",
+        default: 1,
+        min: 1,
+        max: 75,
+        visibleWhen: { key: "modelMode", equals: "number" },
+      },
+      {
+        key: "cellString",
         type: "text",
-        label: "Model (1–75 or m_…)",
-        default: "1",
-        placeholder: "1  or  m_De1f1g1",
-        hint: "Positional — Miller list number or cell string.",
+        label: "Cell string",
+        default: "m_A",
+        placeholder: "m_De1f1g1",
+        hint: "Starts with m_; cells A–H, e1, f1, … optional ,I / ,Ih.",
+        visibleWhen: { key: "modelMode", equals: "cells" },
       },
       { key: "merge", type: "bool", label: "Merge facelets (-M)", flag: "-M", default: false },
       {
@@ -676,12 +715,13 @@ export const TOOL_PARAM_SCHEMAS: Record<FlagsToolKind, ToolParamSchema> = {
   iso_delta: {
     fields: [
       {
-        key: "model",
-        type: "text",
-        label: "Model (1–44 or name)",
+        key: "polyhedron",
+        type: "select",
+        label: "Polyhedron",
+        omitIfEmpty: true,
         default: "1",
-        placeholder: "1  or  Tetrahedron",
-        hint: "Positional list number / name. Leave empty when using -c / -d.",
+        options: [...ISO_DELTA_MODEL_OPTIONS],
+        hint: "From `iso_delta -L`. Choose none when using -c / -d only.",
       },
       {
         key: "compound",
@@ -691,7 +731,7 @@ export const TOOL_PARAM_SCHEMAS: Record<FlagsToolKind, ToolParamSchema> = {
         omitIfEmpty: true,
         default: "",
         options: [
-          { value: "", label: "(off — use model)" },
+          { value: "", label: "(off — use polyhedron)" },
           { value: "a", label: "a — k tetrahedra" },
           { value: "b", label: "b — 5/10 tetrahedra" },
           { value: "d", label: "d — 6 octahedra" },
