@@ -1,0 +1,241 @@
+import { useEffect, useMemo, useRef, useState } from "react";
+import { saveBlob, saveTextFile } from "../io/saveTextFile";
+import { libraryOffZip } from "./archive";
+import { loadLibraries, readLibraryFile, saveLibrary } from "./store";
+import {
+  addFolder,
+  createLibraryDocument,
+  downloadBaseName,
+  findEntry,
+  folderByPath,
+  insertEntry,
+  patchEntry,
+  removeNode,
+  renameLibrary,
+  renameNode,
+  resolveDestination,
+  sortLibraries,
+} from "./tree";
+import type {
+  EntryDraft,
+  EntryRef,
+  LibraryDocument,
+  LibraryLocation,
+} from "./types";
+
+function replaceDoc(libraries: LibraryDocument[], doc: LibraryDocument): LibraryDocument[] {
+  return sortLibraries(libraries.map((library) => (library.id === doc.id ? doc : library)));
+}
+
+function correctNav(
+  libraries: LibraryDocument[],
+  nav: LibraryLocation,
+  ready: boolean,
+): LibraryLocation {
+  if (!ready || !nav.libraryId) return nav;
+  const doc = libraries.find((library) => library.id === nav.libraryId);
+  if (!doc) return { libraryId: null, folderIds: [] };
+  if (!folderByPath(doc, nav.folderIds)) return { libraryId: doc.id, folderIds: [] };
+  return nav;
+}
+
+export function useLibrary() {
+  const [libraries, setLibraries] = useState<LibraryDocument[]>([]);
+  const [ready, setReady] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [navState, setNavState] = useState<LibraryLocation>({ libraryId: null, folderIds: [] });
+  const [query, setQuery] = useState("");
+  const [selected, setSelected] = useState<EntryRef | null>(null);
+
+  const librariesRef = useRef(libraries);
+  const navRef = useRef(navState);
+  const queueRef = useRef<Promise<unknown>>(Promise.resolve());
+  const nav = useMemo(
+    () => correctNav(libraries, navState, ready),
+    [libraries, navState, ready],
+  );
+
+  useEffect(() => {
+    navRef.current = nav;
+  }, [nav]);
+
+  const updateNav = (
+    next: LibraryLocation | ((current: LibraryLocation) => LibraryLocation),
+  ) => {
+    const value = typeof next === "function" ? next(navRef.current) : next;
+    navRef.current = value;
+    setNavState(value);
+  };
+
+  const commit = (next: LibraryDocument[]) => {
+    const sorted = sortLibraries(next);
+    librariesRef.current = sorted;
+    setLibraries(sorted);
+  };
+
+  const enqueue = <T,>(fn: () => Promise<T>): Promise<T> => {
+    const run = queueRef.current.then(fn, fn);
+    queueRef.current = run.then(
+      () => undefined,
+      () => undefined,
+    );
+    return run;
+  };
+
+  useEffect(() => {
+    let cancelled = false;
+    loadLibraries()
+      .then((docs) => {
+        if (cancelled) return;
+        librariesRef.current = docs;
+        setLibraries(docs);
+        setReady(true);
+      })
+      .catch((error: unknown) => {
+        if (cancelled) return;
+        setLoadError(error instanceof Error ? error.message : String(error));
+        setReady(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const createLibrary = (name: string) =>
+    enqueue(async () => {
+      const doc = createLibraryDocument(
+        name,
+        librariesRef.current.map((library) => library.name),
+      );
+      await saveLibrary(doc);
+      commit([...librariesRef.current, doc]);
+    });
+
+  const renameLibraryById = (libraryId: string, name: string) =>
+    enqueue(async () => {
+      const doc = librariesRef.current.find((library) => library.id === libraryId);
+      if (!doc) throw new Error("Library not found");
+      const next = renameLibrary(
+        doc,
+        name,
+        librariesRef.current.map((library) => library.name),
+      );
+      await saveLibrary(next);
+      commit(replaceDoc(librariesRef.current, next));
+    });
+
+  const importLibrary = (file: File) =>
+    enqueue(async () => {
+      const doc = await readLibraryFile(
+        file,
+        librariesRef.current.map((library) => library.name),
+      );
+      await saveLibrary(doc);
+      commit([...librariesRef.current, doc]);
+    });
+
+  const exportJson = async (libraryId: string) => {
+    const doc = librariesRef.current.find((library) => library.id === libraryId);
+    if (!doc) throw new Error("Library not found");
+    await saveTextFile(
+      JSON.stringify(doc, null, 2),
+      `${downloadBaseName(doc.name)}.json`,
+      "application/json",
+    );
+  };
+
+  const exportZip = async (libraryId: string) => {
+    const doc = librariesRef.current.find((library) => library.id === libraryId);
+    if (!doc) throw new Error("Library not found");
+    const bytes = libraryOffZip(doc);
+    await saveBlob(
+      new Blob([Uint8Array.from(bytes)], { type: "application/zip" }),
+      `${downloadBaseName(doc.name)}-off.zip`,
+    );
+  };
+
+  const createFolder = (name: string) =>
+    enqueue(async () => {
+      const libraryId = navRef.current.libraryId;
+      if (!libraryId) throw new Error("Open a library first");
+      const doc = librariesRef.current.find((library) => library.id === libraryId);
+      if (!doc) throw new Error("Library not found");
+      const next = addFolder(doc, navRef.current.folderIds, name);
+      await saveLibrary(next);
+      commit(replaceDoc(librariesRef.current, next));
+    });
+
+  const renameItem = (libraryId: string, nodeId: string, name: string) =>
+    enqueue(async () => {
+      const doc = librariesRef.current.find((library) => library.id === libraryId);
+      if (!doc) throw new Error("Library not found");
+      const next = renameNode(doc, nodeId, name);
+      await saveLibrary(next);
+      commit(replaceDoc(librariesRef.current, next));
+    });
+
+  const deleteItem = (libraryId: string, nodeId: string) =>
+    enqueue(async () => {
+      const doc = librariesRef.current.find((library) => library.id === libraryId);
+      if (!doc) throw new Error("Library not found");
+      const next = removeNode(doc, nodeId);
+      await saveLibrary(next);
+      commit(replaceDoc(librariesRef.current, next));
+      setSelected((current) => {
+        if (!current || current.libraryId !== libraryId) return current;
+        return findEntry(next, current.entryId) ? current : null;
+      });
+      updateNav((current) => {
+        if (current.libraryId !== libraryId) return current;
+        return folderByPath(next, current.folderIds)
+          ? current
+          : { libraryId, folderIds: [] };
+      });
+      return next;
+    });
+
+  const createEntry = (draft: EntryDraft) =>
+    enqueue(async () => {
+      const dest = resolveDestination(librariesRef.current, navRef.current);
+      const doc = librariesRef.current.find((library) => library.id === dest.libraryId);
+      if (!doc) throw new Error("Library not found");
+      const { doc: next, entry } = insertEntry(doc, dest.folderIds, draft);
+      await saveLibrary(next);
+      commit(replaceDoc(librariesRef.current, next));
+      const ref = { libraryId: next.id, entryId: entry.id };
+      setSelected(ref);
+      return ref;
+    });
+
+  const updateEntry = (ref: EntryRef, draft: EntryDraft) =>
+    enqueue(async () => {
+      const doc = librariesRef.current.find((library) => library.id === ref.libraryId);
+      if (!doc) throw new Error("Library not found");
+      const next = patchEntry(doc, ref.entryId, draft);
+      await saveLibrary(next);
+      commit(replaceDoc(librariesRef.current, next));
+      setSelected(ref);
+    });
+
+  return {
+    libraries,
+    ready,
+    loadError,
+    nav,
+    setNav: updateNav,
+    query,
+    setQuery,
+    selected,
+    setSelected,
+    createLibrary,
+    renameLibraryById,
+    importLibrary,
+    exportJson,
+    exportZip,
+    createFolder,
+    renameItem,
+    deleteItem,
+    createEntry,
+    updateEntry,
+  };
+}

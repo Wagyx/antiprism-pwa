@@ -43,6 +43,7 @@ import { APP_VERSION } from "../version";
 import { AddOpButton } from "./AddOpButton";
 import { CategoryIcon } from "./CategoryIcon";
 import { MenuSelect } from "./MenuSelect";
+import { ModeSwitch, type Mode } from "./ModeSwitch";
 import { ToolInfoButton } from "./ToolInfoButton";
 import { useDismissDetails } from "./useDismissDetails";
 
@@ -89,6 +90,10 @@ type Props = {
   onRedo: () => void;
   canSave: boolean;
   onSaveAs: (format: SaveAsFormatId) => void;
+  mode: Mode;
+  onModeChange: (mode: Mode) => void;
+  editingName: string | null;
+  onSaveToLibrary: () => void;
 };
 
 /** Drop redundant "Step N (kind):" prefix when the message sits under that card. */
@@ -807,6 +812,10 @@ export function StackPanel({
   stepText,
   canSave,
   onSaveAs,
+  mode,
+  onModeChange,
+  editingName,
+  onSaveToLibrary,
 }: Props) {
   useDismissDetails();
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
@@ -842,6 +851,8 @@ export function StackPanel({
           <p className="brand-version">v{APP_VERSION}</p>
         </div>
       </div>
+      <ModeSwitch mode={mode} onChange={onModeChange} />
+      {editingName ? <p className="hint">Library entry: {editingName}</p> : null}
 
       <div className="stack">
         <div className="stack-heading">Operations</div>
@@ -1024,6 +1035,15 @@ export function StackPanel({
             ))}
           </div>
         </details>
+        <button
+          type="button"
+          className="tool-btn"
+          disabled={!canSave || busy}
+          title="Save the current polyhedron into the library"
+          onClick={onSaveToLibrary}
+        >
+          To library
+        </button>
         {/* Undo/Redo buttons hidden for now; stack history still wired in App */}
         <span className={`busy-hint${busy ? " is-on" : ""}`} aria-live="polite">
           Running…

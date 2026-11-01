@@ -8,7 +8,20 @@ It may be necessary to build a wasm version of antiprism.
 Viewing the polyhedra is done using Three.js based on this viewer : 
 https://asliceofcuriosity.fr/blog/extra/polyhedra-viewer-antiprism.html
 
-The application has a library module that allows to load polyhedra in (OFF and OBJ file formats). It also allows to browse and search through the library. There is a default internal library and the user can create its own which is stored locally.
+The application has a library manager module. This module allows the user to store and view polyhedra created by the editor.
+- The library module let the user browse through the libraries. The user can create a new library or import one. Each library is a json file. The json file reflects the hierarchy of files and folders like a filesystem would.
+- the json library files should not be deleted by the application at any point even when updating, this is very important. User needs to be able to trust the system and not loose their data.
+- a library can be renamed, names are unique
+- a library json file can be exported to the user computer
+- all the output OFF files in a library can also be exported to a zip archive with the same folder hierarchy
+- At each level in a library the folders, parent folder and entries appears as cards in a grid.
+- each entry in the library stores the input file content (if any), the OFF output of the pipeline as well as the pipeline state and date of creation, date of modification.
+- folders as well as entries can be renamed, deleted, created. Names are unique
+- Each card shows the name, n_vertices, n_edges, n_faces.
+- A search bar lets the user search by the out polyhedron properties (name, n_vertices, n_edges, n_faces for now, more later) but also by the antiprism command. the scope of the search is the current folder and subfolders. at the top level, the scope is all the libraries.
+- at the top level, the first folder is MyLibrary by default, at this level a button Import library let the user import a json library next to the existing libraries
+- entries have an edit button that opens it in the editor.
+- the browsing lives on the right panel, the left panel shows a live view of the last selected entry (based on the output OFF, there is no need to rerun the whole pipeline)
 
 The application has an editor module that lets the user inspect the polyhedron in a 3D view and call the programs from antiprism. Some operations from antiprism can be piped like the geometry modifiers from Blender.
 

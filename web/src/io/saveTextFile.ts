@@ -2,20 +2,11 @@ type SaveResult = "downloaded" | "cancelled";
 
 let inFlight: Promise<SaveResult> | null = null;
 
-/** Save arbitrary text via a browser download. */
-export function saveTextFile(
-  text: string,
-  suggestedName: string,
-  mime = "text/plain;charset=utf-8",
-): Promise<SaveResult> {
+/** Save a blob via a browser download. */
+export function saveBlob(blob: Blob, suggestedName: string): Promise<SaveResult> {
   if (inFlight) return inFlight;
 
-  if (!text.trim()) {
-    return Promise.resolve("cancelled" as const);
-  }
-
   const run: Promise<SaveResult> = (async (): Promise<SaveResult> => {
-    const blob = new Blob([text], { type: mime });
     const url = URL.createObjectURL(blob);
     try {
       const a = document.createElement("a");
@@ -37,4 +28,16 @@ export function saveTextFile(
   }) as Promise<SaveResult>;
 
   return run;
+}
+
+/** Save arbitrary text via a browser download. */
+export function saveTextFile(
+  text: string,
+  suggestedName: string,
+  mime = "text/plain;charset=utf-8",
+): Promise<SaveResult> {
+  if (!text.trim()) {
+    return Promise.resolve("cancelled" as const);
+  }
+  return saveBlob(new Blob([text], { type: mime }), suggestedName);
 }

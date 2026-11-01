@@ -57,10 +57,18 @@ export function useUndoable<T>(initial: T) {
     });
   }, []);
 
+  /** Replace the present value and drop undo history. */
+  const load = useCallback((next: T) => {
+    setPast([]);
+    setFuture([]);
+    setPresent(next);
+  }, []);
+
   return {
     present,
     set,
     replace,
+    load,
     undo,
     redo,
     canUndo: past.length > 0,
