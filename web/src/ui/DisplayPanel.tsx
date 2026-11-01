@@ -51,6 +51,14 @@ export function DisplayPanel({ display, onChange, onResetCamera }: Props) {
             />
             Vertices
           </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={display.axesActive}
+              onChange={(e) => set("axesActive", e.target.checked)}
+            />
+            XYZ axes
+          </label>
           <button
             type="button"
             className="display-reset-camera"

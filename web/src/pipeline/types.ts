@@ -244,6 +244,7 @@ export type DisplayOptions = {
   verticesActive: boolean;
   edgesActive: boolean;
   facesActive: boolean;
+  axesActive: boolean;
 };
 
 export function newId(): string {
@@ -409,6 +410,7 @@ export const defaultDisplay: DisplayOptions = {
   verticesActive: true,
   edgesActive: true,
   facesActive: true,
+  axesActive: true,
 };
 
 export const OFF_COLOR_PRESETS = [

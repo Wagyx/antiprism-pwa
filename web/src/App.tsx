@@ -213,6 +213,7 @@ export default function App() {
           verticesActive={display.verticesActive}
           edgesActive={display.edgesActive}
           facesActive={display.facesActive}
+          axesActive={display.axesActive}
           cameraResetKey={cameraResetKey}
         />
       </main>

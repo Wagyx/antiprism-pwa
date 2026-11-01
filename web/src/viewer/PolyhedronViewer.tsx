@@ -43,11 +43,15 @@ type Props = {
   verticesActive?: boolean;
   edgesActive?: boolean;
   facesActive?: boolean;
+  axesActive?: boolean;
   vertexRadius?: number;
   edgeRadius?: number;
   /** Increment to restore the default camera/orbit view. */
   cameraResetKey?: number;
 };
+
+/** Axis length in scene units (polyhedra are normalized near radius 10). */
+const AXES_SIZE = 12;
 
 const DEFAULT_CAMERA_POS = new THREE.Vector3(0, 0, 40);
 
@@ -246,6 +250,7 @@ export function PolyhedronViewer({
   verticesActive = true,
   edgesActive = true,
   facesActive = true,
+  axesActive = true,
   vertexRadius = 0.03,
   edgeRadius = 0.02,
   cameraResetKey = 0,
@@ -258,6 +263,7 @@ export function PolyhedronViewer({
     camera: THREE.PerspectiveCamera;
     controls: OrbitControls;
     content: THREE.Object3D | null;
+    axes: THREE.AxesHelper;
     raf: number;
   } | null>(null);
 
@@ -292,12 +298,17 @@ export function PolyhedronViewer({
     controls.enablePan = true;
     resetCameraView(camera, controls);
 
+    const axes = new THREE.AxesHelper(AXES_SIZE);
+    axes.visible = axesActive;
+    scene.add(axes);
+
     const state = {
       renderer,
       scene,
       camera,
       controls,
       content: null as THREE.Object3D | null,
+      axes,
       raf: 0,
     };
     sceneRef.current = state;
@@ -324,6 +335,10 @@ export function PolyhedronViewer({
       cancelAnimationFrame(state.raf);
       ro.disconnect();
       controls.dispose();
+      axes.geometry.dispose();
+      const mat = axes.material;
+      if (Array.isArray(mat)) mat.forEach((m) => m.dispose());
+      else mat.dispose();
       renderer.dispose();
       if (renderer.domElement.parentElement === mount) {
         mount.removeChild(renderer.domElement);
@@ -331,6 +346,12 @@ export function PolyhedronViewer({
       sceneRef.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    const state = sceneRef.current;
+    if (!state) return;
+    state.axes.visible = axesActive;
+  }, [axesActive]);
 
   useEffect(() => {
     const state = sceneRef.current;
