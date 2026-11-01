@@ -47,6 +47,10 @@ extern int off_report_main(int argc, char **argv);
 extern int off_query_main(int argc, char **argv);
 extern int off2obj_main(int argc, char **argv);
 extern int off2crds_main(int argc, char **argv);
+extern int obj2off_main(int argc, char **argv);
+extern int off2pov_main(int argc, char **argv);
+extern int off2vrml_main(int argc, char **argv);
+extern int off2dae_main(int argc, char **argv);
 
 namespace {
 
@@ -180,6 +184,14 @@ int call_tool(const std::string &tool, const std::vector<std::string> &args)
     return off2obj_main(argc, g_argv_ptrs.data());
   if (tool == "off2crds")
     return off2crds_main(argc, g_argv_ptrs.data());
+  if (tool == "obj2off")
+    return obj2off_main(argc, g_argv_ptrs.data());
+  if (tool == "off2pov")
+    return off2pov_main(argc, g_argv_ptrs.data());
+  if (tool == "off2vrml")
+    return off2vrml_main(argc, g_argv_ptrs.data());
+  if (tool == "off2dae")
+    return off2dae_main(argc, g_argv_ptrs.data());
   fprintf(stderr, "unknown tool: %s\n", tool.c_str());
   return 1;
 }

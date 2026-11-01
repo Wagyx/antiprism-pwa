@@ -114,7 +114,7 @@ done
 echo "==> Compiling editor tools (renamed main + disambiguated locals)"
 # Tool .cc files reuse short names (pr_opts, cn_opts, make_skeleton, …).
 # Prefix those with -D so multiple tools can link into one Wasm module.
-rm -f "$OBJ_DIR/src"/{polygon,conway,geodesic,off_color,off_util,off_trans,pol_recip,canonical,conv_hull,planar,zono,poly_kscope,stellate,leonardo,wythoff,to_nfold,off_normals,repel,poly_form,off_color_radial,miller,iso_delta,iso_kite,symmetro,sph_rings,waterman,tetra59,bravais,unitile2d,n_icons,kcycle,lat_util,col_util,off_report,off_query,off2obj,off2crds}.o
+rm -f "$OBJ_DIR/src"/{polygon,conway,geodesic,off_color,off_util,off_trans,pol_recip,canonical,conv_hull,planar,zono,poly_kscope,stellate,leonardo,wythoff,to_nfold,off_normals,repel,poly_form,off_color_radial,miller,iso_delta,iso_kite,symmetro,sph_rings,waterman,tetra59,bravais,unitile2d,n_icons,kcycle,lat_util,col_util,off_report,off_query,off2obj,off2crds,obj2off,off2pov,off2vrml,off2dae}.o
 compile_one "$ANTI/src/polygon.cc" "$OBJ_DIR/src/polygon.o" -Dmain=polygon_main
 compile_one "$ANTI/src/conway.cc" "$OBJ_DIR/src/conway.o" \
   -Dmain=conway_main -Dcn_opts=conway_cn_opts -Dextended_help=conway_extended_help
@@ -165,6 +165,10 @@ compile_one "$ANTI/src/off_report.cc" "$OBJ_DIR/src/off_report.o" -Dmain=off_rep
 compile_one "$ANTI/src/off_query.cc" "$OBJ_DIR/src/off_query.o" -Dmain=off_query_main
 compile_one "$ANTI/src/off2obj.cc" "$OBJ_DIR/src/off2obj.o" -Dmain=off2obj_main
 compile_one "$ANTI/src/off2crds.cc" "$OBJ_DIR/src/off2crds.o" -Dmain=off2crds_main
+compile_one "$ANTI/src/obj2off.cc" "$OBJ_DIR/src/obj2off.o" -Dmain=obj2off_main
+compile_one "$ANTI/src/off2pov.cc" "$OBJ_DIR/src/off2pov.o" -Dmain=off2pov_main
+compile_one "$ANTI/src/off2vrml.cc" "$OBJ_DIR/src/off2vrml.o" -Dmain=off2vrml_main
+compile_one "$ANTI/src/off2dae.cc" "$OBJ_DIR/src/off2dae.o" -Dmain=off2dae_main
 compile_one "$ANTI/src/canonical_common.cc" "$OBJ_DIR/src/canonical_common.o"
 compile_one "$ANTI/src/color_common.cc" "$OBJ_DIR/src/color_common.o"
 compile_one "$ANTI/src/lat_util_common.cc" "$OBJ_DIR/src/lat_util_common.o"
@@ -218,6 +222,10 @@ em++ -O2 \
   "$OBJ_DIR/src/off_query.o" \
   "$OBJ_DIR/src/off2obj.o" \
   "$OBJ_DIR/src/off2crds.o" \
+  "$OBJ_DIR/src/obj2off.o" \
+  "$OBJ_DIR/src/off2pov.o" \
+  "$OBJ_DIR/src/off2vrml.o" \
+  "$OBJ_DIR/src/off2dae.o" \
   "$OBJ_DIR/src/canonical_common.o" \
   "$OBJ_DIR/src/color_common.o" \
   "$OBJ_DIR/src/lat_util_common.o" \

@@ -934,4 +934,64 @@ export const TOOL_DOCS: Record<PipelineKind, ToolDoc> = {
       },
     ],
   },
+
+  obj2off: {
+    title: "obj2off",
+    blurb: "Load a Wavefront OBJ file and convert it to OFF as a pipeline seed.",
+    sections: [
+      {
+        heading: "Notes",
+        entries: [
+          { symbol: "v / f / l", summary: "Vertices, faces, and lines are read." },
+          { symbol: "Kd", summary: "Face colours from MTL diffuse when present." },
+          { symbol: "-d", summary: "Significant digits on OFF output." },
+        ],
+      },
+    ],
+  },
+
+  off2pov: {
+    title: "off2pov",
+    blurb: "Convert the current OFF to a POV-Ray scene (text; passes OFF through).",
+    sections: [
+      {
+        heading: "Options",
+        entries: [
+          { symbol: "-v / -e", summary: "Vertex sphere / edge cylinder radius." },
+          { symbol: "-x", summary: "Hide v/e/f elements." },
+          { symbol: "-O", summary: "a=all-in-one, o=objects, t=template." },
+        ],
+      },
+    ],
+  },
+
+  off2vrml: {
+    title: "off2vrml",
+    blurb: "Convert the current OFF to VRML (text; passes OFF through).",
+    sections: [
+      {
+        heading: "Options",
+        entries: [
+          { symbol: "-v / -e", summary: "Vertex sphere / edge cylinder radius." },
+          { symbol: "-x", summary: "Hide v/e/f elements." },
+        ],
+      },
+    ],
+  },
+
+  off2dae: {
+    title: "off2dae",
+    blurb: "Convert the current OFF to Collada DAE (text; passes OFF through).",
+    sections: [
+      {
+        heading: "Options",
+        entries: [
+          { symbol: "-v / -e", summary: "Vertex sphere / edge cylinder radius." },
+          { symbol: "-x", summary: "Hide v/e/f elements." },
+          { symbol: "-K", summary: "Smoothing level for spheres/cylinders." },
+          { symbol: "-d", summary: "Significant digits." },
+        ],
+      },
+    ],
+  },
 };

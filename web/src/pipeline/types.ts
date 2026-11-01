@@ -61,6 +61,9 @@ export const FLAGS_TOOL_KINDS = [
   "off_query",
   "off2obj",
   "off2crds",
+  "off2pov",
+  "off2vrml",
+  "off2dae",
 ] as const;
 
 export type FlagsToolKind = (typeof FLAGS_TOOL_KINDS)[number];
@@ -68,6 +71,7 @@ export type FlagsToolKind = (typeof FLAGS_TOOL_KINDS)[number];
 export const PIPELINE_KINDS = [
   "polygon",
   "import_off",
+  "obj2off",
   "conway_seed",
   "conway",
   "geodesic",
@@ -115,6 +119,7 @@ export const PIPELINE_CATEGORIES: {
     tools: [
       { kind: "polygon", blurb: "Prism, pyramid, …" },
       { kind: "import_off", blurb: "Load OFF file" },
+      { kind: "obj2off", blurb: "Load OBJ → OFF" },
       { kind: "conway_seed", blurb: "Conway seed" },
       { kind: "geodesic", blurb: "Frequency spheres" },
       { kind: "zono", blurb: "Zonohedra" },
@@ -170,6 +175,9 @@ export const PIPELINE_CATEGORIES: {
       { kind: "off_query", blurb: "Element data" },
       { kind: "off2obj", blurb: "Export Wavefront OBJ" },
       { kind: "off2crds", blurb: "Export coordinates" },
+      { kind: "off2pov", blurb: "Export POV-Ray" },
+      { kind: "off2vrml", blurb: "Export VRML" },
+      { kind: "off2dae", blurb: "Export Collada DAE" },
     ],
   },
 ];
@@ -201,6 +209,14 @@ export type ImportOffOp = OpBase & {
   kind: "import_off";
   fileName: string;
   offText: string;
+};
+
+/** Seed that converts a loaded OBJ file to OFF via Wasm `obj2off`. */
+export type Obj2OffOp = OpBase & {
+  kind: "obj2off";
+  fileName: string;
+  objText: string;
+  digits: number;
 };
 
 /** Seed-only Conway step (capital letter / Pn…); calls Wasm `conway`. */
@@ -241,6 +257,7 @@ export type FlagsOp = OpBase & {
 export type PipelineOp =
   | PolygonOp
   | ImportOffOp
+  | Obj2OffOp
   | ConwaySeedOp
   | ConwayOp
   | GeodesicOp
@@ -267,6 +284,7 @@ export function isSeedOp(op: PipelineOp): boolean {
   return (
     op.kind === "polygon" ||
     op.kind === "import_off" ||
+    op.kind === "obj2off" ||
     GENERATOR_SEED_KINDS.has(op.kind)
   );
 }
@@ -277,6 +295,9 @@ export const TEXT_TOOL_KINDS = [
   "off_query",
   "off2obj",
   "off2crds",
+  "off2pov",
+  "off2vrml",
+  "off2dae",
 ] as const;
 
 export type TextToolKind = (typeof TEXT_TOOL_KINDS)[number];
@@ -295,8 +316,79 @@ export function textToolDownloadName(kind: TextToolKind): string {
       return "report.txt";
     case "off_query":
       return "query.txt";
+    case "off2pov":
+      return "polyhedron.pov";
+    case "off2vrml":
+      return "polyhedron.wrl";
+    case "off2dae":
+      return "polyhedron.dae";
   }
 }
+
+/** Formats offered by the stack Export menu. */
+export const SAVE_AS_OPTIONS = [
+  {
+    id: "off",
+    label: "OFF",
+    fileName: "polyhedron.off",
+    tool: null,
+    args: [] as string[],
+    mime: "model/off",
+  },
+  {
+    id: "obj",
+    label: "OBJ",
+    fileName: "polyhedron.obj",
+    tool: "off2obj" as const,
+    args: ["-d", "8"],
+    mime: "model/obj",
+  },
+  {
+    id: "crds",
+    label: "Coordinates",
+    fileName: "coordinates.txt",
+    tool: "off2crds" as const,
+    args: ["-d", "8"],
+    mime: "text/plain;charset=utf-8",
+  },
+  {
+    id: "pov",
+    label: "POV-Ray",
+    fileName: "polyhedron.pov",
+    tool: "off2pov" as const,
+    args: [] as string[],
+    mime: "text/plain;charset=utf-8",
+  },
+  {
+    id: "vrml",
+    label: "VRML",
+    fileName: "polyhedron.wrl",
+    tool: "off2vrml" as const,
+    args: [] as string[],
+    mime: "model/vrml",
+  },
+  {
+    id: "dae",
+    label: "Collada DAE",
+    fileName: "polyhedron.dae",
+    tool: "off2dae" as const,
+    args: [] as string[],
+    mime: "model/vnd.collada+xml",
+  },
+] as const;
+
+export type SaveAsFormatId = (typeof SAVE_AS_OPTIONS)[number]["id"];
+
+export function saveAsOption(
+  id: SaveAsFormatId,
+): (typeof SAVE_AS_OPTIONS)[number] {
+  const opt = SAVE_AS_OPTIONS.find((o) => o.id === id);
+  if (!opt) throw new Error(`Unknown save format: ${id}`);
+  return opt;
+}
+
+/** Path written by Wasm setup_io; obj2off needs a real file for tinyobj. */
+export const WASM_STDIN_PATH = "/tmp/ap_stdin";
 
 /** Notation token for a Conway seed step (e.g. T, P5). */
 export function conwaySeedToken(op: ConwaySeedOp): string {
@@ -348,6 +440,19 @@ export function createImportOffOp(
     enabled: partial?.enabled ?? true,
     fileName: partial?.fileName ?? "",
     offText: partial?.offText ?? "",
+  };
+}
+
+export function createObj2OffOp(
+  partial?: Partial<Omit<Obj2OffOp, "id" | "kind">>,
+): Obj2OffOp {
+  return {
+    id: newId(),
+    kind: "obj2off",
+    enabled: partial?.enabled ?? true,
+    fileName: partial?.fileName ?? "",
+    objText: partial?.objText ?? "",
+    digits: partial?.digits ?? 8,
   };
 }
 
@@ -419,6 +524,8 @@ export function createOp(kind: PipelineKind, _isFirst: boolean): PipelineOp {
       return createPolygonOp();
     case "import_off":
       return createImportOffOp();
+    case "obj2off":
+      return createObj2OffOp();
     case "conway_seed":
       return createConwaySeedOp();
     case "conway":
@@ -438,6 +545,9 @@ export function opToArgs(op: PipelineOp): string[] {
       return [op.polygonType, String(op.numSides)];
     case "import_off":
       return op.fileName ? [op.fileName] : [];
+    case "obj2off":
+      // tinyobj loads by path; Wasm setup_io writes stdin bytes to this file.
+      return ["-d", String(op.digits), WASM_STDIN_PATH];
     case "conway_seed":
       return [conwaySeedToken(op)];
     case "conway": {
@@ -463,6 +573,10 @@ export function opToArgs(op: PipelineOp): string[] {
 export function opToCommandLine(op: PipelineOp): string {
   if (op.kind === "import_off") {
     return op.fileName ? `import_off ${op.fileName}` : "import_off (no file)";
+  }
+  if (op.kind === "obj2off") {
+    const file = op.fileName || "(no file)";
+    return `obj2off -d ${op.digits} ${file}`;
   }
   const tool = wasmToolForOp(op);
   const args = opToArgs(op).filter((a) => a.length > 0);

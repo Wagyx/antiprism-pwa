@@ -1423,4 +1423,123 @@ export const TOOL_PARAM_SCHEMAS: Record<FlagsToolKind, ToolParamSchema> = {
       },
     ],
   },
+
+  off2pov: {
+    fields: [
+      {
+        key: "vertRad",
+        type: "text",
+        label: "Vertex radius (-v)",
+        flag: "-v",
+        default: "",
+        placeholder: "b  or  0.05",
+        hint: "Empty = default; b = non-overlapping balls.",
+      },
+      {
+        key: "edgeRad",
+        type: "text",
+        label: "Edge radius (-e)",
+        flag: "-e",
+        default: "",
+        placeholder: "0.03",
+      },
+      {
+        key: "hide",
+        type: "text",
+        label: "Hide (-x)",
+        flag: "-x",
+        default: "",
+        placeholder: "vef",
+        hint: "Letters v, e, f to hide vertices / edges / faces.",
+      },
+      {
+        key: "outType",
+        type: "select",
+        label: "Output (-O)",
+        flag: "-O",
+        default: "a",
+        options: [
+          { value: "a", label: "a — all in one file" },
+          { value: "o", label: "o — objects only" },
+          { value: "t", label: "t — template only" },
+        ],
+      },
+    ],
+  },
+
+  off2vrml: {
+    fields: [
+      {
+        key: "vertRad",
+        type: "text",
+        label: "Vertex radius (-v)",
+        flag: "-v",
+        default: "",
+        placeholder: "b  or  0.05",
+      },
+      {
+        key: "edgeRad",
+        type: "text",
+        label: "Edge radius (-e)",
+        flag: "-e",
+        default: "",
+        placeholder: "0.03",
+      },
+      {
+        key: "hide",
+        type: "text",
+        label: "Hide (-x)",
+        flag: "-x",
+        default: "",
+        placeholder: "vef",
+      },
+    ],
+  },
+
+  off2dae: {
+    fields: [
+      {
+        key: "vertRad",
+        type: "text",
+        label: "Vertex radius (-v)",
+        flag: "-v",
+        default: "",
+        placeholder: "b  or  0.05",
+      },
+      {
+        key: "edgeRad",
+        type: "text",
+        label: "Edge radius (-e)",
+        flag: "-e",
+        default: "",
+        placeholder: "0.03",
+      },
+      {
+        key: "hide",
+        type: "text",
+        label: "Hide (-x)",
+        flag: "-x",
+        default: "",
+        placeholder: "vef",
+      },
+      {
+        key: "smooth",
+        type: "number",
+        label: "Smooth level (-K)",
+        flag: "-K",
+        default: 3,
+        min: 1,
+        max: 8,
+      },
+      {
+        key: "digits",
+        type: "number",
+        label: "Digits (-d)",
+        flag: "-d",
+        default: 8,
+        min: -16,
+        max: 16,
+      },
+    ],
+  },
 };

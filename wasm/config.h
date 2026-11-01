@@ -43,4 +43,8 @@
 #define VERSION "0.32.99"
 #define STDC_HEADERS 1
 
+/* Subsecond timer / sleep backends (see base/timer.cc). */
+#define UTIMER 1 /* gettimeofday */
+#define USLEEP 1 /* usleep */
+
 #endif /* ANTIPRISM_WASM_CONFIG_H */

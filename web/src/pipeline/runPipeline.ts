@@ -70,6 +70,47 @@ export async function runPipeline(ops: PipelineOp[]): Promise<PipelineResult> {
       continue;
     }
 
+    if (op.kind === "obj2off") {
+      const text = op.objText.trim();
+      if (!text) {
+        return {
+          ok: false,
+          offText: off || null,
+          error: `Step ${i + 1} (obj2off): no OBJ file loaded`,
+          failedStep: i,
+          stepText,
+        };
+      }
+      const result = await runAntiprism(
+        "obj2off",
+        opToArgs(op),
+        op.objText,
+      );
+      if (!result.ok) {
+        const msg =
+          result.stderr.trim() ||
+          `obj2off exited with code ${result.code}`;
+        return {
+          ok: false,
+          offText: off || null,
+          error: `Step ${i + 1} (obj2off): ${msg}`,
+          failedStep: i,
+          stepText,
+        };
+      }
+      if (!looksLikeOff(result.stdout)) {
+        return {
+          ok: false,
+          offText: off || null,
+          error: `Step ${i + 1} (obj2off): conversion did not produce OFF`,
+          failedStep: i,
+          stepText,
+        };
+      }
+      off = result.stdout;
+      continue;
+    }
+
     if (isTextTool(op.kind) && !off.trim()) {
       return {
         ok: false,

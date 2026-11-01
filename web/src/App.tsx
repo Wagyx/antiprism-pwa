@@ -10,8 +10,10 @@ import { runPipeline } from "./pipeline/runPipeline";
 import {
   defaultDisplay,
   defaultStack,
+  saveAsOption,
   type DisplayOptions,
   type PipelineOp,
+  type SaveAsFormatId,
 } from "./pipeline/types";
 import { useUndoable } from "./pipeline/useUndoable";
 import { saveOffFile } from "./io/saveOff";
@@ -168,33 +170,28 @@ export default function App() {
   }, []);
 
   const saveLock = useRef(false);
-  const onSaveOff = useCallback(() => {
+  const onSaveAs = useCallback((format: SaveAsFormatId) => {
     if (saveLock.current) return;
     const text = offText ?? offTextRef.current;
     if (!text?.trim()) return;
-    saveLock.current = true;
-    void saveOffFile(text).finally(() => {
-      saveLock.current = false;
-    });
-  }, [offText]);
-
-  const onSaveObj = useCallback(() => {
-    if (saveLock.current) return;
-    const text = offText ?? offTextRef.current;
-    if (!text?.trim()) return;
+    const opt = saveAsOption(format);
     saveLock.current = true;
     void (async () => {
       try {
-        const result = await runAntiprism("off2obj", ["-d", "8"], text);
+        if (!opt.tool) {
+          await saveOffFile(text, opt.fileName);
+          return;
+        }
+        const result = await runAntiprism(opt.tool, [...opt.args], text);
         if (!result.ok || !result.stdout.trim()) {
           setError(
             result.stderr.trim() ||
-              `off2obj exited with code ${result.code}`,
+              `${opt.tool} exited with code ${result.code}`,
           );
           setFailedStep(null);
           return;
         }
-        await saveTextFile(result.stdout, "polyhedron.obj", "model/obj");
+        await saveTextFile(result.stdout, opt.fileName, opt.mime);
       } catch (e) {
         setError(e instanceof Error ? e.message : String(e));
         setFailedStep(null);
@@ -219,8 +216,7 @@ export default function App() {
         onUndo={undo}
         onRedo={redo}
         canSave={Boolean(offText?.trim())}
-        onSaveOff={onSaveOff}
-        onSaveObj={onSaveObj}
+        onSaveAs={onSaveAs}
       />
       <div
         className="panel-resizer"

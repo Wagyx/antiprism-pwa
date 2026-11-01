@@ -80,12 +80,12 @@ App-only seeds are listed separately.
 
 | Tool | Role | Status | Notes |
 |---|---|---|---|
-| `obj2off` | OBJ → OFF | Todo | Future importer |
+| `obj2off` | OBJ → OFF | Done | Seed; loads OBJ, converts via Wasm |
 | `off2obj` | OFF → OBJ | Done | Text out + download; pass-through OFF |
 | `off2crds` | OFF → coordinates | Done | Text out + download; pass-through OFF |
-| `off2pov` | OFF → POV-Ray | Todo | |
-| `off2vrml` | OFF → VRML | Todo | |
-| `off2dae` | OFF → Collada | Todo | |
+| `off2pov` | OFF → POV-Ray | Done | Text out + download; pass-through OFF |
+| `off2vrml` | OFF → VRML | Done | Text out + download; pass-through OFF |
+| `off2dae` | OFF → Collada | Done | Text out + download; pass-through OFF |
 | `antiview` | Native OpenGL viewer | N/A | Replaced by Three.js viewer |
 
-**Counts:** Done **38** Antiprism CLIs (+ `import_off`) · Todo **4** · N/A **1**
+**Counts:** Done **42** Antiprism CLIs (+ `import_off`) · Todo **1** (`off_align`) · N/A **1**

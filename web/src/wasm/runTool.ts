@@ -35,7 +35,11 @@ export type AntiprismTool =
   | "off_report"
   | "off_query"
   | "off2obj"
-  | "off2crds";
+  | "off2crds"
+  | "obj2off"
+  | "off2pov"
+  | "off2vrml"
+  | "off2dae";
 
 export type ToolResult = {
   ok: boolean;

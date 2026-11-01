@@ -27,14 +27,17 @@ import {
   OFF_COLOR_PRESETS,
   opToCommandLine,
   POLYGON_TYPES,
+  SAVE_AS_OPTIONS,
   textToolDownloadName,
   type ConwayOp,
   type ConwaySeedFamily,
   type ConwaySeedOp,
   type FlagsOp,
   type ImportOffOp,
+  type Obj2OffOp,
   type PipelineKind,
   type PipelineOp,
+  type SaveAsFormatId,
 } from "../pipeline/types";
 import { APP_VERSION } from "../version";
 import { AddOpButton } from "./AddOpButton";
@@ -85,8 +88,7 @@ type Props = {
   onUndo: () => void;
   onRedo: () => void;
   canSave: boolean;
-  onSaveOff: () => void;
-  onSaveObj: () => void;
+  onSaveAs: (format: SaveAsFormatId) => void;
 };
 
 /** Drop redundant "Step N (kind):" prefix when the message sits under that card. */
@@ -115,6 +117,8 @@ function opSummary(op: PipelineOp): string {
     case "polygon":
       return `${op.polygonType} ${op.numSides}`;
     case "import_off":
+      return op.fileName || "(no file)";
+    case "obj2off":
       return op.fileName || "(no file)";
     case "conway_seed":
       return conwaySeedToken(op);
@@ -317,6 +321,103 @@ function ImportOffFields({
       {loadError ? <p className="error">{loadError}</p> : null}
       <p className="hint">
         Seed step: loads an OFF file into the pipeline (replaces previous geometry).
+      </p>
+    </div>
+  );
+}
+
+function Obj2OffFields({
+  op,
+  ops,
+  onCommit,
+  onPatch,
+}: {
+  op: Obj2OffOp;
+  ops: PipelineOp[];
+  onCommit: (ops: PipelineOp[]) => void;
+  onPatch: (ops: PipelineOp[]) => void;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  const onPick = async (file: File | undefined) => {
+    if (!file) return;
+    try {
+      const text = await file.text();
+      if (!text.trim()) {
+        throw new Error(`“${file.name}” is empty`);
+      }
+      setLoadError(null);
+      onCommit(
+        updateOp(ops, op.id, {
+          fileName: file.name || "model.obj",
+          objText: text,
+        }),
+      );
+    } catch (e) {
+      setLoadError(e instanceof Error ? e.message : String(e));
+    }
+  };
+
+  return (
+    <div className="stack-card-body">
+      <input
+        ref={inputRef}
+        type="file"
+        accept=".obj,text/plain"
+        hidden
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          e.target.value = "";
+          void onPick(file);
+        }}
+      />
+      <div className="field-row">
+        <button
+          type="button"
+          className="import-pick-btn"
+          onClick={() => inputRef.current?.click()}
+        >
+          {op.fileName ? "Replace OBJ…" : "Choose OBJ…"}
+        </button>
+        {op.fileName ? (
+          <button
+            type="button"
+            className="import-clear-btn"
+            aria-label="Clear file"
+            onClick={() =>
+              onCommit(updateOp(ops, op.id, { fileName: "", objText: "" }))
+            }
+          >
+            Clear
+          </button>
+        ) : null}
+      </div>
+      <p className="import-file-name" title={op.fileName || undefined}>
+        {op.fileName
+          ? `${op.fileName} · ${(op.objText.length / 1024).toFixed(1)} KB`
+          : "No file loaded"}
+      </p>
+      <label className="field">
+        <span>Digits (-d)</span>
+        <input
+          type="number"
+          min={-16}
+          max={16}
+          value={op.digits}
+          onChange={(e) =>
+            onPatch(
+              updateOp(ops, op.id, {
+                digits: Number(e.target.value) || 8,
+              }),
+            )
+          }
+          onBlur={() => onCommit(ops)}
+        />
+      </label>
+      {loadError ? <p className="error">{loadError}</p> : null}
+      <p className="hint">
+        Seed step: converts Wavefront OBJ to OFF via <code>obj2off</code>.
       </p>
     </div>
   );
@@ -556,6 +657,17 @@ function OpFields({
     );
   }
 
+  if (op.kind === "obj2off") {
+    return (
+      <Obj2OffFields
+        op={op}
+        ops={ops}
+        onCommit={onCommit}
+        onPatch={onPatch}
+      />
+    );
+  }
+
   if (op.kind === "conway_seed") {
     const seedOp = op as ConwaySeedOp;
     const parametric = CONWAY_PARAMETRIC_SEEDS.has(seedOp.family);
@@ -728,8 +840,7 @@ export function StackPanel({
   failedStep,
   stepText,
   canSave,
-  onSaveOff,
-  onSaveObj,
+  onSaveAs,
 }: Props) {
   useDismissDetails();
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
@@ -912,22 +1023,41 @@ export function StackPanel({
       </div>
 
       <div className="toolbar save-toolbar">
-        <button
-          type="button"
-          disabled={!canSave || busy}
-          onClick={onSaveOff}
-          title="Save pipeline result as OFF"
+        <details
+          className={`add-op save-as${canSave && !busy ? "" : " is-disabled"}`}
+          onToggle={(e) => {
+            if ((!canSave || busy) && e.currentTarget.open) {
+              e.currentTarget.open = false;
+            }
+          }}
         >
-          Save as OFF
-        </button>
-        <button
-          type="button"
-          disabled={!canSave || busy}
-          onClick={onSaveObj}
-          title="Convert pipeline result with off2obj and download"
-        >
-          Save as OBJ
-        </button>
+          <summary
+            className="add-op-btn"
+            title="Export pipeline result"
+            aria-disabled={!canSave || busy}
+          >
+            Export
+          </summary>
+          <div className="add-op-menu" role="menu" aria-label="Export format">
+            {SAVE_AS_OPTIONS.map((opt) => (
+              <button
+                key={opt.id}
+                type="button"
+                role="menuitem"
+                onClick={(e) => {
+                  const host = e.currentTarget.closest("details");
+                  host?.removeAttribute("open");
+                  onSaveAs(opt.id);
+                }}
+              >
+                <span className="save-as-label">{opt.label}</span>
+                <span className="save-as-ext">
+                  .{opt.fileName.split(".").pop()}
+                </span>
+              </button>
+            ))}
+          </div>
+        </details>
         {/* Undo/Redo buttons hidden for now; stack history still wired in App */}
         <span className={`busy-hint${busy ? " is-on" : ""}`} aria-live="polite">
           Running…

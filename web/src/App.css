@@ -177,10 +177,33 @@
   width: 100%;
 }
 
-.save-toolbar > button {
+.save-toolbar > .save-as {
   flex: 1 1 0;
   min-width: 0;
+}
+
+.save-toolbar > .save-as > .add-op-btn {
   text-align: center;
+}
+
+.save-toolbar > .save-as.is-disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.save-toolbar > .save-as > .add-op-menu {
+  top: auto;
+  bottom: calc(100% + 0.2rem);
+}
+
+.save-toolbar .save-as-label {
+  display: inline;
+}
+
+.save-toolbar .save-as-ext {
+  float: right;
+  opacity: 0.45;
+  font-size: 0.65rem;
 }
 
 .save-toolbar > .busy-hint {
