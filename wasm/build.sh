@@ -114,7 +114,7 @@ done
 echo "==> Compiling editor tools (renamed main + disambiguated locals)"
 # Tool .cc files reuse short names (pr_opts, cn_opts, make_skeleton, …).
 # Prefix those with -D so multiple tools can link into one Wasm module.
-rm -f "$OBJ_DIR/src"/{polygon,conway,geodesic,off_color,off_util,off_trans,pol_recip,canonical,conv_hull,planar,zono,poly_kscope,stellate,leonardo,wythoff,to_nfold,off_normals,repel}.o
+rm -f "$OBJ_DIR/src"/{polygon,conway,geodesic,off_color,off_util,off_trans,pol_recip,canonical,conv_hull,planar,zono,poly_kscope,stellate,leonardo,wythoff,to_nfold,off_normals,repel,poly_form,off_color_radial,miller,iso_delta,iso_kite,symmetro}.o
 compile_one "$ANTI/src/polygon.cc" "$OBJ_DIR/src/polygon.o" -Dmain=polygon_main
 compile_one "$ANTI/src/conway.cc" "$OBJ_DIR/src/conway.o" \
   -Dmain=conway_main -Dcn_opts=conway_cn_opts -Dextended_help=conway_extended_help
@@ -138,6 +138,16 @@ compile_one "$ANTI/src/wythoff.cc" "$OBJ_DIR/src/wythoff.o" -Dmain=wythoff_main
 compile_one "$ANTI/src/to_nfold.cc" "$OBJ_DIR/src/to_nfold.o" -Dmain=to_nfold_main
 compile_one "$ANTI/src/off_normals.cc" "$OBJ_DIR/src/off_normals.o" -Dmain=off_normals_main
 compile_one "$ANTI/src/repel.cc" "$OBJ_DIR/src/repel.o" -Dmain=repel_main
+compile_one "$ANTI/src/poly_form.cc" "$OBJ_DIR/src/poly_form.o" -Dmain=poly_form_main
+compile_one "$ANTI/src/off_color_radial.cc" "$OBJ_DIR/src/off_color_radial.o" \
+  -Dmain=off_color_radial_main
+compile_one "$ANTI/src/miller.cc" "$OBJ_DIR/src/miller.o" -Dmain=miller_main
+compile_one "$ANTI/src/iso_delta.cc" "$OBJ_DIR/src/iso_delta.o" -Dmain=iso_delta_main
+compile_one "$ANTI/src/iso_kite.cc" "$OBJ_DIR/src/iso_kite.o" -Dmain=iso_kite_main
+compile_one "$ANTI/src/symmetro.cc" "$OBJ_DIR/src/symmetro.o" \
+  -Dmain=symmetro_main \
+  -Ddelete_free_faces=symmetro_delete_free_faces \
+  -Dis_point_on_polygon_edges=symmetro_is_point_on_polygon_edges
 compile_one "$ANTI/src/canonical_common.cc" "$OBJ_DIR/src/canonical_common.o"
 compile_one "$ANTI/src/color_common.cc" "$OBJ_DIR/src/color_common.o"
 
@@ -170,6 +180,12 @@ em++ -O2 \
   "$OBJ_DIR/src/to_nfold.o" \
   "$OBJ_DIR/src/off_normals.o" \
   "$OBJ_DIR/src/repel.o" \
+  "$OBJ_DIR/src/poly_form.o" \
+  "$OBJ_DIR/src/off_color_radial.o" \
+  "$OBJ_DIR/src/miller.o" \
+  "$OBJ_DIR/src/iso_delta.o" \
+  "$OBJ_DIR/src/iso_kite.o" \
+  "$OBJ_DIR/src/symmetro.o" \
   "$OBJ_DIR/src/canonical_common.o" \
   "$OBJ_DIR/src/color_common.o" \
   "$OBJ_DIR/bindings.o" \

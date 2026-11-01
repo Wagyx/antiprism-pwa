@@ -594,4 +594,117 @@ export const TOOL_DOCS: Record<PipelineKind, ToolDoc> = {
       },
     ],
   },
+
+  poly_form: {
+    title: "poly_form",
+    blurb:
+      "Make face-regular models or unscramble graphs on a sphere/ellipsoid. Cap -n in the browser.",
+    sections: [
+      {
+        heading: "Options",
+        entries: [
+          { symbol: "-a r|u|U|e|p", summary: "Regular faces / unscramble / equalise / planarise." },
+          { symbol: "-n", summary: "Max iterations (UI default 80)." },
+          { symbol: "-z -1", summary: "Quiet status reports." },
+          { symbol: "-y", summary: "Maintain base symmetry (-a e/r/p)." },
+          { symbol: "-s / -k / -f", summary: "Shorten / radius / flatten percentages." },
+          { symbol: "-E", summary: "Ellipsoid axis lengths (optional power)." },
+        ],
+      },
+    ],
+  },
+
+  off_color_radial: {
+    title: "off_color_radial",
+    blurb: "Colour faces in a radial pattern from symmetry axes (or append the axes).",
+    sections: [
+      {
+        heading: "Options",
+        entries: [
+          { symbol: "-d radial|axes", summary: "Colour faces radially, or show axes." },
+          { symbol: "-a", summary: "Axis order: primary / secondary / tertiary / all." },
+          { symbol: "-s", summary: "Symmetry subgroup (Schoenflies)." },
+          { symbol: "-f", summary: "Element index list as radial seeds (overrides -a)." },
+          { symbol: "-r / -m / -c", summary: "Reverse map / colour maps / map stepping." },
+        ],
+      },
+    ],
+  },
+
+  miller: {
+    title: "miller",
+    blurb:
+      "Miller’s stellations of the icosahedron (list 1–75) plus later discoveries via cell strings.",
+    sections: [
+      {
+        heading: "Args",
+        entries: [
+          { symbol: "1…75", summary: "Miller list number." },
+          { symbol: "m_…", summary: "Cell string (A–H, e1, f1, …), optional ,I / ,Ih." },
+          { symbol: "-M", summary: "Merge stellation facelets (cell strings)." },
+          { symbol: "-r", summary: "Rebuild compound to separate vertices." },
+          { symbol: "-O s|d", summary: "Output stellation or diagram." },
+        ],
+      },
+    ],
+  },
+
+  iso_delta: {
+    title: "iso_delta",
+    blurb: "Isohedral deltahedra (Shephard). Pick list 1–44 by number/name, or special compounds.",
+    sections: [
+      {
+        heading: "Options",
+        entries: [
+          { symbol: "polyhedron", summary: "List number 1–44 or start of the name." },
+          { symbol: "-L", summary: "List models." },
+          { symbol: "-c a…q", summary: "Compound / special cases." },
+          { symbol: "-d / -n", summary: "Dipyramid set with n/d (6/5 ≤ n/d ≤ 6)." },
+          { symbol: "-t", summary: "Output a single triangle only." },
+        ],
+      },
+    ],
+  },
+
+  iso_kite: {
+    title: "iso_kite",
+    blurb:
+      "Isohedral kite-faced polyhedra from a Schwarz triangle (T1, O1, I1, …) or fractions A B C.",
+    sections: [
+      {
+        heading: "Options",
+        entries: [
+          { symbol: "model", summary: "Schwarz name or fractions; single fraction → trapezohedron." },
+          { symbol: "-A / -B / -C", summary: "Kite vertex heights along OA / OB / OC." },
+          { symbol: "-l", summary: "List compounds, or pick by list number." },
+          { symbol: "-a / -N", summary: "Compound angle / number of parts." },
+          { symbol: "-k / -q", summary: "Single kite only / quiet report." },
+        ],
+      },
+    ],
+  },
+
+  symmetro: {
+    title: "symmetro",
+    blurb:
+      "Symmetrohedra and twisters: regular polygons on symmetry axes (Kaplan–Hart, twister, S/C).",
+    sections: [
+      {
+        heading: "Modes (pick one)",
+        entries: [
+          { symbol: "-k", summary: "Kaplan–Hart: s,l,m,n,a e.g. I,2,*,4,1." },
+          { symbol: "-t", summary: "Twister: s[p,q]i,m1,m2 e.g. T[3,2],1,2." },
+          { symbol: "-s / -c", summary: "S- or C-symmetry twisters." },
+        ],
+      },
+      {
+        heading: "Scene",
+        entries: [
+          { symbol: "-C", summary: "Convex hull: polygons / suppress / force / auto." },
+          { symbol: "-x", summary: "Remove free faces." },
+          { symbol: "-M x|y|z", summary: "Mirror (may create a compound)." },
+        ],
+      },
+    ],
+  },
 };

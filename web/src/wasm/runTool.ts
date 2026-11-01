@@ -16,7 +16,13 @@ export type AntiprismTool =
   | "wythoff"
   | "to_nfold"
   | "off_normals"
-  | "repel";
+  | "repel"
+  | "poly_form"
+  | "off_color_radial"
+  | "miller"
+  | "iso_delta"
+  | "iso_kite"
+  | "symmetro";
 
 export type ToolResult = {
   ok: boolean;

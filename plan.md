@@ -53,14 +53,14 @@ App-only seeds are listed separately.
 | `to_nfold` | Change axial fold | Done | Positional `n` / `n/d` |
 | `off_normals` | Normals as geometry | Done | |
 | `repel` | Repelling points | Done | Caps `-n`; quiet `-z -1` |
-| `poly_form` | Face-regular / unscramble | Todo | |
-| `off_color_radial` | Radial colouring | Todo | |
+| `poly_form` | Face-regular / unscramble | Done | Iteration caps in UI |
+| `off_color_radial` | Radial colouring | Done | |
 | `off_align` | Align / brick compound | Todo | Needs two geometries |
 | `col_util` | Colour plots / blends | Todo | |
-| `symmetro` | Regular polygons at axes | Todo | |
-| `miller` | Miller stellations (icosahedron) | Todo | |
-| `iso_delta` | Isohedral deltahedra | Todo | |
-| `iso_kite` | Isohedral kite-faced | Todo | |
+| `symmetro` | Regular polygons at axes | Done | |
+| `miller` | Miller stellations (icosahedron) | Done | |
+| `iso_delta` | Isohedral deltahedra | Done | |
+| `iso_kite` | Isohedral kite-faced | Done | |
 | `kcycle` | Kaleidocycle rings | Todo | |
 | `lat_util` | Lattice utilities | Todo | |
 | `bravais` | Bravais / lattice models | Todo | |
@@ -84,4 +84,4 @@ App-only seeds are listed separately.
 | `off2dae` | OFF → Collada | Todo | |
 | `antiview` | Native OpenGL viewer | N/A | Replaced by Three.js viewer |
 
-**Counts:** Done **19** Antiprism CLIs (+ `import_off`) · Todo **23** · N/A **1**
+**Counts:** Done **25** Antiprism CLIs (+ `import_off`) · Todo **17** · N/A **1**

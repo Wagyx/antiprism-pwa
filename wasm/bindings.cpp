@@ -28,6 +28,12 @@ extern int wythoff_main(int argc, char **argv);
 extern int to_nfold_main(int argc, char **argv);
 extern int off_normals_main(int argc, char **argv);
 extern int repel_main(int argc, char **argv);
+extern int poly_form_main(int argc, char **argv);
+extern int off_color_radial_main(int argc, char **argv);
+extern int miller_main(int argc, char **argv);
+extern int iso_delta_main(int argc, char **argv);
+extern int iso_kite_main(int argc, char **argv);
+extern int symmetro_main(int argc, char **argv);
 
 namespace {
 
@@ -123,6 +129,18 @@ int call_tool(const std::string &tool, const std::vector<std::string> &args)
     return off_normals_main(argc, g_argv_ptrs.data());
   if (tool == "repel")
     return repel_main(argc, g_argv_ptrs.data());
+  if (tool == "poly_form")
+    return poly_form_main(argc, g_argv_ptrs.data());
+  if (tool == "off_color_radial")
+    return off_color_radial_main(argc, g_argv_ptrs.data());
+  if (tool == "miller")
+    return miller_main(argc, g_argv_ptrs.data());
+  if (tool == "iso_delta")
+    return iso_delta_main(argc, g_argv_ptrs.data());
+  if (tool == "iso_kite")
+    return iso_kite_main(argc, g_argv_ptrs.data());
+  if (tool == "symmetro")
+    return symmetro_main(argc, g_argv_ptrs.data());
   fprintf(stderr, "unknown tool: %s\n", tool.c_str());
   return 1;
 }

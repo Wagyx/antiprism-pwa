@@ -35,6 +35,12 @@ export const FLAGS_TOOL_KINDS = [
   "to_nfold",
   "off_normals",
   "repel",
+  "poly_form",
+  "off_color_radial",
+  "miller",
+  "iso_delta",
+  "iso_kite",
+  "symmetro",
 ] as const;
 
 export type FlagsToolKind = (typeof FLAGS_TOOL_KINDS)[number];
@@ -66,6 +72,10 @@ export const PIPELINE_CATEGORIES: {
       { kind: "geodesic", blurb: "Frequency spheres" },
       { kind: "zono", blurb: "Zonohedra" },
       { kind: "wythoff", blurb: "Wythoff tilings" },
+      { kind: "miller", blurb: "Icosa stellations" },
+      { kind: "iso_delta", blurb: "Isohedral deltas" },
+      { kind: "iso_kite", blurb: "Isohedral kites" },
+      { kind: "symmetro", blurb: "Symmetrohedra" },
     ],
   },
   {
@@ -88,6 +98,7 @@ export const PIPELINE_CATEGORIES: {
       { kind: "planar", blurb: "Coplanar faces" },
       { kind: "conv_hull", blurb: "Convex hull" },
       { kind: "repel", blurb: "Repel points" },
+      { kind: "poly_form", blurb: "Regular faces" },
     ],
   },
   {
@@ -96,6 +107,7 @@ export const PIPELINE_CATEGORIES: {
     tools: [
       { kind: "off_util", blurb: "Orient, sphere, …" },
       { kind: "off_color", blurb: "Colour V/E/F" },
+      { kind: "off_color_radial", blurb: "Radial colouring" },
       { kind: "off_normals", blurb: "Normals as geom" },
     ],
   },
