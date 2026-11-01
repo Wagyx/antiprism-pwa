@@ -566,6 +566,17 @@
   align-self: flex-start;
 }
 
+.import-load {
+  flex: 0 1 auto;
+  min-width: 7.5rem;
+}
+
+.import-load > .import-pick-btn {
+  width: auto;
+  min-width: 7.5rem;
+  text-align: left;
+}
+
 .import-pick-btn,
 .import-clear-btn {
   font: inherit;

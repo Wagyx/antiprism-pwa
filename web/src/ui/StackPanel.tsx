@@ -33,8 +33,8 @@ import {
   type ConwaySeedFamily,
   type ConwaySeedOp,
   type FlagsOp,
-  type ImportOffOp,
-  type Obj2OffOp,
+  type ImportFileFormat,
+  type ImportFileOp,
   type PipelineKind,
   type PipelineOp,
   type SaveAsFormatId,
@@ -116,10 +116,10 @@ function opSummary(op: PipelineOp): string {
   switch (op.kind) {
     case "polygon":
       return `${op.polygonType} ${op.numSides}`;
-    case "import_off":
-      return op.fileName || "(no file)";
-    case "obj2off":
-      return op.fileName || "(no file)";
+    case "import_file":
+      return op.fileName
+        ? `${op.format.toUpperCase()} · ${op.fileName}`
+        : "(no file)";
     case "conway_seed":
       return conwaySeedToken(op);
     case "conway":
@@ -251,98 +251,56 @@ function FlagsParamFields({
   );
 }
 
-function ImportOffFields({
-  op,
-  ops,
-  onCommit,
-}: {
-  op: ImportOffOp;
-  ops: PipelineOp[];
-  onCommit: (ops: PipelineOp[]) => void;
-}) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [loadError, setLoadError] = useState<string | null>(null);
+const IMPORT_FILE_OPTIONS: {
+  format: ImportFileFormat;
+  label: string;
+  accept: string;
+}[] = [
+  { format: "off", label: "OFF file", accept: ".off,text/plain" },
+  { format: "obj", label: "OBJ file", accept: ".obj,text/plain" },
+];
 
-  const onPick = async (file: File | undefined) => {
-    if (!file) return;
-    try {
-      const loaded = await readOffFile(file);
-      setLoadError(null);
-      onCommit(
-        updateOp(ops, op.id, {
-          fileName: loaded.name,
-          offText: loaded.text,
-        }),
-      );
-    } catch (e) {
-      setLoadError(e instanceof Error ? e.message : String(e));
-    }
-  };
-
-  return (
-    <div className="stack-card-body">
-      <input
-        ref={inputRef}
-        type="file"
-        accept=".off,text/plain"
-        hidden
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          e.target.value = "";
-          void onPick(file);
-        }}
-      />
-      <div className="field-row">
-        <button
-          type="button"
-          className="import-pick-btn"
-          onClick={() => inputRef.current?.click()}
-        >
-          {op.fileName ? "Replace OFF…" : "Choose OFF…"}
-        </button>
-        {op.fileName ? (
-          <button
-            type="button"
-            className="import-clear-btn"
-            aria-label="Clear file"
-            onClick={() =>
-              onCommit(updateOp(ops, op.id, { fileName: "", offText: "" }))
-            }
-          >
-            Clear
-          </button>
-        ) : null}
-      </div>
-      <p className="import-file-name" title={op.fileName || undefined}>
-        {op.fileName
-          ? `${op.fileName} · ${(op.offText.length / 1024).toFixed(1)} KB`
-          : "No file loaded"}
-      </p>
-      {loadError ? <p className="error">{loadError}</p> : null}
-      <p className="hint">
-        Seed step: loads an OFF file into the pipeline (replaces previous geometry).
-      </p>
-    </div>
-  );
-}
-
-function Obj2OffFields({
+function ImportFileFields({
   op,
   ops,
   onCommit,
   onPatch,
 }: {
-  op: Obj2OffOp;
+  op: ImportFileOp;
   ops: PipelineOp[];
   onCommit: (ops: PipelineOp[]) => void;
   onPatch: (ops: PipelineOp[]) => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const pendingFormat = useRef<ImportFileFormat>("off");
   const [loadError, setLoadError] = useState<string | null>(null);
+
+  const openPicker = (format: ImportFileFormat) => {
+    pendingFormat.current = format;
+    const input = inputRef.current;
+    if (!input) return;
+    const opt = IMPORT_FILE_OPTIONS.find((o) => o.format === format);
+    input.accept = opt?.accept ?? "";
+    input.click();
+  };
 
   const onPick = async (file: File | undefined) => {
     if (!file) return;
+    const format = pendingFormat.current;
     try {
+      if (format === "off") {
+        const loaded = await readOffFile(file);
+        setLoadError(null);
+        onCommit(
+          updateOp(ops, op.id, {
+            format: "off",
+            fileName: loaded.name,
+            fileText: loaded.text,
+          }),
+        );
+        return;
+      }
+
       const text = await file.text();
       if (!text.trim()) {
         throw new Error(`“${file.name}” is empty`);
@@ -350,8 +308,9 @@ function Obj2OffFields({
       setLoadError(null);
       onCommit(
         updateOp(ops, op.id, {
+          format: "obj",
           fileName: file.name || "model.obj",
-          objText: text,
+          fileText: text,
         }),
       );
     } catch (e) {
@@ -364,7 +323,6 @@ function Obj2OffFields({
       <input
         ref={inputRef}
         type="file"
-        accept=".obj,text/plain"
         hidden
         onChange={(e) => {
           const file = e.target.files?.[0];
@@ -373,20 +331,36 @@ function Obj2OffFields({
         }}
       />
       <div className="field-row">
-        <button
-          type="button"
-          className="import-pick-btn"
-          onClick={() => inputRef.current?.click()}
-        >
-          {op.fileName ? "Replace OBJ…" : "Choose OBJ…"}
-        </button>
+        <details className="add-op import-load">
+          <summary className="add-op-btn import-pick-btn">Load file</summary>
+          <div className="add-op-menu" role="menu" aria-label="File format">
+            {IMPORT_FILE_OPTIONS.map((opt) => (
+              <button
+                key={opt.format}
+                type="button"
+                role="menuitem"
+                onClick={(e) => {
+                  e.currentTarget.closest("details")?.removeAttribute("open");
+                  openPicker(opt.format);
+                }}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </details>
         {op.fileName ? (
           <button
             type="button"
             className="import-clear-btn"
             aria-label="Clear file"
             onClick={() =>
-              onCommit(updateOp(ops, op.id, { fileName: "", objText: "" }))
+              onCommit(
+                updateOp(ops, op.id, {
+                  fileName: "",
+                  fileText: "",
+                }),
+              )
             }
           >
             Clear
@@ -395,29 +369,31 @@ function Obj2OffFields({
       </div>
       <p className="import-file-name" title={op.fileName || undefined}>
         {op.fileName
-          ? `${op.fileName} · ${(op.objText.length / 1024).toFixed(1)} KB`
+          ? `${op.format.toUpperCase()} · ${op.fileName} · ${(op.fileText.length / 1024).toFixed(1)} KB`
           : "No file loaded"}
       </p>
-      <label className="field">
-        <span>Digits (-d)</span>
-        <input
-          type="number"
-          min={-16}
-          max={16}
-          value={op.digits}
-          onChange={(e) =>
-            onPatch(
-              updateOp(ops, op.id, {
-                digits: Number(e.target.value) || 8,
-              }),
-            )
-          }
-          onBlur={() => onCommit(ops)}
-        />
-      </label>
+      {op.format === "obj" && op.fileName ? (
+        <label className="field">
+          <span>Digits (-d)</span>
+          <input
+            type="number"
+            min={-16}
+            max={16}
+            value={op.digits}
+            onChange={(e) =>
+              onPatch(
+                updateOp(ops, op.id, {
+                  digits: Number(e.target.value) || 8,
+                }),
+              )
+            }
+            onBlur={() => onCommit(ops)}
+          />
+        </label>
+      ) : null}
       {loadError ? <p className="error">{loadError}</p> : null}
       <p className="hint">
-        Seed step: converts Wavefront OBJ to OFF via <code>obj2off</code>.
+        Seed step: loads OFF directly, or converts OBJ via <code>obj2off</code>.
       </p>
     </div>
   );
@@ -647,19 +623,9 @@ function OpFields({
     );
   }
 
-  if (op.kind === "import_off") {
+  if (op.kind === "import_file") {
     return (
-      <ImportOffFields
-        op={op}
-        ops={ops}
-        onCommit={onCommit}
-      />
-    );
-  }
-
-  if (op.kind === "obj2off") {
-    return (
-      <Obj2OffFields
+      <ImportFileFields
         op={op}
         ops={ops}
         onCommit={onCommit}

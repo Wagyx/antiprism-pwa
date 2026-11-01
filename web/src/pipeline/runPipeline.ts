@@ -46,68 +46,59 @@ export async function runPipeline(ops: PipelineOp[]): Promise<PipelineResult> {
     const op = ops[i];
     if (!op.enabled) continue;
 
-    if (op.kind === "import_off") {
-      const text = op.offText.trim();
+    if (op.kind === "import_file") {
+      const text = op.fileText.trim();
       if (!text) {
         return {
           ok: false,
           offText: off || null,
-          error: `Step ${i + 1} (import_off): no OFF file loaded`,
+          error: `Step ${i + 1} (import_file): no file loaded`,
           failedStep: i,
           stepText,
         };
       }
+
+      if (op.format === "obj") {
+        const result = await runAntiprism(
+          "obj2off",
+          opToArgs(op),
+          op.fileText,
+        );
+        if (!result.ok) {
+          const msg =
+            result.stderr.trim() ||
+            `obj2off exited with code ${result.code}`;
+          return {
+            ok: false,
+            offText: off || null,
+            error: `Step ${i + 1} (import_file): ${msg}`,
+            failedStep: i,
+            stepText,
+          };
+        }
+        if (!looksLikeOff(result.stdout)) {
+          return {
+            ok: false,
+            offText: off || null,
+            error: `Step ${i + 1} (import_file): OBJ conversion did not produce OFF`,
+            failedStep: i,
+            stepText,
+          };
+        }
+        off = result.stdout;
+        continue;
+      }
+
       if (!looksLikeOff(text)) {
         return {
           ok: false,
           offText: off || null,
-          error: `Step ${i + 1} (import_off): file is not OFF`,
+          error: `Step ${i + 1} (import_file): file is not OFF`,
           failedStep: i,
           stepText,
         };
       }
-      off = op.offText;
-      continue;
-    }
-
-    if (op.kind === "obj2off") {
-      const text = op.objText.trim();
-      if (!text) {
-        return {
-          ok: false,
-          offText: off || null,
-          error: `Step ${i + 1} (obj2off): no OBJ file loaded`,
-          failedStep: i,
-          stepText,
-        };
-      }
-      const result = await runAntiprism(
-        "obj2off",
-        opToArgs(op),
-        op.objText,
-      );
-      if (!result.ok) {
-        const msg =
-          result.stderr.trim() ||
-          `obj2off exited with code ${result.code}`;
-        return {
-          ok: false,
-          offText: off || null,
-          error: `Step ${i + 1} (obj2off): ${msg}`,
-          failedStep: i,
-          stepText,
-        };
-      }
-      if (!looksLikeOff(result.stdout)) {
-        return {
-          ok: false,
-          offText: off || null,
-          error: `Step ${i + 1} (obj2off): conversion did not produce OFF`,
-          failedStep: i,
-          stepText,
-        };
-      }
-      off = result.stdout;
+      off = op.fileText;
       continue;
     }
 

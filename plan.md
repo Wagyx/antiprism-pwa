@@ -14,12 +14,8 @@ The application has an editor module that lets the user inspect the polyhedron i
 
 
 TODOS:
-- github repo
-- change logo
-- Antiview Web
 - library
-- exporter (OBJ, …)
-- importer (OBJ, WRL ?)
+- importer (WRL ?)
 - undo/redo (history wired; UI buttons hidden)
 
 ## Antiprism tool support
@@ -39,7 +35,7 @@ App-only seeds are listed separately.
 | Tool | Role | Status | Notes |
 |---|---|---|---|
 | `polygon` | Polygon-based polyhedra | Done | Seed |
-| `import_off` | Load OFF from disk as seed | Done | App-native (not an Antiprism CLI) |
+| `import_file` | Load OFF / OBJ from disk as seed | Done | App-native; OBJ via Wasm `obj2off` |
 | `conway` | Conway notation | Done | |
 | `geodesic` | Geodesic spheres / frequency | Done | |
 | `off_color` | Colour V/E/F | Done | |
@@ -80,7 +76,7 @@ App-only seeds are listed separately.
 
 | Tool | Role | Status | Notes |
 |---|---|---|---|
-| `obj2off` | OBJ → OFF | Done | Seed; loads OBJ, converts via Wasm |
+| `obj2off` | OBJ → OFF | Done | Used by `import_file` (not a separate stack tool) |
 | `off2obj` | OFF → OBJ | Done | Text out + download; pass-through OFF |
 | `off2crds` | OFF → coordinates | Done | Text out + download; pass-through OFF |
 | `off2pov` | OFF → POV-Ray | Done | Text out + download; pass-through OFF |
@@ -88,4 +84,4 @@ App-only seeds are listed separately.
 | `off2dae` | OFF → Collada | Done | Text out + download; pass-through OFF |
 | `antiview` | Native OpenGL viewer | N/A | Replaced by Three.js viewer |
 
-**Counts:** Done **42** Antiprism CLIs (+ `import_off`) · Todo **1** (`off_align`) · N/A **1**
+**Counts:** Done **42** Antiprism CLIs (+ `import_file`) · Todo **1** (`off_align`) · N/A **1**

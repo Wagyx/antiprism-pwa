@@ -86,27 +86,31 @@ export const TOOL_DOCS: Record<PipelineKind, ToolDoc> = {
     ],
   },
 
-  import_off: {
-    title: "import_off",
+  import_file: {
+    title: "import_file",
     blurb:
-      "Seed the pipeline from an OFF file on disk. The loaded geometry replaces any previous OFF in the stack (like polygon, it does not read stdin).",
+      "Seed the pipeline from an OFF or OBJ file on disk. The loaded geometry replaces any previous OFF in the stack (like polygon, it does not read stdin).",
     sections: [
       {
         heading: "Usage",
         entries: [
           {
-            symbol: "Choose OFF…",
-            summary: "Pick a local .off file; contents are stored on this step.",
+            symbol: "Load file",
+            summary: "Choose OFF or OBJ; the file contents are stored on this step.",
+          },
+          {
+            symbol: "OFF file",
+            summary: "Plain-text OFF (Geomview / Antiprism). Header must start with OFF.",
+          },
+          {
+            symbol: "OBJ file",
+            summary: "Wavefront OBJ; converted to OFF via Antiprism obj2off.",
           },
           {
             symbol: "Clear",
             summary: "Remove the loaded file from this step.",
           },
         ],
-      },
-      {
-        heading: "Format",
-        body: "Plain-text OFF (Geomview / Antiprism). Header line must start with OFF. OBJ and other formats are not supported yet.",
       },
     ],
   },
@@ -930,21 +934,6 @@ export const TOOL_DOCS: Record<PipelineKind, ToolDoc> = {
         entries: [
           { symbol: "-s", summary: "Coordinate separator." },
           { symbol: "-d", summary: "Significant digits." },
-        ],
-      },
-    ],
-  },
-
-  obj2off: {
-    title: "obj2off",
-    blurb: "Load a Wavefront OBJ file and convert it to OFF as a pipeline seed.",
-    sections: [
-      {
-        heading: "Notes",
-        entries: [
-          { symbol: "v / f / l", summary: "Vertices, faces, and lines are read." },
-          { symbol: "Kd", summary: "Face colours from MTL diffuse when present." },
-          { symbol: "-d", summary: "Significant digits on OFF output." },
         ],
       },
     ],

@@ -70,8 +70,7 @@ export type FlagsToolKind = (typeof FLAGS_TOOL_KINDS)[number];
 
 export const PIPELINE_KINDS = [
   "polygon",
-  "import_off",
-  "obj2off",
+  "import_file",
   "conway_seed",
   "conway",
   "geodesic",
@@ -118,8 +117,7 @@ export const PIPELINE_CATEGORIES: {
     label: "Seed",
     tools: [
       { kind: "polygon", blurb: "Prism, pyramid, …" },
-      { kind: "import_off", blurb: "Load OFF file" },
-      { kind: "obj2off", blurb: "Load OBJ → OFF" },
+      { kind: "import_file", blurb: "Load OFF / OBJ" },
       { kind: "conway_seed", blurb: "Conway seed" },
       { kind: "geodesic", blurb: "Frequency spheres" },
       { kind: "zono", blurb: "Zonohedra" },
@@ -204,18 +202,16 @@ export type PolygonOp = OpBase & {
   numSides: number;
 };
 
-/** Seed that injects a loaded OFF file into the pipeline. */
-export type ImportOffOp = OpBase & {
-  kind: "import_off";
-  fileName: string;
-  offText: string;
-};
+export type ImportFileFormat = "off" | "obj";
 
-/** Seed that converts a loaded OBJ file to OFF via Wasm `obj2off`. */
-export type Obj2OffOp = OpBase & {
-  kind: "obj2off";
+/** Seed that injects a loaded OFF or OBJ file into the pipeline. */
+export type ImportFileOp = OpBase & {
+  kind: "import_file";
+  format: ImportFileFormat;
   fileName: string;
-  objText: string;
+  /** Raw file text (OFF, or OBJ converted via Wasm `obj2off`). */
+  fileText: string;
+  /** Significant digits for obj2off (-d); used when format is obj. */
   digits: number;
 };
 
@@ -256,8 +252,7 @@ export type FlagsOp = OpBase & {
 
 export type PipelineOp =
   | PolygonOp
-  | ImportOffOp
-  | Obj2OffOp
+  | ImportFileOp
   | ConwaySeedOp
   | ConwayOp
   | GeodesicOp
@@ -283,8 +278,7 @@ const GENERATOR_SEED_KINDS = new Set<string>([
 export function isSeedOp(op: PipelineOp): boolean {
   return (
     op.kind === "polygon" ||
-    op.kind === "import_off" ||
-    op.kind === "obj2off" ||
+    op.kind === "import_file" ||
     GENERATOR_SEED_KINDS.has(op.kind)
   );
 }
@@ -431,27 +425,16 @@ export function createPolygonOp(
   };
 }
 
-export function createImportOffOp(
-  partial?: Partial<Omit<ImportOffOp, "id" | "kind">>,
-): ImportOffOp {
+export function createImportFileOp(
+  partial?: Partial<Omit<ImportFileOp, "id" | "kind">>,
+): ImportFileOp {
   return {
     id: newId(),
-    kind: "import_off",
+    kind: "import_file",
     enabled: partial?.enabled ?? true,
+    format: partial?.format ?? "off",
     fileName: partial?.fileName ?? "",
-    offText: partial?.offText ?? "",
-  };
-}
-
-export function createObj2OffOp(
-  partial?: Partial<Omit<Obj2OffOp, "id" | "kind">>,
-): Obj2OffOp {
-  return {
-    id: newId(),
-    kind: "obj2off",
-    enabled: partial?.enabled ?? true,
-    fileName: partial?.fileName ?? "",
-    objText: partial?.objText ?? "",
+    fileText: partial?.fileText ?? "",
     digits: partial?.digits ?? 8,
   };
 }
@@ -522,10 +505,8 @@ export function createOp(kind: PipelineKind, _isFirst: boolean): PipelineOp {
   switch (kind) {
     case "polygon":
       return createPolygonOp();
-    case "import_off":
-      return createImportOffOp();
-    case "obj2off":
-      return createObj2OffOp();
+    case "import_file":
+      return createImportFileOp();
     case "conway_seed":
       return createConwaySeedOp();
     case "conway":
@@ -543,11 +524,12 @@ export function opToArgs(op: PipelineOp): string[] {
   switch (op.kind) {
     case "polygon":
       return [op.polygonType, String(op.numSides)];
-    case "import_off":
+    case "import_file":
+      if (op.format === "obj") {
+        // tinyobj loads by path; Wasm setup_io writes stdin bytes to this file.
+        return ["-d", String(op.digits), WASM_STDIN_PATH];
+      }
       return op.fileName ? [op.fileName] : [];
-    case "obj2off":
-      // tinyobj loads by path; Wasm setup_io writes stdin bytes to this file.
-      return ["-d", String(op.digits), WASM_STDIN_PATH];
     case "conway_seed":
       return [conwaySeedToken(op)];
     case "conway": {
@@ -571,12 +553,12 @@ export function opToArgs(op: PipelineOp): string[] {
 
 /** Shell-like argv for display (tool name + args). */
 export function opToCommandLine(op: PipelineOp): string {
-  if (op.kind === "import_off") {
-    return op.fileName ? `import_off ${op.fileName}` : "import_off (no file)";
-  }
-  if (op.kind === "obj2off") {
+  if (op.kind === "import_file") {
     const file = op.fileName || "(no file)";
-    return `obj2off -d ${op.digits} ${file}`;
+    if (op.format === "obj") {
+      return `obj2off -d ${op.digits} ${file}`;
+    }
+    return op.fileName ? `import_file ${file}` : "import_file (no file)";
   }
   const tool = wasmToolForOp(op);
   const args = opToArgs(op).filter((a) => a.length > 0);
