@@ -67,6 +67,20 @@
   min-width: 0;
 }
 
+.brand-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.brand-title-row h1 {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .controls h1 {
   margin: 0;
   font-family: "IBM Plex Serif", Georgia, serif;
@@ -686,6 +700,25 @@
   font-size: 1rem;
   line-height: 1;
   cursor: pointer;
+  opacity: 0.7;
+}
+
+.about-panel {
+  width: 20rem;
+}
+
+.about-panel p {
+  margin: 0 0 0.45rem;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.about-panel a {
+  color: #c4a35a;
+}
+
+.about-panel .about-credit {
+  margin-bottom: 0;
   opacity: 0.7;
 }
 

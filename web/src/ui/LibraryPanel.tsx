@@ -18,6 +18,7 @@ import type {
   LibraryNode,
 } from "../library/types";
 import { APP_VERSION } from "../version";
+import { AboutButton } from "./AboutButton";
 import { useDismissDetails } from "./useDismissDetails";
 
 type Props = {
@@ -82,14 +83,23 @@ function sortedNodes(nodes: LibraryNode[]): LibraryNode[] {
   return [...folders, ...entries];
 }
 
-function shortDate(iso: string): string {
+function entryStamp(iso: string): string {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return "";
-  return date.toLocaleDateString(undefined, {
+  return date.toLocaleString(undefined, {
     year: "numeric",
     month: "short",
     day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
   });
+}
+
+function entryStampTitle(entry: LibraryEntry): string {
+  const created = entryStamp(entry.createdAt);
+  const modified = entryStamp(entry.modifiedAt);
+  if (!created || created === modified) return created ? `Created ${created}` : "";
+  return `Created ${created}. Modified ${modified}`;
 }
 
 export function LibraryPanel({
@@ -445,7 +455,10 @@ export function LibraryPanel({
           alt=""
         />
         <div className="brand-text">
-          <h1>Library</h1>
+          <div className="brand-title-row">
+            <h1>Antiprism PWA</h1>
+            <AboutButton />
+          </div>
           <p className="brand-version">v{APP_VERSION}</p>
         </div>
       </div>
@@ -1326,8 +1339,10 @@ function EntryCard({
           <CardMenuItem onClick={onDelete}>Delete</CardMenuItem>
         </CardMenu>
       </div>
-      {shortDate(entry.modifiedAt) ? (
-        <p className="lib-meta">{shortDate(entry.modifiedAt)}</p>
+      {entryStamp(entry.modifiedAt) ? (
+        <p className="lib-meta" title={entryStampTitle(entry)}>
+          {entryStamp(entry.modifiedAt)}
+        </p>
       ) : null}
       {path ? <p className="lib-path">{path}</p> : null}
       <p className="lib-counts">

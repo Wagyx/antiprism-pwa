@@ -40,6 +40,7 @@ import {
   type SaveAsFormatId,
 } from "../pipeline/types";
 import { APP_VERSION } from "../version";
+import { AboutButton } from "./AboutButton";
 import { AddOpButton } from "./AddOpButton";
 import { CategoryIcon } from "./CategoryIcon";
 import { MenuSelect } from "./MenuSelect";
@@ -952,7 +953,10 @@ export function StackPanel({
           alt=""
         />
         <div className="brand-text">
-          <h1>Antiprism PWA</h1>
+          <div className="brand-title-row">
+            <h1>Antiprism PWA</h1>
+            <AboutButton />
+          </div>
           <p className="brand-version">v{APP_VERSION}</p>
         </div>
       </div>
