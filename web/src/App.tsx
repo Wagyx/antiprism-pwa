@@ -47,6 +47,7 @@ export default function App() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [failedStep, setFailedStep] = useState<number | null>(null);
+  const [stepText, setStepText] = useState<Record<string, string>>({});
   const [panelWidth, setPanelWidth] = useState(PANEL_DEFAULT);
 
   const latestRun = useRef(0);
@@ -75,6 +76,7 @@ export default function App() {
       if (!result.ok) {
         setError(result.error);
         setFailedStep(result.failedStep);
+        setStepText(result.stepText);
         if (result.offText && result.offText !== offTextRef.current) {
           offTextRef.current = result.offText;
           setOffText(result.offText);
@@ -87,6 +89,7 @@ export default function App() {
 
       setError(null);
       setFailedStep(null);
+      setStepText(result.stepText);
       if (result.offText !== offTextRef.current) {
         offTextRef.current = result.offText;
         setOffText(result.offText);
@@ -95,6 +98,7 @@ export default function App() {
       if (runId !== latestRun.current) return;
       setError(e instanceof Error ? e.message : String(e));
       setFailedStep(null);
+      setStepText({});
       offTextRef.current = null;
       setOffText(null);
     } finally {
@@ -181,6 +185,7 @@ export default function App() {
         busy={busy}
         error={error}
         failedStep={failedStep}
+        stepText={stepText}
         canUndo={canUndo}
         canRedo={canRedo}
         onUndo={undo}

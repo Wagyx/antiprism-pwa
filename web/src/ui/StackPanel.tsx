@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { readOffFile } from "../io/loadOff";
+import { saveTextFile } from "../io/saveTextFile";
 import {
   isFieldVisible,
   TOOL_PARAM_SCHEMAS,
@@ -22,9 +23,11 @@ import {
   createOp,
   flagsOpSummary,
   isFlagsTool,
+  isTextTool,
   OFF_COLOR_PRESETS,
   opToCommandLine,
   POLYGON_TYPES,
+  textToolDownloadName,
   type ConwayOp,
   type ConwaySeedFamily,
   type ConwaySeedOp,
@@ -76,6 +79,7 @@ type Props = {
   busy: boolean;
   error: string | null;
   failedStep: number | null;
+  stepText: Record<string, string>;
   canUndo: boolean;
   canRedo: boolean;
   onUndo: () => void;
@@ -720,6 +724,7 @@ export function StackPanel({
   busy,
   error,
   failedStep,
+  stepText,
   canSave,
   onSaveOff,
 }: Props) {
@@ -780,6 +785,8 @@ export function StackPanel({
         ) : null}
         {ops.map((op, index) => {
           const open = isExpanded(op.id) || failedStep === index;
+          const outText = stepText[op.id];
+          const textKind = isTextTool(op.kind) ? op.kind : null;
           return (
             <div key={op.id} className="stack-item">
               {index > 0 ? (
@@ -884,6 +891,27 @@ export function StackPanel({
                   <p className="op-error" role="alert">
                     {formatStepError(error, op.kind, index)}
                   </p>
+                ) : null}
+
+                {outText && textKind ? (
+                  <div className="op-text-out">
+                    <div className="op-text-out-head">
+                      <span className="op-text-out-label">Output</span>
+                      <button
+                        type="button"
+                        className="op-text-out-save"
+                        onClick={() =>
+                          void saveTextFile(
+                            outText,
+                            textToolDownloadName(textKind),
+                          )
+                        }
+                      >
+                        Download
+                      </button>
+                    </div>
+                    <pre className="op-text-out-body">{outText}</pre>
+                  </div>
                 ) : null}
               </div>
             </div>

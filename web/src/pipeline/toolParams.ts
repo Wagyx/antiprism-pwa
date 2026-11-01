@@ -1270,4 +1270,157 @@ export const TOOL_PARAM_SCHEMAS: Record<FlagsToolKind, ToolParamSchema> = {
       { key: "cmy", type: "bool", label: "CMY mode (-c)", flag: "-c", default: false },
     ],
   },
+
+  off_report: {
+    fields: [
+      {
+        key: "sections",
+        type: "text",
+        label: "Sections (-S)",
+        flag: "-S",
+        default: "G",
+        placeholder: "G",
+        hint: "A=all G=general F=faces E=edges S=solid a=angles D=distances s=symmetry",
+      },
+      {
+        key: "counts",
+        type: "text",
+        label: "Counts (-C)",
+        flag: "-C",
+        default: "",
+        placeholder: "FEs",
+        hint: "A=all F=faces E=edges w=windings S=solid D=dihedral s=sides o=orders …",
+      },
+      {
+        key: "centre",
+        type: "text",
+        label: "Centre (-c)",
+        flag: "-c",
+        default: "0",
+        placeholder: "0 | C | X,Y,Z",
+      },
+      {
+        key: "edges",
+        type: "select",
+        label: "Edges (-E)",
+        flag: "-E",
+        default: "a",
+        options: [
+          { value: "a", label: "a — explicit + implicit" },
+          { value: "e", label: "e — explicit" },
+          { value: "i", label: "i — implicit" },
+        ],
+      },
+      {
+        key: "keepOrient",
+        type: "bool",
+        label: "Keep orientation (-k)",
+        flag: "-k",
+        default: false,
+      },
+      {
+        key: "digits",
+        type: "number",
+        label: "Digits (-d)",
+        flag: "-d",
+        default: 8,
+        min: -16,
+        max: 17,
+      },
+    ],
+  },
+
+  off_query: {
+    fields: [
+      {
+        key: "indexes",
+        type: "text",
+        label: "Indexes (-I)",
+        flag: "-I",
+        default: "-",
+        placeholder: "0-3,5",
+        hint: "Index ranges, or - for all / added elements.",
+      },
+      {
+        key: "centre",
+        type: "text",
+        label: "Centre (-c)",
+        flag: "-c",
+        default: "0",
+        placeholder: "0 | C | X,Y,Z",
+      },
+      {
+        key: "edges",
+        type: "select",
+        label: "Edges (-E)",
+        flag: "-E",
+        default: "a",
+        options: [
+          { value: "a", label: "a — explicit + implicit" },
+          { value: "e", label: "e — explicit" },
+          { value: "i", label: "i — implicit" },
+        ],
+      },
+      {
+        key: "keepOrient",
+        type: "bool",
+        label: "Keep orientation (-k)",
+        flag: "-k",
+        default: false,
+      },
+      {
+        key: "digits",
+        type: "number",
+        label: "Digits (-d)",
+        flag: "-d",
+        default: 8,
+        min: -16,
+        max: 17,
+      },
+      {
+        key: "query",
+        type: "text",
+        label: "Query",
+        default: "Vc",
+        placeholder: "Vc",
+        hint: "Element letter V/E/F then value letters (e.g. Vc, Fl, Ea). Positional.",
+      },
+    ],
+  },
+
+  off2obj: {
+    fields: [
+      {
+        key: "digits",
+        type: "number",
+        label: "Digits (-d)",
+        flag: "-d",
+        default: 8,
+        min: -16,
+        max: 16,
+      },
+    ],
+  },
+
+  off2crds: {
+    fields: [
+      {
+        key: "sep",
+        type: "text",
+        label: "Separator (-s)",
+        flag: "-s",
+        default: " ",
+        placeholder: " ",
+      },
+      {
+        key: "digits",
+        type: "number",
+        label: "Digits (-d)",
+        flag: "-d",
+        default: 8,
+        min: -16,
+        max: 16,
+      },
+    ],
+  },
 };

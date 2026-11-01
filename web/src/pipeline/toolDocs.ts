@@ -868,4 +868,70 @@ export const TOOL_DOCS: Record<PipelineKind, ToolDoc> = {
       },
     ],
   },
+
+  off_report: {
+    title: "off_report",
+    blurb:
+      "Print global measures, maxima, and counts for the current geometry (text; passes OFF through).",
+    sections: [
+      {
+        heading: "Options",
+        entries: [
+          { symbol: "-S", summary: "Report sections (A G F E S a D s)." },
+          { symbol: "-C", summary: "Value counts (A F E w S D s o …)." },
+          { symbol: "-c", summary: "Centre: 0, C, or X,Y,Z." },
+          { symbol: "-E", summary: "Edge set for the report." },
+          { symbol: "-k", summary: "Keep orientation." },
+        ],
+      },
+    ],
+  },
+
+  off_query: {
+    title: "off_query",
+    blurb:
+      "List per-element data for vertices, edges, or faces (text; passes OFF through).",
+    sections: [
+      {
+        heading: "Query",
+        entries: [
+          { symbol: "V…", summary: "Vertex values (c d f a n o g K …)." },
+          { symbol: "E…", summary: "Edge values (v d f D a l c C K …)." },
+          { symbol: "F…", summary: "Face values (v d n A N C a l s p P K …)." },
+          { symbol: "-I", summary: "Element index ranges (default -)." },
+        ],
+      },
+    ],
+  },
+
+  off2obj: {
+    title: "off2obj",
+    blurb: "Convert the current OFF to Wavefront OBJ text (passes OFF through).",
+    sections: [
+      {
+        heading: "Options",
+        entries: [
+          { symbol: "-d", summary: "Significant digits." },
+          {
+            symbol: "note",
+            summary: "Edge colours are not preserved in OBJ.",
+          },
+        ],
+      },
+    ],
+  },
+
+  off2crds: {
+    title: "off2crds",
+    blurb: "Extract vertex coordinates as text (passes OFF through).",
+    sections: [
+      {
+        heading: "Options",
+        entries: [
+          { symbol: "-s", summary: "Coordinate separator." },
+          { symbol: "-d", summary: "Significant digits." },
+        ],
+      },
+    ],
+  },
 };

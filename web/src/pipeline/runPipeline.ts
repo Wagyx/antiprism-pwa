@@ -1,18 +1,34 @@
 import { looksLikeOff } from "../io/loadOff";
 import { runAntiprism } from "../wasm/client";
 import type { AntiprismTool } from "../wasm/runTool";
-import { isSeedOp, opToArgs, wasmToolForOp, type PipelineOp } from "./types";
+import {
+  isSeedOp,
+  isTextTool,
+  opToArgs,
+  wasmToolForOp,
+  type PipelineOp,
+} from "./types";
 
 export type PipelineResult = {
   ok: boolean;
   offText: string | null;
   error: string | null;
   failedStep: number | null;
+  /** Text/export stdout keyed by operation id (pass-through tools). */
+  stepText: Record<string, string>;
 };
 
 export async function runPipeline(ops: PipelineOp[]): Promise<PipelineResult> {
+  const stepText: Record<string, string> = {};
+
   if (ops.length === 0) {
-    return { ok: false, offText: null, error: "Stack is empty", failedStep: null };
+    return {
+      ok: false,
+      offText: null,
+      error: "Stack is empty",
+      failedStep: null,
+      stepText,
+    };
   }
 
   if (!ops.some((op) => op.enabled)) {
@@ -21,6 +37,7 @@ export async function runPipeline(ops: PipelineOp[]): Promise<PipelineResult> {
       offText: null,
       error: "All operations are off",
       failedStep: null,
+      stepText,
     };
   }
 
@@ -37,6 +54,7 @@ export async function runPipeline(ops: PipelineOp[]): Promise<PipelineResult> {
           offText: off || null,
           error: `Step ${i + 1} (import_off): no OFF file loaded`,
           failedStep: i,
+          stepText,
         };
       }
       if (!looksLikeOff(text)) {
@@ -45,10 +63,21 @@ export async function runPipeline(ops: PipelineOp[]): Promise<PipelineResult> {
           offText: off || null,
           error: `Step ${i + 1} (import_off): file is not OFF`,
           failedStep: i,
+          stepText,
         };
       }
       off = op.offText;
       continue;
+    }
+
+    if (isTextTool(op.kind) && !off.trim()) {
+      return {
+        ok: false,
+        offText: null,
+        error: `Step ${i + 1} (${op.kind}): needs geometry from a prior step`,
+        failedStep: i,
+        stepText,
+      };
     }
 
     const args = opToArgs(op);
@@ -68,10 +97,17 @@ export async function runPipeline(ops: PipelineOp[]): Promise<PipelineResult> {
         offText: off || null,
         error: `Step ${i + 1} (${op.kind}): ${msg}`,
         failedStep: i,
+        stepText,
       };
     }
+
+    if (isTextTool(op.kind)) {
+      stepText[op.id] = result.stdout;
+      continue;
+    }
+
     off = result.stdout;
   }
 
-  return { ok: true, offText: off, error: null, failedStep: null };
+  return { ok: true, offText: off, error: null, failedStep: null, stepText };
 }

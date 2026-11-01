@@ -43,6 +43,10 @@ extern int n_icons_main(int argc, char **argv);
 extern int kcycle_main(int argc, char **argv);
 extern int lat_util_main(int argc, char **argv);
 extern int col_util_main(int argc, char **argv);
+extern int off_report_main(int argc, char **argv);
+extern int off_query_main(int argc, char **argv);
+extern int off2obj_main(int argc, char **argv);
+extern int off2crds_main(int argc, char **argv);
 
 namespace {
 
@@ -168,6 +172,14 @@ int call_tool(const std::string &tool, const std::vector<std::string> &args)
     return lat_util_main(argc, g_argv_ptrs.data());
   if (tool == "col_util")
     return col_util_main(argc, g_argv_ptrs.data());
+  if (tool == "off_report")
+    return off_report_main(argc, g_argv_ptrs.data());
+  if (tool == "off_query")
+    return off_query_main(argc, g_argv_ptrs.data());
+  if (tool == "off2obj")
+    return off2obj_main(argc, g_argv_ptrs.data());
+  if (tool == "off2crds")
+    return off2crds_main(argc, g_argv_ptrs.data());
   fprintf(stderr, "unknown tool: %s\n", tool.c_str());
   return 1;
 }

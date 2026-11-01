@@ -57,6 +57,10 @@ export const FLAGS_TOOL_KINDS = [
   "kcycle",
   "lat_util",
   "col_util",
+  "off_report",
+  "off_query",
+  "off2obj",
+  "off2crds",
 ] as const;
 
 export type FlagsToolKind = (typeof FLAGS_TOOL_KINDS)[number];
@@ -162,6 +166,10 @@ export const PIPELINE_CATEGORIES: {
       { kind: "off_color", blurb: "Colour V/E/F" },
       { kind: "off_color_radial", blurb: "Radial colouring" },
       { kind: "off_normals", blurb: "Normals as geom" },
+      { kind: "off_report", blurb: "Measures & counts" },
+      { kind: "off_query", blurb: "Element data" },
+      { kind: "off2obj", blurb: "Export Wavefront OBJ" },
+      { kind: "off2crds", blurb: "Export coordinates" },
     ],
   },
 ];
@@ -261,6 +269,33 @@ export function isSeedOp(op: PipelineOp): boolean {
     op.kind === "import_off" ||
     GENERATOR_SEED_KINDS.has(op.kind)
   );
+}
+
+/** Tools that print text/export formats and leave pipeline OFF unchanged. */
+export const TEXT_TOOL_KINDS = [
+  "off_report",
+  "off_query",
+  "off2obj",
+  "off2crds",
+] as const;
+
+export type TextToolKind = (typeof TEXT_TOOL_KINDS)[number];
+
+export function isTextTool(kind: string): kind is TextToolKind {
+  return (TEXT_TOOL_KINDS as readonly string[]).includes(kind);
+}
+
+export function textToolDownloadName(kind: TextToolKind): string {
+  switch (kind) {
+    case "off2obj":
+      return "polyhedron.obj";
+    case "off2crds":
+      return "coordinates.txt";
+    case "off_report":
+      return "report.txt";
+    case "off_query":
+      return "query.txt";
+  }
 }
 
 /** Notation token for a Conway seed step (e.g. T, P5). */

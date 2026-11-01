@@ -31,7 +31,11 @@ export type AntiprismTool =
   | "n_icons"
   | "kcycle"
   | "lat_util"
-  | "col_util";
+  | "col_util"
+  | "off_report"
+  | "off_query"
+  | "off2obj"
+  | "off2crds";
 
 export type ToolResult = {
   ok: boolean;
