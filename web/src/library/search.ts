@@ -10,6 +10,101 @@ export type SearchHit = {
   command: string;
 };
 
+export type RangeFilter = {
+  enabled: boolean;
+  min: string;
+  max: string;
+};
+
+export type SearchFilters = {
+  date: RangeFilter;
+  vertices: RangeFilter;
+  edges: RangeFilter;
+  faces: RangeFilter;
+};
+
+export const EMPTY_SEARCH_FILTERS: SearchFilters = {
+  date: { enabled: false, min: "", max: "" },
+  vertices: { enabled: false, min: "", max: "" },
+  edges: { enabled: false, min: "", max: "" },
+  faces: { enabled: false, min: "", max: "" },
+};
+
+function bound(raw: string): number | null {
+  const text = raw.trim();
+  if (!text) return null;
+  const value = Number(text);
+  return Number.isFinite(value) ? value : null;
+}
+
+function rangeIsActive(range: RangeFilter): boolean {
+  return range.enabled && (range.min.trim() !== "" || range.max.trim() !== "");
+}
+
+export function searchFiltersActive(filters: SearchFilters): boolean {
+  return (
+    rangeIsActive(filters.date) ||
+    rangeIsActive(filters.vertices) ||
+    rangeIsActive(filters.edges) ||
+    rangeIsActive(filters.faces)
+  );
+}
+
+function inNumberRange(value: number, range: RangeFilter): boolean {
+  if (!range.enabled) return true;
+  const min = bound(range.min);
+  const max = bound(range.max);
+  if (min == null && max == null) return true;
+  if (min != null && max != null && min > max) return false;
+  if (min != null && value < min) return false;
+  if (max != null && value > max) return false;
+  return true;
+}
+
+function parseDay(text: string): number | null | "invalid" {
+  const raw = text.trim();
+  if (!raw) return null;
+  if (raw.length < 10) return null;
+  const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(raw);
+  if (!match) return "invalid";
+  const day = Number(match[1]);
+  const month = Number(match[2]);
+  const year = Number(match[3]);
+  const date = new Date(year, month - 1, day);
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month - 1 ||
+    date.getDate() !== day
+  ) {
+    return "invalid";
+  }
+  return date.getTime();
+}
+
+function dayStart(text: string): number | null | "invalid" {
+  const time = parseDay(text);
+  return time;
+}
+
+function dayEnd(text: string): number | null | "invalid" {
+  const time = parseDay(text);
+  if (time === null || time === "invalid") return time;
+  return time + 24 * 60 * 60 * 1000 - 1;
+}
+
+function inDateRange(iso: string, range: RangeFilter): boolean {
+  if (!range.enabled) return true;
+  const from = dayStart(range.min);
+  const to = dayEnd(range.max);
+  if (from === "invalid" || to === "invalid") return false;
+  if (from == null && to == null) return true;
+  if (from != null && to != null && from > to) return false;
+  const time = new Date(iso).getTime();
+  if (Number.isNaN(time)) return false;
+  if (from != null && time < from) return false;
+  if (to != null && time > to) return false;
+  return true;
+}
 type CountField = "nVertices" | "nEdges" | "nFaces";
 type TextField = "name" | "command";
 type Cmp = "eq" | "gt" | "gte" | "lt" | "lte";
@@ -131,7 +226,16 @@ export function parseSearch(query: string): ParsedQuery {
   return { active: true, error: null, filters, text };
 }
 
-function matches(entry: LibraryEntry, command: string, parsed: ParsedQuery): boolean {
+function matches(
+  entry: LibraryEntry,
+  command: string,
+  parsed: ParsedQuery,
+  filters: SearchFilters,
+): boolean {
+  if (!inDateRange(entry.modifiedAt, filters.date)) return false;
+  if (!inNumberRange(entry.counts.nVertices, filters.vertices)) return false;
+  if (!inNumberRange(entry.counts.nEdges, filters.edges)) return false;
+  if (!inNumberRange(entry.counts.nFaces, filters.faces)) return false;
   const name = entry.name.toLowerCase();
   const cmd = command.toLowerCase();
   for (const filter of parsed.filters) {
@@ -155,15 +259,24 @@ function walk(
   folderIds: string[],
   folderNames: string[],
   parsed: ParsedQuery,
+  filters: SearchFilters,
   hits: SearchHit[],
 ) {
   for (const child of folder.children) {
     if (child.type === "folder") {
-      walk(library, child, [...folderIds, child.id], [...folderNames, child.name], parsed, hits);
+      walk(
+        library,
+        child,
+        [...folderIds, child.id],
+        [...folderNames, child.name],
+        parsed,
+        filters,
+        hits,
+      );
       continue;
     }
     const command = entryCommand(child.pipeline);
-    if (!matches(child, command, parsed)) continue;
+    if (!matches(child, command, parsed, filters)) continue;
     hits.push({
       libraryId: library.id,
       libraryName: library.name,
@@ -179,15 +292,16 @@ export function searchLibraries(
   libraries: LibraryDocument[],
   scope: { libraryId: string | null; folderIds: string[] },
   query: string,
+  filters: SearchFilters = EMPTY_SEARCH_FILTERS,
 ): { error: string | null; hits: SearchHit[] | null } {
   const parsed = parseSearch(query);
-  if (!parsed.active) return { error: null, hits: null };
+  if (!parsed.active && !searchFiltersActive(filters)) return { error: null, hits: null };
   if (parsed.error) return { error: parsed.error, hits: [] };
 
   const hits: SearchHit[] = [];
   if (!scope.libraryId) {
     for (const library of libraries) {
-      walk(library, library.root, [], [], parsed, hits);
+      walk(library, library.root, [], [], parsed, filters, hits);
     }
   } else {
     const library = libraries.find((item) => item.id === scope.libraryId);
@@ -206,7 +320,7 @@ export function searchLibraries(
         names.push(next.name);
         folder = next;
       }
-      if (ok) walk(library, folder, [...scope.folderIds], names, parsed, hits);
+      if (ok) walk(library, folder, [...scope.folderIds], names, parsed, filters, hits);
     }
   }
 

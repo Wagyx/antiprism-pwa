@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type MouseEvent as ReactMouseEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { entryCommand } from "../library/snapshot";
-import { searchLibraries } from "../library/search";
+import { searchLibraries, EMPTY_SEARCH_FILTERS, searchFiltersActive, type RangeFilter, type SearchFilters } from "../library/search";
 import {
   countEntries,
   findNode,
@@ -86,13 +86,12 @@ function sortedNodes(nodes: LibraryNode[]): LibraryNode[] {
 function entryStamp(iso: string): string {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return "";
-  return date.toLocaleString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  });
+  const pad = (value: number) => String(value).padStart(2, "0");
+  const day = pad(date.getDate());
+  const month = pad(date.getMonth() + 1);
+  const hour = pad(date.getHours());
+  const minute = pad(date.getMinutes());
+  return `${day}/${month}/${date.getFullYear()}, ${hour}:${minute}`;
 }
 
 function entryStampTitle(entry: LibraryEntry): string {
@@ -100,6 +99,64 @@ function entryStampTitle(entry: LibraryEntry): string {
   const modified = entryStamp(entry.modifiedAt);
   if (!created || created === modified) return created ? `Created ${created}` : "";
   return `Created ${created}. Modified ${modified}`;
+}
+
+function RangeFields({
+  label,
+  kind,
+  range,
+  title,
+  onChange,
+}: {
+  label: string;
+  kind: "date" | "number";
+  range: RangeFilter;
+  title?: string;
+  onChange: (patch: Partial<RangeFilter>) => void;
+}) {
+  const minLabel = kind === "date" ? `${label} from` : `${label} minimum`;
+  const maxLabel = kind === "date" ? `${label} to` : `${label} maximum`;
+  return (
+    <div className={`lib-filter${range.enabled ? "" : " is-off"}`}>
+      <label className="lib-filter-toggle" title={title}>
+        <input
+          type="checkbox"
+          checked={range.enabled}
+          onChange={(event) => onChange({ enabled: event.target.checked })}
+        />
+        <span>{label}</span>
+      </label>
+      <div className="lib-filter-range">
+        <input
+          type={kind === "date" ? "text" : "number"}
+          inputMode={kind === "date" ? "numeric" : undefined}
+          aria-label={minLabel}
+          placeholder={kind === "date" ? "dd/mm/yyyy" : "min"}
+          value={range.min}
+          disabled={!range.enabled}
+          min={kind === "number" ? 0 : undefined}
+          step={kind === "number" ? 1 : undefined}
+          maxLength={kind === "date" ? 10 : undefined}
+          autoComplete="off"
+          onChange={(event) => onChange({ min: event.target.value })}
+        />
+        <span aria-hidden="true">–</span>
+        <input
+          type={kind === "date" ? "text" : "number"}
+          inputMode={kind === "date" ? "numeric" : undefined}
+          aria-label={maxLabel}
+          placeholder={kind === "date" ? "dd/mm/yyyy" : "max"}
+          value={range.max}
+          disabled={!range.enabled}
+          min={kind === "number" ? 0 : undefined}
+          step={kind === "number" ? 1 : undefined}
+          maxLength={kind === "date" ? 10 : undefined}
+          autoComplete="off"
+          onChange={(event) => onChange({ max: event.target.value })}
+        />
+      </div>
+    </div>
+  );
 }
 
 export function LibraryPanel({
@@ -136,6 +193,7 @@ export function LibraryPanel({
   const [picked, setPicked] = useState<Pick[]>([]);
   const [confirmDelete, setConfirmDelete] = useState<Pick[] | null>(null);
   const [confirmLibraryId, setConfirmLibraryId] = useState<string | null>(null);
+  const [filters, setFilters] = useState<SearchFilters>(EMPTY_SEARCH_FILTERS);
   const [moveOpen, setMoveOpen] = useState(false);
   const renameLock = useRef(false);
   const cancelRename = useRef(false);
@@ -147,8 +205,9 @@ export function LibraryPanel({
     ? ordered.find((library) => library.id === nav.libraryId) ?? null
     : null;
   const openFolder = openLibrary ? folderByPath(openLibrary, nav.folderIds) : null;
-  const searching = query.trim().length > 0;
-  const search = searchLibraries(libraries, nav, query);
+  const filtering = searchFiltersActive(filters);
+  const searching = query.trim().length > 0 || filtering;
+  const search = searchLibraries(libraries, nav, query, filters);
   const moveLibraryId =
     picked.length > 0 && picked.every((item) => item.libraryId === picked[0]?.libraryId)
       ? picked[0].libraryId
@@ -173,6 +232,11 @@ export function LibraryPanel({
   const changeQuery = (value: string) => {
     clearPick();
     onQuery(value);
+  };
+
+  const setFilter = (key: keyof SearchFilters, patch: Partial<RangeFilter>) => {
+    clearPick();
+    setFilters((current) => ({ ...current, [key]: { ...current[key], ...patch } }));
   };
 
   useEffect(() => {
@@ -466,11 +530,41 @@ export function LibraryPanel({
         <span>Search</span>
         <input
           value={query}
-          placeholder="name, n_faces:20, command…"
+          placeholder="name or command"
           onChange={(event) => changeQuery(event.target.value)}
           autoComplete="off"
         />
       </label>
+      <details className="lib-advanced">
+        <summary>Advanced</summary>
+        <div className="lib-filters">
+          <RangeFields
+            label="Date"
+            kind="date"
+            title="Modified date"
+            range={filters.date}
+            onChange={(patch) => setFilter("date", patch)}
+          />
+          <RangeFields
+            label="Vertices"
+            kind="number"
+            range={filters.vertices}
+            onChange={(patch) => setFilter("vertices", patch)}
+          />
+          <RangeFields
+            label="Edges"
+            kind="number"
+            range={filters.edges}
+            onChange={(patch) => setFilter("edges", patch)}
+          />
+          <RangeFields
+            label="Faces"
+            kind="number"
+            range={filters.faces}
+            onChange={(patch) => setFilter("faces", patch)}
+          />
+        </div>
+      </details>
       <p className="lib-scope">
         {searching
           ? openLibrary
@@ -702,6 +796,7 @@ export function LibraryPanel({
                 }
                 onShow={() => {
                   changeQuery("");
+                  setFilters(EMPTY_SEARCH_FILTERS);
                   navigate({ libraryId: hit.libraryId, folderIds: hit.folderIds });
                   onSelect({ libraryId: hit.libraryId, entryId: hit.entry.id });
                 }}
