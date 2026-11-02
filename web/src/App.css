@@ -1678,7 +1678,39 @@
 }
 
 .modal.modal-cli {
-  width: min(36rem, 100%);
+  width: min(52rem, 100%);
+}
+
+.cli-lines {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  max-height: min(60vh, 28rem);
+  overflow: auto;
+}
+
+.cli-row {
+  display: grid;
+  grid-template-columns: minmax(6.5rem, 0.7fr) minmax(8rem, 0.9fr) minmax(10rem, 1.5fr) auto;
+  gap: 0.4rem;
+  align-items: end;
+}
+
+.cli-row input[type="file"] {
+  width: 100%;
+  max-width: 100%;
+  font-size: 0.72rem;
+}
+
+.cli-remove {
+  margin-bottom: 0.05rem;
+}
+
+.cli-add {
+  align-self: flex-start;
 }
 
 .modal h2 {
@@ -1748,6 +1780,10 @@
 
   .panel-resizer {
     display: none;
+  }
+
+  .cli-row {
+    grid-template-columns: 1fr;
   }
 
   .controls {

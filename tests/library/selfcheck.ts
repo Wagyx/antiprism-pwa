@@ -4,6 +4,7 @@ import {
   addFolder,
   createLibraryDocument,
   findNode,
+  insertEntries,
   insertEntry,
   moveDestinations,
   moveNodes,
@@ -152,6 +153,26 @@ const zip = buildStoredZip([
 ]);
 assert(zip[0] === 0x50 && zip[1] === 0x4b, "zip magic");
 writeFileSync("/tmp/antiprism-library-test.zip", zip);
+
+const batch = insertEntries(createLibraryDocument("Batch", ["MyLibrary"]), [], [
+  { ...draft, name: "alpha" },
+  { ...draft, name: "beta" },
+]);
+assert(batch.entries.length === 2, "batch import creates both entries");
+assert(
+  batch.doc.root.children.filter((child) => child.type === "entry").length === 2,
+  "both entries are stored",
+);
+let repeated = false;
+try {
+  insertEntries(batch.doc, [], [
+    { ...draft, name: "gamma" },
+    { ...draft, name: "gamma" },
+  ]);
+} catch {
+  repeated = true;
+}
+assert(repeated, "batch import rejects a repeated name");
 
 const packed = libraryOffZip(doc);
 writeFileSync("/tmp/antiprism-library-off.zip", packed);

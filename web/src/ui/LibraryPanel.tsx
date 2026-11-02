@@ -19,7 +19,7 @@ import type {
 } from "../library/types";
 import { APP_VERSION } from "../version";
 import { AboutButton } from "./AboutButton";
-import { CliPipelineDialog, type CliDraft } from "./CliPipelineDialog";
+import { CliPipelineDialog, type CliImportRow } from "./CliPipelineDialog";
 import { useDismissDetails } from "./useDismissDetails";
 
 type Props = {
@@ -47,7 +47,7 @@ type Props = {
   onDeleteLibrary: (libraryId: string) => Promise<void>;
   onDeleteNodes: (libraryId: string, nodeIds: string[]) => Promise<void>;
   onCreatePolyhedron: () => void;
-  onCreateFromCli: (draft: CliDraft) => void;
+  onImportFromCli: (rows: CliImportRow[]) => Promise<EntryRef>;
 };
 
 type Pick = {
@@ -196,7 +196,7 @@ export function LibraryPanel({
   onDeleteLibrary,
   onDeleteNodes,
   onCreatePolyhedron,
-  onCreateFromCli,
+  onImportFromCli,
 }: Props) {
   const importRef = useRef<HTMLInputElement>(null);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -816,7 +816,7 @@ export function LibraryPanel({
                     setCliOpen(true);
                   }}
                 >
-                  Polyhedron from CLI
+                  Import from CLI
                 </button>
               </div>
             </details>
@@ -1165,10 +1165,16 @@ export function LibraryPanel({
       </div>
       {cliOpen ? (
         <CliPipelineDialog
+          existingNames={openFolder?.children.map((child) => child.name) ?? []}
           onClose={() => setCliOpen(false)}
-          onCreate={(draft) => {
+          onImport={async (rows) => {
+            const ref = await onImportFromCli(rows);
             setCliOpen(false);
-            onCreateFromCli(draft);
+            setCursorKey(nodeKey(ref.libraryId, ref.entryId));
+            const pick = { libraryId: ref.libraryId, nodeId: ref.entryId };
+            setPicked([pick]);
+            anchorRef.current = pickKey(pick);
+            return ref;
           }}
         />
       ) : null}

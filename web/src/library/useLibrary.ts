@@ -9,6 +9,7 @@ import {
   downloadBaseName,
   findEntry,
   folderByPath,
+  insertEntries,
   insertEntry,
   moveNodes,
   moveNodesUp,
@@ -259,6 +260,24 @@ export function useLibrary() {
       return ref;
     });
 
+  const createEntries = (
+    drafts: EntryDraft[],
+    location: { libraryId: string; folderIds: string[] },
+  ) =>
+    enqueue(async () => {
+      const doc = librariesRef.current.find((library) => library.id === location.libraryId);
+      if (!doc) throw new Error("Library not found");
+      if (!folderByPath(doc, location.folderIds)) throw new Error("Folder not found");
+      const { doc: next, entries } = insertEntries(doc, location.folderIds, drafts);
+      await saveLibrary(next);
+      commit(replaceDoc(librariesRef.current, next));
+      const last = entries[entries.length - 1];
+      if (!last) throw new Error("Nothing to import");
+      const ref = { libraryId: next.id, entryId: last.id };
+      setSelected(ref);
+      return ref;
+    });
+
   const updateEntry = (ref: EntryRef, draft: EntryDraft) =>
     enqueue(async () => {
       const doc = librariesRef.current.find((library) => library.id === ref.libraryId);
@@ -293,6 +312,7 @@ export function useLibrary() {
     deleteLibrary,
     deleteItems,
     createEntry,
+    createEntries,
     updateEntry,
   };
 }

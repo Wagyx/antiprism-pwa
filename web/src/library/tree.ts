@@ -220,30 +220,46 @@ export function addFolder(
   return touch(doc, root);
 }
 
+export function insertEntries(
+  doc: LibraryDocument,
+  folderIds: string[],
+  drafts: EntryDraft[],
+): { doc: LibraryDocument; entries: LibraryEntry[] } {
+  if (drafts.length === 0) throw new Error("Nothing to import");
+  const created: LibraryEntry[] = [];
+  const root = updateFolder(doc.root, folderIds, (folder) => {
+    const names = siblingNames(folder);
+    const at = nowIso();
+    const entries: LibraryEntry[] = drafts.map((draft) => {
+      const entry: LibraryEntry = {
+        type: "entry",
+        id: crypto.randomUUID(),
+        name: requireUnique(names, draft.name),
+        createdAt: at,
+        modifiedAt: at,
+        inputFile: draft.inputFile,
+        offText: draft.offText,
+        pipeline: draft.pipeline,
+        counts: draft.counts,
+      };
+      names.push(entry.name);
+      created.push(entry);
+      return entry;
+    });
+    return { ...folder, modifiedAt: at, children: [...folder.children, ...entries] };
+  });
+  return { doc: touch(doc, root), entries: created };
+}
+
 export function insertEntry(
   doc: LibraryDocument,
   folderIds: string[],
   draft: EntryDraft,
 ): { doc: LibraryDocument; entry: LibraryEntry } {
-  let created: LibraryEntry | null = null;
-  const root = updateFolder(doc.root, folderIds, (folder) => {
-    const at = nowIso();
-    const entry: LibraryEntry = {
-      type: "entry",
-      id: crypto.randomUUID(),
-      name: requireUnique(siblingNames(folder), draft.name),
-      createdAt: at,
-      modifiedAt: at,
-      inputFile: draft.inputFile,
-      offText: draft.offText,
-      pipeline: draft.pipeline,
-      counts: draft.counts,
-    };
-    created = entry;
-    return { ...folder, modifiedAt: at, children: [...folder.children, entry] };
-  });
-  if (!created) throw new Error("Could not create the entry");
-  return { doc: touch(doc, root), entry: created };
+  const { doc: next, entries } = insertEntries(doc, folderIds, [draft]);
+  const entry = entries[0];
+  if (!entry) throw new Error("Could not create the entry");
+  return { doc: next, entry };
 }
 
 export function patchEntry(

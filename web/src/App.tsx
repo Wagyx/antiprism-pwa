@@ -19,8 +19,8 @@ import { useUndoable } from "./pipeline/useUndoable";
 import { countsFromOff } from "./library/counts";
 import { cloneSteps, inputForEditor, pipelineForEditor } from "./library/snapshot";
 import { findEntry, folderByPath, requireUnique, resolveDestination } from "./library/tree";
-import type { CliDraft } from "./ui/CliPipelineDialog";
-import type { EntryRef, LibraryInputFile, PolyCounts } from "./library/types";
+import type { CliImportRow } from "./ui/CliPipelineDialog";
+import type { EntryDraft, EntryRef, LibraryInputFile, PolyCounts } from "./library/types";
 import { useLibrary } from "./library/useLibrary";
 import { saveOffFile } from "./io/saveOff";
 import { saveTextFile } from "./io/saveTextFile";
@@ -261,19 +261,23 @@ export default function App() {
     );
   };
 
-  const onCreateFromCli = (draft: CliDraft) => {
+  const onImportFromCli = async (rows: CliImportRow[]) => {
     const dest = resolveDestination(library.libraries, library.nav);
-    openSession(
-      {
-        ref: null,
-        name: null,
-        baseline: "",
-        location: dest,
-      },
-      draft.steps,
-      draft.inputFile,
-      null,
-    );
+    const drafts: EntryDraft[] = [];
+    for (const row of rows) {
+      const result = await runPipeline(row.steps, row.inputFile);
+      if (!result.ok || !result.offText?.trim()) {
+        throw new Error(`${row.name}: ${result.error ?? "the pipeline produced no polyhedron"}`);
+      }
+      drafts.push({
+        name: row.name,
+        offText: result.offText,
+        pipeline: row.steps,
+        inputFile: row.inputFile,
+        counts: countsFor(result.offText),
+      });
+    }
+    return library.createEntries(drafts, dest);
   };
 
   const onEditEntry = (ref: EntryRef) => {
@@ -548,7 +552,7 @@ export default function App() {
             });
           }}
           onCreatePolyhedron={onCreatePolyhedron}
-          onCreateFromCli={onCreateFromCli}
+          onImportFromCli={onImportFromCli}
         />
       )}
       {resizer}
