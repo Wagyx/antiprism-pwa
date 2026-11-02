@@ -1,0 +1,170 @@
+{
+  "Platonic": [
+    {
+      "name": "Tetrahedron",
+      "command": "off_util tet"
+    },
+    {
+      "name": "Octahedron",
+      "command": "off_util oct"
+    },
+    {
+      "name": "Cube",
+      "command": "off_util cube"
+    },
+    {
+      "name": "Icosahedron",
+      "command": "off_util ico"
+    },
+    {
+      "name": "Dodecahedron",
+      "command": "off_util dod"
+    }
+  ],
+  "Archimedean": [
+    {
+      "name": "Truncated Tetrahedron",
+      "command": "off_util tr_tet"
+    },
+    {
+      "name": "Cuboctahedron",
+      "command": "off_util cubo"
+    },
+    {
+      "name": "Truncated Octahedron",
+      "command": "off_util tr_oct"
+    },
+    {
+      "name": "Truncated Cube",
+      "command": "off_util tr_cube"
+    },
+    {
+      "name": "Rhombicuboctahedron",
+      "command": "off_util rh_cubo"
+    },
+    {
+      "name": "Truncated Cuboctahedron",
+      "command": "off_util tr_cubo"
+    },
+    {
+      "name": "Snub Cube",
+      "command": "off_util sn_cube"
+    },
+    {
+      "name": "Icosidodecahedron",
+      "command": "off_util icosid"
+    },
+    {
+      "name": "Truncated Icosahedron",
+      "command": "off_util tr_ico"
+    },
+    {
+      "name": "Truncated Dodecahedron",
+      "command": "off_util tr_dod"
+    },
+    {
+      "name": "Rhombicosidodecahedron",
+      "command": "off_util rh_icosid"
+    },
+    {
+      "name": "Truncated Icosidodecahedron",
+      "command": "off_util tr_icosid"
+    },
+    {
+      "name": "Snub Dodecahedron",
+      "command": "off_util sn_dod"
+    }
+  ],
+  "Kepler-Poinsot": [
+    {
+      "name": "Small Stellated Dodecahedron",
+      "command": "off_util sm_st_dod"
+    },
+    {
+      "name": "Great Dodecahedron",
+      "command": "off_util gr_dod"
+    },
+    {
+      "name": "Great Stellated Dodecahedron",
+      "command": "off_util gr_st_dod"
+    },
+    {
+      "name": "Great Icosahedron",
+      "command": "off_util gr_ico"
+    }
+  ],
+  "Catalan": [
+    {
+      "name": "Triakis Tetrahedron",
+      "command": "off_util tri_tet"
+    },
+    {
+      "name": "Rhombic Dodecahedron",
+      "command": "off_util rd"
+    },
+    {
+      "name": "Triakis Octahedron",
+      "command": "off_util tri_oct"
+    },
+    {
+      "name": "Tetrakis Hexahedron",
+      "command": "off_util tetr_hex"
+    },
+    {
+      "name": "Disdyakis Hexahedron",
+      "command": "off_util disd_hex"
+    },
+    {
+      "name": "Deltoidal Icositetrahedron",
+      "command": "off_util delt_icosit"
+    },
+    {
+      "name": "Trapezoidal Icositetrahedron",
+      "command": "off_util trap_icosit"
+    },
+    {
+      "name": "Hexakis Octahedron",
+      "command": "off_util hex_oct"
+    },
+    {
+      "name": "Disdyakis Dodecahedron",
+      "command": "off_util disd_dod"
+    },
+    {
+      "name": "Pentagonal Icositetrahedron",
+      "command": "off_util pen_icosit"
+    },
+    {
+      "name": "Rhombic Triacontahedron",
+      "command": "off_util rt"
+    },
+    {
+      "name": "Triakis Icosahedron",
+      "command": "off_util tri_ico"
+    },
+    {
+      "name": "Pentakis Dodecahedron",
+      "command": "off_util pent_dod"
+    },
+    {
+      "name": "Deltoidal Hexecontahedron",
+      "command": "off_util delt_hexac"
+    },
+    {
+      "name": "Trapezoidal Hexecontahedron",
+      "command": "off_util trap_hexac"
+    },
+    {
+      "name": "Hexakis Icosahedron",
+      "command": "off_util hex_ico"
+    },
+    {
+      "name": "Disdyakis Triacontahedron",
+      "command": "off_util disd_tri"
+    },
+    {
+      "name": "Pentagonal Hexecontahedron",
+      "command": "off_util pen_hexac"
+    }
+  ]
+}

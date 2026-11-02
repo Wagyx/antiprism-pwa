@@ -1,0 +1,326 @@
+{
+  "Tetrahedral": [
+    {
+      "name": "3:2 3",
+      "command": "off_util wythoff_3:2_3"
+    },
+    {
+      "name": "2 3:3",
+      "command": "off_util wythoff_2_3:3"
+    },
+    {
+      "name": "3/2 3:3",
+      "command": "off_util wythoff_3/2_3:3"
+    },
+    {
+      "name": "3/2 3:2",
+      "command": "off_util wythoff_3/2_3:2"
+    }
+  ],
+  "Octahedral": [
+    {
+      "name": "4:2 3",
+      "command": "off_util wythoff_4:2_3"
+    },
+    {
+      "name": "3:2 4",
+      "command": "off_util wythoff_3:2_4"
+    },
+    {
+      "name": "2:3 4",
+      "command": "off_util wythoff_2:3_4"
+    },
+    {
+      "name": "2 4:3",
+      "command": "off_util wythoff_2_4:3"
+    },
+    {
+      "name": "2 3:4",
+      "command": "off_util wythoff_2_3:4"
+    },
+    {
+      "name": "3 4:2",
+      "command": "off_util wythoff_3_4:2"
+    },
+    {
+      "name": "2 3 4:",
+      "command": "off_util wythoff_2_3_4:"
+    },
+    {
+      "name": ":2 3 4",
+      "command": "off_util wythoff_:2_3_4"
+    },
+    {
+      "name": "3/2 4:4",
+      "command": "off_util wythoff_3/2_4:4"
+    },
+    {
+      "name": "3 4:4/3",
+      "command": "off_util wythoff_3_4:4/3"
+    },
+    {
+      "name": "4/3 4:3",
+      "command": "off_util wythoff_4/3_4:3"
+    },
+    {
+      "name": "4/3 3 4:",
+      "command": "off_util wythoff_4/3_3_4:"
+    },
+    {
+      "name": "3/2 4:2",
+      "command": "off_util wythoff_3/2_4:2"
+    },
+    {
+      "name": "3/2 2 4:",
+      "command": "off_util wythoff_3/2_2_4:"
+    },
+    {
+      "name": "2 3:4/3",
+      "command": "off_util wythoff_2_3:4/3"
+    },
+    {
+      "name": "4/3 2 3:",
+      "command": "off_util wythoff_4/3_2_3:"
+    },
+    {
+      "name": "4/3 3/2 2:",
+      "command": "off_util wythoff_4/3_3/2_2:"
+    }
+  ],
+  "Icosahedral": [
+    {
+      "name": "5:2 3",
+      "command": "off_util wythoff_5:2_3"
+    },
+    {
+      "name": "3:2 5",
+      "command": "off_util wythoff_3:2_5"
+    },
+    {
+      "name": "2:3 5",
+      "command": "off_util wythoff_2:3_5"
+    },
+    {
+      "name": "2 5:3",
+      "command": "off_util wythoff_2_5:3"
+    },
+    {
+      "name": "2 3:5",
+      "command": "off_util wythoff_2_3:5"
+    },
+    {
+      "name": "3 5:2",
+      "command": "off_util wythoff_3_5:2"
+    },
+    {
+      "name": "2 3 5:",
+      "command": "off_util wythoff_2_3_5:"
+    },
+    {
+      "name": ":2 3 5",
+      "command": "off_util wythoff_:2_3_5"
+    },
+    {
+      "name": "3:5/2 3",
+      "command": "off_util wythoff_3:5/2_3"
+    },
+    {
+      "name": "5/2 3:3",
+      "command": "off_util wythoff_5/2_3:3"
+    },
+    {
+      "name": ":5/2 3 3",
+      "command": "off_util wythoff_:5/2_3_3"
+    },
+    {
+      "name": "3/2 5:5",
+      "command": "off_util wythoff_3/2_5:5"
+    },
+    {
+      "name": "5:2 5/2",
+      "command": "off_util wythoff_5:2_5/2"
+    },
+    {
+      "name": "5/2:2 5",
+      "command": "off_util wythoff_5/2:2_5"
+    },
+    {
+      "name": "2:5/2 5",
+      "command": "off_util wythoff_2:5/2_5"
+    },
+    {
+      "name": "2 5/2:5",
+      "command": "off_util wythoff_2_5/2:5"
+    },
+    {
+      "name": "5/2 5:2",
+      "command": "off_util wythoff_5/2_5:2"
+    },
+    {
+      "name": "2 5/2 5:",
+      "command": "off_util wythoff_2_5/2_5:"
+    },
+    {
+      "name": ":2 5/2 5",
+      "command": "off_util wythoff_:2_5/2_5"
+    },
+    {
+      "name": "3:5/3 5",
+      "command": "off_util wythoff_3:5/3_5"
+    },
+    {
+      "name": "3 5:5/3",
+      "command": "off_util wythoff_3_5:5/3"
+    },
+    {
+      "name": "5/3 3:5",
+      "command": "off_util wythoff_5/3_3:5"
+    },
+    {
+      "name": "5/3 5:3",
+      "command": "off_util wythoff_5/3_5:3"
+    },
+    {
+      "name": "5/3 3 5:",
+      "command": "off_util wythoff_5/3_3_5:"
+    },
+    {
+      "name": ":5/3 3 5",
+      "command": "off_util wythoff_:5/3_3_5"
+    },
+    {
+      "name": "3/2:3 5",
+      "command": "off_util wythoff_3/2:3_5"
+    },
+    {
+      "name": "3/2 5:3",
+      "command": "off_util wythoff_3/2_5:3"
+    },
+    {
+      "name": "3/2 3:5",
+      "command": "off_util wythoff_3/2_3:5"
+    },
+    {
+      "name": "3/2 3 5:",
+      "command": "off_util wythoff_3/2_3_5:"
+    },
+    {
+      "name": "5/4 5:5",
+      "command": "off_util wythoff_5/4_5:5"
+    },
+    {
+      "name": "3:2 5/2",
+      "command": "off_util wythoff_3:2_5/2"
+    },
+    {
+      "name": "5/2:2 3",
+      "command": "off_util wythoff_5/2:2_3"
+    },
+    {
+      "name": "2:5/2 3",
+      "command": "off_util wythoff_2:5/2_3"
+    },
+    {
+      "name": "2 5/2:3",
+      "command": "off_util wythoff_2_5/2:3"
+    },
+    {
+      "name": "2 5/2 3:",
+      "command": "off_util wythoff_2_5/2_3:"
+    },
+    {
+      "name": ":2 5/2 3",
+      "command": "off_util wythoff_:2_5/2_3"
+    },
+    {
+      "name": "2 5:5/3",
+      "command": "off_util wythoff_2_5:5/3"
+    },
+    {
+      "name": "5/3 2 5:",
+      "command": "off_util wythoff_5/3_2_5:"
+    },
+    {
+      "name": ":5/3 2 5",
+      "command": "off_util wythoff_:5/3_2_5"
+    },
+    {
+      "name": "5/2 3:5/3",
+      "command": "off_util wythoff_5/2_3:5/3"
+    },
+    {
+      "name": "5/3 5/2:3",
+      "command": "off_util wythoff_5/3_5/2:3"
+    },
+    {
+      "name": "5/3 5/2 3:",
+      "command": "off_util wythoff_5/3_5/2_3:"
+    },
+    {
+      "name": ":5/3 5/2 3",
+      "command": "off_util wythoff_:5/3_5/2_3"
+    },
+    {
+      "name": "5/4 5:3",
+      "command": "off_util wythoff_5/4_5:3"
+    },
+    {
+      "name": "2 3:5/3",
+      "command": "off_util wythoff_2_3:5/3"
+    },
+    {
+      "name": "5/3 3:2",
+      "command": "off_util wythoff_5/3_3:2"
+    },
+    {
+      "name": "5/3 2 3:",
+      "command": "off_util wythoff_5/3_2_3:"
+    },
+    {
+      "name": ":5/3 2 3",
+      "command": "off_util wythoff_:5/3_2_3"
+    },
+    {
+      "name": "5/3 5/2:5/3",
+      "command": "off_util wythoff_5/3_5/2:5/3"
+    },
+    {
+      "name": "3/2 3:5/3",
+      "command": "off_util wythoff_3/2_3:5/3"
+    },
+    {
+      "name": ":3/2 3/2 5/2",
+      "command": "off_util wythoff_:3/2_3/2_5/2"
+    },
+    {
+      "name": "3/2 5/3 2:",
+      "command": "off_util wythoff_3/2_5/3_2:"
+    },
+    {
+      "name": ":3/2 5/3 2",
+      "command": "off_util wythoff_:3/2_5/3_2"
+    }
+  ],
+  "Prismatic": [
+    {
+      "name": "2 5:2",
+      "command": "off_util wythoff_2_5:2"
+    },
+    {
+      "name": ":2 2 5",
+      "command": "off_util wythoff_:2_2_5"
+    },
+    {
+      "name": "2 5/2:2",
+      "command": "off_util wythoff_2_5/2:2"
+    },
+    {
+      "name": ":2 2 5/2",
+      "command": "off_util wythoff_:2_2_5/2"
+    },
+    {
+      "name": ":2 2 5/3",
+      "command": "off_util wythoff_:2_2_5/3"
+    }
+  ]
+}

@@ -1,0 +1,392 @@
+{
+  "Tetrahedra": [
+    {
+      "name": "UC1_a10 - 6 Tetrahedra Rotational (10 Degrees)",
+      "command": "off_util UC1_a10"
+    },
+    {
+      "name": "UC1_a40 - 6 Tetrahedra Rotational (40 Degrees)",
+      "command": "off_util UC1_a40"
+    },
+    {
+      "name": "UC2_a10 - 12 Tetrahedra Rotational (10 Degrees)",
+      "command": "off_util UC2_a10"
+    },
+    {
+      "name": "UC2_a22.5 - 12 Tetrahedra Rotational (22.5 Degrees)",
+      "command": "off_util UC2_a22.5"
+    },
+    {
+      "name": "UC2_a40 - 12 Tetrahedra Rotational (40 Degrees)",
+      "command": "off_util UC2_a40"
+    },
+    {
+      "name": "UC3 - 6 Tetrahedra",
+      "command": "off_util UC3"
+    },
+    {
+      "name": "UC4 - 2 Tetrahedra",
+      "command": "off_util UC4"
+    },
+    {
+      "name": "UC5 - 5 Tetrahedra",
+      "command": "off_util UC5"
+    },
+    {
+      "name": "UC6 - 10 Tetrahedra",
+      "command": "off_util UC6"
+    }
+  ],
+  "Cubes": [
+    {
+      "name": "UC7 - 6 Cubes Rotational",
+      "command": "off_util UC7"
+    },
+    {
+      "name": "UC8 - 3 Cubes",
+      "command": "off_util UC8"
+    },
+    {
+      "name": "UC9 - 5 Cubes",
+      "command": "off_util UC9"
+    }
+  ],
+  "Octahedra": [
+    {
+      "name": "UC10_a10 - 4 Octahedra Rotational (10 Degrees)",
+      "command": "off_util UC10_a10"
+    },
+    {
+      "name": "UC10_a30 - 4 Octahedra Rotational (30 Degrees)",
+      "command": "off_util UC10_a30"
+    },
+    {
+      "name": "UC10_a50 - 4 Octahedra Rotational (50 Degrees)",
+      "command": "off_util UC10_a50"
+    },
+    {
+      "name": "UC11_a10 - 8 Octahedra Rotational (10 Degrees)",
+      "command": "off_util UC11_a10"
+    },
+    {
+      "name": "UC11_a30 - 8 Octahedra Rotational (30 Degrees)",
+      "command": "off_util UC11_a30"
+    },
+    {
+      "name": "UC11_a50 - 8 Octahedra Rotational (50 Degrees)",
+      "command": "off_util UC11_a50"
+    },
+    {
+      "name": "UC12 - 4 Octahedra",
+      "command": "off_util UC12"
+    },
+    {
+      "name": "UC13_a10 - 20 Octahedra Rotational (10 Degrees)",
+      "command": "off_util UC13_a10"
+    },
+    {
+      "name": "UC13_a30 - 20 Octahedra Rotational (30 Degrees)",
+      "command": "off_util UC13_a30"
+    },
+    {
+      "name": "UC13_a60 - 20 Octahedra Rotational (60 Degrees)",
+      "command": "off_util UC13_a60"
+    },
+    {
+      "name": "UC14 - 20 Octahedra",
+      "command": "off_util UC14"
+    },
+    {
+      "name": "UC15 - 10 Octahedra 1",
+      "command": "off_util UC15"
+    },
+    {
+      "name": "UC16 - 10 Octahedra 2",
+      "command": "off_util UC16"
+    },
+    {
+      "name": "UC17 - 5 Octahedra",
+      "command": "off_util UC17"
+    }
+  ],
+  "Tetrahemihexahedra": [
+    {
+      "name": "UC18 - 5 Tetrahemihexahedra",
+      "command": "off_util UC18"
+    },
+    {
+      "name": "UC19 - 20 Tetrahemihexahedra",
+      "command": "off_util UC19"
+    }
+  ],
+  "Prisms and Antiprisms": [
+    {
+      "name": "UC20_k3n5/2a3 - 2k N/d-gonal Prisms Rotational (6 {5/2}-gonal Prisms 3 Degrees)",
+      "command": "off_util UC20_k3n5/2a3"
+    },
+    {
+      "name": "UC20_k5n3a45 - 2k N/d-gonal Prisms Rotational (10 Triangular Prisms 45 Degrees)",
+      "command": "off_util UC20_k5n3a45"
+    },
+    {
+      "name": "UC21_k3n5/2 - K N/d-gonal Prisms (3 {5/2}-gonal Prisms)",
+      "command": "off_util UC21_k3n5/2"
+    },
+    {
+      "name": "UC21_k5n3 - K N/d-gonal Prisms (5 Triangular Prisms)",
+      "command": "off_util UC21_k5n3"
+    },
+    {
+      "name": "UC22_k3n5/3a3 - 2k N/odd_d-gonal Antiprisms Rotational (6 {5/3}-gonal Antiprisms 3 Degrees)",
+      "command": "off_util UC22_k3n5/3a3"
+    },
+    {
+      "name": "UC22_k5n3a45 - 2k N/odd_d-gonal Antiprisms Rotational (10 Triangular Antiprisms 45 Degrees)",
+      "command": "off_util UC22_k5n3a45"
+    },
+    {
+      "name": "UC23_k3n5/3 - K N/odd_d-gonal Antiprisms (3 {5/3}-gonal Antiprisms)",
+      "command": "off_util UC23_k3n5/3"
+    },
+    {
+      "name": "UC23_k5n3 - K N/odd_d-gonal Antiprisms (5 Triangular Antiprisms)",
+      "command": "off_util UC23_k5n3"
+    },
+    {
+      "name": "UC24_k3n5/2a3 - 2k N/even_d-gonal Antiprisms Rotational (6 {5/2}-gonal Antiprisms 3 Degrees)",
+      "command": "off_util UC24_k3n5/2a3"
+    },
+    {
+      "name": "UC25_k3n5/2 - K N/even_d-gonal Antiprisms (3 {5/2}-gonal Antiprisms)",
+      "command": "off_util UC25_k3n5/2"
+    },
+    {
+      "name": "UC26_a6 - 12 Pentagonal Antiprisms Rotational (6 Degrees)",
+      "command": "off_util UC26_a6"
+    },
+    {
+      "name": "UC26_a18 - 12 Pentagonal Antiprisms Rotational (18 Degrees)",
+      "command": "off_util UC26_a18"
+    },
+    {
+      "name": "UC26_a30 - 12 Pentagonal Antiprisms Rotational (30 Degrees)",
+      "command": "off_util UC26_a30"
+    },
+    {
+      "name": "UC27 - 6 Pentagonal Antiprisms",
+      "command": "off_util UC27"
+    },
+    {
+      "name": "UC28_a10 - 12 Pentagrammic Crossed Antiprisms Rotational (10 Degrees)",
+      "command": "off_util UC28_a10"
+    },
+    {
+      "name": "UC28_a18 - 12 Pentagrammic Crossed Antiprisms Rotational (18 Degrees)",
+      "command": "off_util UC28_a18"
+    },
+    {
+      "name": "UC28_a30 - 12 Pentagrammic Crossed Antiprisms Rotational (30 Degrees)",
+      "command": "off_util UC28_a30"
+    },
+    {
+      "name": "UC29 - 6 Pentagrammic Crossed Antiprisms",
+      "command": "off_util UC29"
+    },
+    {
+      "name": "UC30 - 4 Triangular Prisms",
+      "command": "off_util UC30"
+    },
+    {
+      "name": "UC31 - 8 Triangular Prisms",
+      "command": "off_util UC31"
+    },
+    {
+      "name": "UC32 - 10 Triangular Prisms",
+      "command": "off_util UC32"
+    },
+    {
+      "name": "UC33 - 20 Triangular Prisms",
+      "command": "off_util UC33"
+    },
+    {
+      "name": "UC34 - 6 Pentagonal Prisms",
+      "command": "off_util UC34"
+    },
+    {
+      "name": "UC35 - 12 Pentagonal Prisms",
+      "command": "off_util UC35"
+    },
+    {
+      "name": "UC36 - 6 Pentagrammic Prisms",
+      "command": "off_util UC36"
+    },
+    {
+      "name": "UC37 - 12 Pentagrammic Prisms",
+      "command": "off_util UC37"
+    },
+    {
+      "name": "UC38 - 4 Hexagonal Prisms",
+      "command": "off_util UC38"
+    },
+    {
+      "name": "UC39 - 10 Hexagonal Prisms",
+      "command": "off_util UC39"
+    },
+    {
+      "name": "UC40 - 6 Decagonal Prisms",
+      "command": "off_util UC40"
+    },
+    {
+      "name": "UC41 - 6 Decagrammic Prisms",
+      "command": "off_util UC41"
+    },
+    {
+      "name": "UC42 - 3 Square Antiprisms",
+      "command": "off_util UC42"
+    },
+    {
+      "name": "UC43 - 6 Square Antiprisms",
+      "command": "off_util UC43"
+    },
+    {
+      "name": "UC44 - 6 Pentagrammic Antiprisms",
+      "command": "off_util UC44"
+    },
+    {
+      "name": "UC45 - 12 Pentagrammic Antiprisms",
+      "command": "off_util UC45"
+    }
+  ],
+  "Icosahedra and Dodecahedra": [
+    {
+      "name": "UC46 - 2 Icosahedra",
+      "command": "off_util UC46"
+    },
+    {
+      "name": "UC47 - 5 Icosahedra",
+      "command": "off_util UC47"
+    },
+    {
+      "name": "UC48 - 2 Great Dodecahedra",
+      "command": "off_util UC48"
+    },
+    {
+      "name": "UC49 - 5 Great Dodecahedra",
+      "command": "off_util UC49"
+    },
+    {
+      "name": "UC50 - 2 Small Stellated Dodecahedra",
+      "command": "off_util UC50"
+    },
+    {
+      "name": "UC51 - 5 Small Stellated Dodecahedra",
+      "command": "off_util UC51"
+    },
+    {
+      "name": "UC52 - 2 Great Icosahedra",
+      "command": "off_util UC52"
+    },
+    {
+      "name": "UC53 - 5 Great Icosahedra",
+      "command": "off_util UC53"
+    }
+  ],
+  "Truncated Tetrahedra": [
+    {
+      "name": "UC54 - 2 Truncated Tetrahedra",
+      "command": "off_util UC54"
+    },
+    {
+      "name": "UC55 - 5 Truncated Tetrahedra",
+      "command": "off_util UC55"
+    },
+    {
+      "name": "UC56 - 10 Truncated Tetrahedra",
+      "command": "off_util UC56"
+    }
+  ],
+  "Truncated Cubes": [
+    {
+      "name": "UC57 - 5 Truncated Cubes",
+      "command": "off_util UC57"
+    },
+    {
+      "name": "UC58 - 5 Stellated Truncated Hexahedra",
+      "command": "off_util UC58"
+    }
+  ],
+  "Cuboctahedra": [
+    {
+      "name": "UC59 - 5 Cuboctahedra",
+      "command": "off_util UC59"
+    },
+    {
+      "name": "UC60 - 5 Cubohemioctahedra",
+      "command": "off_util UC60"
+    },
+    {
+      "name": "UC61 - 5 Octahemioctahedra",
+      "command": "off_util UC61"
+    }
+  ],
+  "Rhombicuboctahedra": [
+    {
+      "name": "UC62 - 5 Rhombicuboctahedra",
+      "command": "off_util UC62"
+    },
+    {
+      "name": "UC63 - 5 Small Rhombihexahedra",
+      "command": "off_util UC63"
+    },
+    {
+      "name": "UC64 - 5 Small Cubicuboctahedra",
+      "command": "off_util UC64"
+    },
+    {
+      "name": "UC65 - 5 Great Cubicuboctahedra",
+      "command": "off_util UC65"
+    },
+    {
+      "name": "UC66 - 5 Great Rhombihexahedra",
+      "command": "off_util UC66"
+    },
+    {
+      "name": "UC67 - 5 Great Rhombicuboctahedra",
+      "command": "off_util UC67"
+    }
+  ],
+  "Snubs": [
+    {
+      "name": "UC68 - 2 Snub Cubes",
+      "command": "off_util UC68"
+    },
+    {
+      "name": "UC69 - 2 Snub Dodecahedra",
+      "command": "off_util UC69"
+    },
+    {
+      "name": "UC70 - 2 Great Snub Icosidodecahedra",
+      "command": "off_util UC70"
+    },
+    {
+      "name": "UC71 - 2 Great Inverted Snub Icosidodecahedra",
+      "command": "off_util UC71"
+    },
+    {
+      "name": "UC72 - 2 Great Retrosnub Icosidodecahedra",
+      "command": "off_util UC72"
+    },
+    {
+      "name": "UC73 - 2 Snub Dodecadodecahedra",
+      "command": "off_util UC73"
+    },
+    {
+      "name": "UC74 - 2 Inverted Snub Dodecadodecahedra",
+      "command": "off_util UC74"
+    },
+    {
+      "name": "UC75 - 2 Snub Icosidodecadodecahedra",
+      "command": "off_util UC75"
+    }
+  ]
+}

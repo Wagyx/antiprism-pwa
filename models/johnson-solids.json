@@ -1,0 +1,400 @@
+{
+  "Pyramids": [
+    {
+      "name": "J1 - Square Pyramid",
+      "command": "off_util J1"
+    },
+    {
+      "name": "J2 - Pentagonal Pyramid",
+      "command": "off_util J2"
+    }
+  ],
+  "Cupolae and Rotunda": [
+    {
+      "name": "J3 - Triangular Cupola",
+      "command": "off_util J3"
+    },
+    {
+      "name": "J4 - Square Cupola",
+      "command": "off_util J4"
+    },
+    {
+      "name": "J5 - Pentagonal Cupola",
+      "command": "off_util J5"
+    },
+    {
+      "name": "J6 - Pentagonal Rotunda",
+      "command": "off_util J6"
+    }
+  ],
+  "Elongated and Gyroelongated Pyramids": [
+    {
+      "name": "J7 - Elongated Triangular Pyramid",
+      "command": "off_util J7"
+    },
+    {
+      "name": "J8 - Elongated Square Pyramid",
+      "command": "off_util J8"
+    },
+    {
+      "name": "J9 - Elongated Pentagonal Pyramid",
+      "command": "off_util J9"
+    },
+    {
+      "name": "J10 - Gyroelongated Square Pyramid",
+      "command": "off_util J10"
+    },
+    {
+      "name": "J11 - Gyroelongated Pentagonal Pyramid",
+      "command": "off_util J11"
+    }
+  ],
+  "Dipyramids": [
+    {
+      "name": "J12 - Triangular Dipyramid",
+      "command": "off_util J12"
+    },
+    {
+      "name": "J13 - Pentagonal Dipyramid",
+      "command": "off_util J13"
+    },
+    {
+      "name": "J14 - Elongated Triangular Dipyramid",
+      "command": "off_util J14"
+    },
+    {
+      "name": "J15 - Elongated Square Dipyramid",
+      "command": "off_util J15"
+    },
+    {
+      "name": "J16 - Elongated Pentagonal Dipyramid",
+      "command": "off_util J16"
+    },
+    {
+      "name": "J17 - Gyroelongated Square Dipyramid",
+      "command": "off_util J17"
+    }
+  ],
+  "Elongated and Gyroelongated Cupolae and Rotundae": [
+    {
+      "name": "J18 - Elongated Triangular Cupola",
+      "command": "off_util J18"
+    },
+    {
+      "name": "J19 - Elongated Square Cupola",
+      "command": "off_util J19"
+    },
+    {
+      "name": "J20 - Elongated Pentagonal Cupola",
+      "command": "off_util J20"
+    },
+    {
+      "name": "J21 - Elongated Pentagonal Rotunda",
+      "command": "off_util J21"
+    },
+    {
+      "name": "J22 - Gyroelongated Triangular Cupola",
+      "command": "off_util J22"
+    },
+    {
+      "name": "J23 - Gyroelongated Square Cupola",
+      "command": "off_util J23"
+    },
+    {
+      "name": "J24 - Gyroelongated Pentagonal Cupola",
+      "command": "off_util J24"
+    },
+    {
+      "name": "J25 - Gyroelongated Pentagonal Rotunda",
+      "command": "off_util J25"
+    }
+  ],
+  "Bicupolae": [
+    {
+      "name": "J26 - Gyrobifastigium",
+      "command": "off_util J26"
+    },
+    {
+      "name": "J27 - Triangular Orthobicupola",
+      "command": "off_util J27"
+    },
+    {
+      "name": "J28 - Square Orthobicupola",
+      "command": "off_util J28"
+    },
+    {
+      "name": "J29 - Square Gyrobicupola",
+      "command": "off_util J29"
+    },
+    {
+      "name": "J30 - Pentagonal Orthobicupola",
+      "command": "off_util J30"
+    },
+    {
+      "name": "J31 - Pentagonal Gyrobicupola",
+      "command": "off_util J31"
+    },
+    {
+      "name": "J32 - Pentagonal Orthocupolarotunda",
+      "command": "off_util J32"
+    },
+    {
+      "name": "J33 - Pentagonal Gyrocupolarotunda",
+      "command": "off_util J33"
+    },
+    {
+      "name": "J34 - Pentagonal Orthobirotunda",
+      "command": "off_util J34"
+    }
+  ],
+  "Elongated Bicupolae": [
+    {
+      "name": "J35 - Elongated Triangular Orthobicupola",
+      "command": "off_util J35"
+    },
+    {
+      "name": "J36 - Elongated Triangular Gyrobicupola",
+      "command": "off_util J36"
+    },
+    {
+      "name": "J37 - Elongated Square Gyrobicupola",
+      "command": "off_util J37"
+    },
+    {
+      "name": "J38 - Elongated Pentagonal Orthobicupola",
+      "command": "off_util J38"
+    },
+    {
+      "name": "J39 - Elongated Pentagonal Gyrobicupola",
+      "command": "off_util J39"
+    },
+    {
+      "name": "J40 - Elongated Pentagonal Orthocupolarotunda",
+      "command": "off_util J40"
+    },
+    {
+      "name": "J41 - Elongated Pentagonal Gyrocupolarotunda",
+      "command": "off_util J41"
+    },
+    {
+      "name": "J42 - Elongated Pentagonal Orthobirotunda",
+      "command": "off_util J42"
+    },
+    {
+      "name": "J43 - Elongated Pentagonal Gyrobirotunda",
+      "command": "off_util J43"
+    }
+  ],
+  "Gyroelongated Bicupolae": [
+    {
+      "name": "J44 - Gyroelongated Triangular Bicupola",
+      "command": "off_util J44"
+    },
+    {
+      "name": "J45 - Gyroelongated Square Bicupola",
+      "command": "off_util J45"
+    },
+    {
+      "name": "J46 - Gyroelongated Pentagonal Bicupola",
+      "command": "off_util J46"
+    },
+    {
+      "name": "J47 - Gyroelongated Pentagonal Cupolarotunda",
+      "command": "off_util J47"
+    },
+    {
+      "name": "J48 - Gyroelongated Pentagonal Birotunda",
+      "command": "off_util J48"
+    }
+  ],
+  "Augmented Prisms": [
+    {
+      "name": "J49 - Augmented Triangular Prism",
+      "command": "off_util J49"
+    },
+    {
+      "name": "J50 - Biaugmented Triangular Prism",
+      "command": "off_util J50"
+    },
+    {
+      "name": "J51 - Triaugmented Triangular Prism",
+      "command": "off_util J51"
+    },
+    {
+      "name": "J52 - Augmented Pentagonal Prism",
+      "command": "off_util J52"
+    },
+    {
+      "name": "J53 - Biaugmented Pentagonal Prism",
+      "command": "off_util J53"
+    },
+    {
+      "name": "J54 - Augmented Hexagonal Prism",
+      "command": "off_util J54"
+    },
+    {
+      "name": "J55 - Parabiaugmented Hexagonal Prism",
+      "command": "off_util J55"
+    },
+    {
+      "name": "J56 - Metabiaugmented Hexagonal Prism",
+      "command": "off_util J56"
+    },
+    {
+      "name": "J57 - Triaugmented Hexagonal Prism",
+      "command": "off_util J57"
+    }
+  ],
+  "Augmented Dodecahedra": [
+    {
+      "name": "J58 - Augmented Dodecahedron",
+      "command": "off_util J58"
+    },
+    {
+      "name": "J59 - Parabiaugmented Dodecahedron",
+      "command": "off_util J59"
+    },
+    {
+      "name": "J60 - Metabiaugmented Dodecahedron",
+      "command": "off_util J60"
+    },
+    {
+      "name": "J61 - Triaugmented Dodecahedron",
+      "command": "off_util J61"
+    }
+  ],
+  "Diminished Icosahedra": [
+    {
+      "name": "J62 - Metabidiminished Icosahedron",
+      "command": "off_util J62"
+    },
+    {
+      "name": "J63 - Tridiminished Icosahedron",
+      "command": "off_util J63"
+    },
+    {
+      "name": "J64 - Augmented Tridiminished Icosahedron",
+      "command": "off_util J64"
+    }
+  ],
+  "Augmented Truncated Solids": [
+    {
+      "name": "J65 - Augmented Truncated Tetrahedron",
+      "command": "off_util J65"
+    },
+    {
+      "name": "J66 - Augmented Truncated Cube",
+      "command": "off_util J66"
+    },
+    {
+      "name": "J67 - Biaugmented Truncated Cube",
+      "command": "off_util J67"
+    },
+    {
+      "name": "J68 - Augmented Truncated Dodecahedron",
+      "command": "off_util J68"
+    },
+    {
+      "name": "J69 - Parabiaugmented Truncated Dodecahedron",
+      "command": "off_util J69"
+    },
+    {
+      "name": "J70 - Metabiaugmented Truncated Dodecahedron",
+      "command": "off_util J70"
+    },
+    {
+      "name": "J71 - Triaugmented Truncated Dodecahedron",
+      "command": "off_util J71"
+    }
+  ],
+  "Gyrate Rhombicosidodecahedra": [
+    {
+      "name": "J72 - Gyrate Rhombicosidodecahedron",
+      "command": "off_util J72"
+    },
+    {
+      "name": "J73 - Parabigyrate Rhombicosidodecahedron",
+      "command": "off_util J73"
+    },
+    {
+      "name": "J74 - Metabigyrate Rhombicosidodecahedron",
+      "command": "off_util J74"
+    },
+    {
+      "name": "J75 - Trigyrate Rhombicosidodecahedron",
+      "command": "off_util J75"
+    }
+  ],
+  "Diminished Rhombicosidodecahedra": [
+    {
+      "name": "J76 - Diminished Rhombicosidodecahedron",
+      "command": "off_util J76"
+    },
+    {
+      "name": "J77 - Paragyrate Diminished Rhombicosidodecahedron",
+      "command": "off_util J77"
+    },
+    {
+      "name": "J78 - Metagyrate Diminished Rhombicosidodecahedron",
+      "command": "off_util J78"
+    },
+    {
+      "name": "J79 - Bigyrate Diminished Rhombicosidodecahedron",
+      "command": "off_util J79"
+    },
+    {
+      "name": "J80 - Parabidiminished Rhombicosidodecahedron",
+      "command": "off_util J80"
+    },
+    {
+      "name": "J81 - Metabidiminished Rhombicosidodecahedron",
+      "command": "off_util J81"
+    },
+    {
+      "name": "J82 - Gyrate Bidiminished Rhombicosidodecahedron",
+      "command": "off_util J82"
+    },
+    {
+      "name": "J83 - Tridiminished Rhombicosidodecahedron",
+      "command": "off_util J83"
+    }
+  ],
+  "Elementary": [
+    {
+      "name": "J84 - Snub Disphenoid",
+      "command": "off_util J84"
+    },
+    {
+      "name": "J85 - Snub Square Antiprism",
+      "command": "off_util J85"
+    },
+    {
+      "name": "J86 - Sphenocorona",
+      "command": "off_util J86"
+    },
+    {
+      "name": "J87 - Augmented Sphenocorona",
+      "command": "off_util J87"
+    },
+    {
+      "name": "J88 - Sphenomegacorona",
+      "command": "off_util J88"
+    },
+    {
+      "name": "J89 - Hebesphenomegacorona",
+      "command": "off_util J89"
+    },
+    {
+      "name": "J90 - Disphenocingulum",
+      "command": "off_util J90"
+    },
+    {
+      "name": "J91 - Bilunabirotunda",
+      "command": "off_util J91"
+    },
+    {
+      "name": "J92 - Triangular Hebesphenorotunda",
+      "command": "off_util J92"
+    }
+  ]
+}

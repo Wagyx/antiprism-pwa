@@ -1,0 +1,330 @@
+{
+  "Tetrahedral": [
+    {
+      "name": "U1 - Tetrahedron",
+      "command": "off_util U1"
+    },
+    {
+      "name": "U2 - Truncated Tetrahedron",
+      "command": "off_util U2"
+    },
+    {
+      "name": "U3 - Octahemioctahedron",
+      "command": "off_util U3"
+    },
+    {
+      "name": "U4 - Tetrahemihexahedron",
+      "command": "off_util U4"
+    }
+  ],
+  "Octahedral": [
+    {
+      "name": "U5 - Octahedron",
+      "command": "off_util U5"
+    },
+    {
+      "name": "U6 - Cube",
+      "command": "off_util U6"
+    },
+    {
+      "name": "U7 - Cuboctahedron",
+      "command": "off_util U7"
+    },
+    {
+      "name": "U8 - Truncated Octahedron",
+      "command": "off_util U8"
+    },
+    {
+      "name": "U9 - Truncated Cube",
+      "command": "off_util U9"
+    },
+    {
+      "name": "U10 - Rhombicuboctahedron",
+      "command": "off_util U10"
+    },
+    {
+      "name": "U11 - Truncated Cuboctahedron",
+      "command": "off_util U11"
+    },
+    {
+      "name": "U12 - Snub Cube",
+      "command": "off_util U12"
+    },
+    {
+      "name": "U13 - Small Cubicuboctahedron",
+      "command": "off_util U13"
+    },
+    {
+      "name": "U14 - Great Cubicuboctahedron",
+      "command": "off_util U14"
+    },
+    {
+      "name": "U15 - Cubohemioctahedron",
+      "command": "off_util U15"
+    },
+    {
+      "name": "U16 - Cubitruncated Cuboctahedron",
+      "command": "off_util U16"
+    },
+    {
+      "name": "U17 - Great Rhombicuboctahedron",
+      "command": "off_util U17"
+    },
+    {
+      "name": "U18 - Small Rhombihexahedron",
+      "command": "off_util U18"
+    },
+    {
+      "name": "U19 - Stellated Truncated Hexahedron",
+      "command": "off_util U19"
+    },
+    {
+      "name": "U20 - Great Truncated Cuboctahedron",
+      "command": "off_util U20"
+    },
+    {
+      "name": "U21 - Great Rhombihexahedron",
+      "command": "off_util U21"
+    }
+  ],
+  "Icosahedral": [
+    {
+      "name": "U22 - Icosahedron",
+      "command": "off_util U22"
+    },
+    {
+      "name": "U23 - Dodecahedron",
+      "command": "off_util U23"
+    },
+    {
+      "name": "U24 - Icosidodecahedron",
+      "command": "off_util U24"
+    },
+    {
+      "name": "U25 - Truncated Icosahedron",
+      "command": "off_util U25"
+    },
+    {
+      "name": "U26 - Truncated Dodecahedron",
+      "command": "off_util U26"
+    },
+    {
+      "name": "U27 - Rhombicosidodecahedron",
+      "command": "off_util U27"
+    },
+    {
+      "name": "U28 - Truncated Icosidodecahedron",
+      "command": "off_util U28"
+    },
+    {
+      "name": "U29 - Snub Dodecahedron",
+      "command": "off_util U29"
+    },
+    {
+      "name": "U30 - Small Ditrigonal Icosidodecahedron",
+      "command": "off_util U30"
+    },
+    {
+      "name": "U31 - Small Icosicosidodecahedron",
+      "command": "off_util U31"
+    },
+    {
+      "name": "U32 - Small Snub Icosicosidodecahedron",
+      "command": "off_util U32"
+    },
+    {
+      "name": "U33 - Small Dodecicosidodecahedron",
+      "command": "off_util U33"
+    },
+    {
+      "name": "U34 - Small Stellated Dodecahedron",
+      "command": "off_util U34"
+    },
+    {
+      "name": "U35 - Great Dodecahedron",
+      "command": "off_util U35"
+    },
+    {
+      "name": "U36 - Great Dodecadodecahedron",
+      "command": "off_util U36"
+    },
+    {
+      "name": "U37 - Truncated Great Dodecahedron",
+      "command": "off_util U37"
+    },
+    {
+      "name": "U38 - Rhombidodecadodecahedron",
+      "command": "off_util U38"
+    },
+    {
+      "name": "U39 - Small Rhombidodecahedron",
+      "command": "off_util U39"
+    },
+    {
+      "name": "U40 - Snub Dodecadodecahedron",
+      "command": "off_util U40"
+    },
+    {
+      "name": "U41 - Ditrigonal Dodecadodecahedron",
+      "command": "off_util U41"
+    },
+    {
+      "name": "U42 - Great Ditrigonal Dodecicosidodecahedron",
+      "command": "off_util U42"
+    },
+    {
+      "name": "U43 - Small Ditrigonal Dodecicosidodecahedron",
+      "command": "off_util U43"
+    },
+    {
+      "name": "U44 - Icosidodecadodecahedron",
+      "command": "off_util U44"
+    },
+    {
+      "name": "U45 - Icositruncated Dodecadodecahedron",
+      "command": "off_util U45"
+    },
+    {
+      "name": "U46 - Snub Icosidodecadodecahedron",
+      "command": "off_util U46"
+    },
+    {
+      "name": "U47 - Great Ditrigonal Icosidodecahedron",
+      "command": "off_util U47"
+    },
+    {
+      "name": "U48 - Great Icosicosidodecahedron",
+      "command": "off_util U48"
+    },
+    {
+      "name": "U49 - Small Icosihemidodecahedron",
+      "command": "off_util U49"
+    },
+    {
+      "name": "U50 - Small Dodecicosahedron",
+      "command": "off_util U50"
+    },
+    {
+      "name": "U51 - Small Dodecahemidodecahedron",
+      "command": "off_util U51"
+    },
+    {
+      "name": "U52 - Great Stellated Dodecahedron",
+      "command": "off_util U52"
+    },
+    {
+      "name": "U53 - Great Icosahedron",
+      "command": "off_util U53"
+    },
+    {
+      "name": "U54 - Great Icosidodecahedron",
+      "command": "off_util U54"
+    },
+    {
+      "name": "U55 - Great Truncated Icosahedron",
+      "command": "off_util U55"
+    },
+    {
+      "name": "U56 - Rhombicosahedron",
+      "command": "off_util U56"
+    },
+    {
+      "name": "U57 - Great Snub Icosidodecahedron",
+      "command": "off_util U57"
+    },
+    {
+      "name": "U58 - Small Stellated Truncated Dodecahedron",
+      "command": "off_util U58"
+    },
+    {
+      "name": "U59 - Truncated Dodecadodecahedron",
+      "command": "off_util U59"
+    },
+    {
+      "name": "U60 - Inverted Snub Dodecadodecahedron",
+      "command": "off_util U60"
+    },
+    {
+      "name": "U61 - Great Dodecicosidodecahedron",
+      "command": "off_util U61"
+    },
+    {
+      "name": "U62 - Small Dodecahemicosahedron",
+      "command": "off_util U62"
+    },
+    {
+      "name": "U63 - Great Dodecicosahedron",
+      "command": "off_util U63"
+    },
+    {
+      "name": "U64 - Great Snub Dodecicosidodecahedron",
+      "command": "off_util U64"
+    },
+    {
+      "name": "U65 - Great Dodecahemicosahedron",
+      "command": "off_util U65"
+    },
+    {
+      "name": "U66 - Great Stellated Truncated Dodecahedron",
+      "command": "off_util U66"
+    },
+    {
+      "name": "U67 - Great Rhombicosidodecahedron",
+      "command": "off_util U67"
+    },
+    {
+      "name": "U68 - Great Truncated Icosidodecahedron",
+      "command": "off_util U68"
+    },
+    {
+      "name": "U69 - Great Inverted Snub Icosidodecahedron",
+      "command": "off_util U69"
+    },
+    {
+      "name": "U70 - Great Dodecahemidodecahedron",
+      "command": "off_util U70"
+    },
+    {
+      "name": "U71 - Great Icosihemidodecahedron",
+      "command": "off_util U71"
+    },
+    {
+      "name": "U72 - Small Retrosnub Icosicosidodecahedron",
+      "command": "off_util U72"
+    },
+    {
+      "name": "U73 - Great Rhombidodecahedron",
+      "command": "off_util U73"
+    },
+    {
+      "name": "U74 - Great Retrosnub Icosidodecahedron",
+      "command": "off_util U74"
+    },
+    {
+      "name": "U75 - Great Dirhombicosidodecahedron",
+      "command": "off_util U75"
+    }
+  ],
+  "Prisms and Antiprisms": [
+    {
+      "name": "U76 - Pentagonal Prism",
+      "command": "off_util U76"
+    },
+    {
+      "name": "U77 - Pentagonal Antiprism",
+      "command": "off_util U77"
+    },
+    {
+      "name": "U78 - Pentagrammic Prism",
+      "command": "off_util U78"
+    },
+    {
+      "name": "U79 - Pentagrammic Antiprism",
+      "command": "off_util U79"
+    },
+    {
+      "name": "U80 - Pentagrammic Crossed Antiprism",
+      "command": "off_util U80"
+    }
+  ]
+}

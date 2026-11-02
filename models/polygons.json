@@ -1,0 +1,368 @@
+{
+  "Prisms": [
+    {
+      "name": "Triangular Prism",
+      "command": "off_util pri3"
+    },
+    {
+      "name": "Square Prism",
+      "command": "off_util pri4"
+    },
+    {
+      "name": "Pentagonal Prism",
+      "command": "off_util pri5"
+    },
+    {
+      "name": "Pentagrammic Prism",
+      "command": "off_util pri5/2"
+    },
+    {
+      "name": "Hexagonal Prism",
+      "command": "off_util pri6"
+    },
+    {
+      "name": "Heptagonal Prism",
+      "command": "off_util pri7"
+    },
+    {
+      "name": "{7/2}-Prism",
+      "command": "off_util pri7/2"
+    },
+    {
+      "name": "{7/3}-Prism",
+      "command": "off_util pri7/3"
+    }
+  ],
+  "Pyramids": [
+    {
+      "name": "Triangular Pyramid",
+      "command": "off_util pyr3"
+    },
+    {
+      "name": "Square Pyramid",
+      "command": "off_util pyr4"
+    },
+    {
+      "name": "Pentagonal Pyramid",
+      "command": "off_util pyr5"
+    },
+    {
+      "name": "Pentagrammic Pyramid",
+      "command": "off_util pyr5/2"
+    },
+    {
+      "name": "{7/2}-Pyramid",
+      "command": "off_util pyr7/2"
+    },
+    {
+      "name": "{7/3}-Pyramid",
+      "command": "off_util pyr7/3"
+    }
+  ],
+  "Dipyramids": [
+    {
+      "name": "Triangular Dipyramid",
+      "command": "off_util dip3"
+    },
+    {
+      "name": "Square Dipyramid",
+      "command": "off_util dip4"
+    },
+    {
+      "name": "Pentagonal Dipyramid",
+      "command": "off_util dip5"
+    },
+    {
+      "name": "Pentagrammic Dipyramid",
+      "command": "off_util dip5/2"
+    },
+    {
+      "name": "{7/2}-Dipyramid",
+      "command": "off_util dip7/2"
+    },
+    {
+      "name": "{7/3}-Dipyramid",
+      "command": "off_util dip7/3"
+    }
+  ],
+  "Antiprisms": [
+    {
+      "name": "Triangular Antiprism",
+      "command": "off_util ant3"
+    },
+    {
+      "name": "Square Antiprism",
+      "command": "off_util ant4"
+    },
+    {
+      "name": "Pentagonal Antiprism",
+      "command": "off_util ant5"
+    },
+    {
+      "name": "Pentagrammic Antiprism",
+      "command": "off_util ant5/2"
+    },
+    {
+      "name": "Crossed Pentagrammic Antiprism",
+      "command": "off_util ant5/3"
+    },
+    {
+      "name": "Hexagonal Antiprism",
+      "command": "off_util ant6"
+    },
+    {
+      "name": "Heptagonal Antiprism",
+      "command": "off_util ant7"
+    },
+    {
+      "name": "{7/2}-Antiprism",
+      "command": "off_util ant7/2"
+    },
+    {
+      "name": "{7/3}-Antiprism",
+      "command": "off_util ant7/3"
+    },
+    {
+      "name": "{7/4}-Antiprism",
+      "command": "off_util ant7/4"
+    }
+  ],
+  "Trapezohedra": [
+    {
+      "name": "Trigonal Trapezohedron",
+      "command": "off_util ant3_d"
+    },
+    {
+      "name": "Tetragonal Trapezohedron",
+      "command": "off_util ant4_d"
+    },
+    {
+      "name": "Pentagonal Trapezohedron",
+      "command": "off_util ant5_d"
+    },
+    {
+      "name": "Pentagrammic Trapezohedron",
+      "command": "off_util ant5/2_d"
+    },
+    {
+      "name": "Crossed Pentagrammic Trapezohedron",
+      "command": "off_util ant5/3_d"
+    },
+    {
+      "name": "Hexagonal Trapezohedron",
+      "command": "off_util ant6_d"
+    },
+    {
+      "name": "Heptagonal Trapezohedron",
+      "command": "off_util ant7_d"
+    },
+    {
+      "name": "{7/2}-Trapezohedron",
+      "command": "off_util ant7/2_d"
+    },
+    {
+      "name": "{7/3}-Trapezohedron",
+      "command": "off_util ant7/3_d"
+    },
+    {
+      "name": "{7/4}-Trapezohedron",
+      "command": "off_util ant7/4_d"
+    }
+  ],
+  "Cupolae": [
+    {
+      "name": "Triangular Cupola",
+      "command": "off_util cup3"
+    },
+    {
+      "name": "{3/2}-Cupola",
+      "command": "off_util cup3/2"
+    },
+    {
+      "name": "Square Cupola",
+      "command": "off_util cup4"
+    },
+    {
+      "name": "{4/3}-Cupola",
+      "command": "off_util cup4/3"
+    },
+    {
+      "name": "Pentagonal Cupola",
+      "command": "off_util cup5"
+    },
+    {
+      "name": "Pentagrammic Cupola",
+      "command": "off_util cup5/2"
+    },
+    {
+      "name": "{5/3}-Cupola",
+      "command": "off_util cup5/3"
+    },
+    {
+      "name": "{7/2}-Cupola",
+      "command": "off_util cup7/2"
+    },
+    {
+      "name": "{7/3}-Cupola",
+      "command": "off_util cup7/3"
+    },
+    {
+      "name": "{7/4}-Cupola",
+      "command": "off_util cup7/4"
+    },
+    {
+      "name": "{7/5}-Cupola",
+      "command": "off_util cup7/5"
+    }
+  ],
+  "Gyrobicupolae": [
+    {
+      "name": "Triangular Gyrobicupola",
+      "command": "off_util gyr3"
+    },
+    {
+      "name": "{3/2}-Gyrobicupola",
+      "command": "off_util gyr3/2"
+    },
+    {
+      "name": "Square Gyrobicupola",
+      "command": "off_util gyr4"
+    },
+    {
+      "name": "{4/3}-Gyrobicupola",
+      "command": "off_util gyr4/3"
+    },
+    {
+      "name": "Pentagonal Gyrobicupola",
+      "command": "off_util gyr5"
+    },
+    {
+      "name": "Pentagrammic Gyrobicupola",
+      "command": "off_util gyr5/2"
+    },
+    {
+      "name": "{5/3}-Gyrobicupola",
+      "command": "off_util gyr5/3"
+    },
+    {
+      "name": "{7/2}-Gyrobicupola",
+      "command": "off_util gyr7/2"
+    },
+    {
+      "name": "{7/3}-Gyrobicupola",
+      "command": "off_util gyr7/3"
+    },
+    {
+      "name": "{7/4}-Gyrobicupola",
+      "command": "off_util gyr7/4"
+    },
+    {
+      "name": "{7/5}-Gyrobicupola",
+      "command": "off_util gyr7/5"
+    }
+  ],
+  "Orthobicupolae": [
+    {
+      "name": "Triangular Orthobicupola",
+      "command": "off_util ort3"
+    },
+    {
+      "name": "{3/2}-Orthobicupola",
+      "command": "off_util ort3/2"
+    },
+    {
+      "name": "Square Orthobicupola",
+      "command": "off_util ort4"
+    },
+    {
+      "name": "{4/3}-Orthobicupola",
+      "command": "off_util ort4/3"
+    },
+    {
+      "name": "Pentagonal Orthobicupola",
+      "command": "off_util ort5"
+    },
+    {
+      "name": "Pentagrammic Orthobicupola",
+      "command": "off_util ort5/2"
+    },
+    {
+      "name": "{5/3}-Orthobicupola",
+      "command": "off_util ort5/3"
+    },
+    {
+      "name": "{7/2}-Orthobicupola",
+      "command": "off_util ort7/2"
+    },
+    {
+      "name": "{7/3}-Orthobicupola",
+      "command": "off_util ort7/3"
+    },
+    {
+      "name": "{7/4}-Orthobicupola",
+      "command": "off_util ort7/4"
+    },
+    {
+      "name": "{7/5}-Orthobicupola",
+      "command": "off_util ort7/5"
+    }
+  ],
+  "Snub Antiprisms": [
+    {
+      "name": "Snub Triangular Antiprism",
+      "command": "off_util snu3"
+    },
+    {
+      "name": "Snub {3/2}-Antiprism",
+      "command": "off_util snu3/2"
+    },
+    {
+      "name": "Snub Square Antiprism",
+      "command": "off_util snu4"
+    },
+    {
+      "name": "Snub {4/3}-Antiprism",
+      "command": "off_util snu4/3"
+    },
+    {
+      "name": "Snub Pentagonal Antiprism",
+      "command": "off_util snu5"
+    },
+    {
+      "name": "Snub Pentagrammic Antiprism",
+      "command": "off_util snu5/2"
+    },
+    {
+      "name": "Snub {5/3}-Antiprism",
+      "command": "off_util snu5/3"
+    },
+    {
+      "name": "Snub {5/4}-Antiprism",
+      "command": "off_util snu5/4"
+    },
+    {
+      "name": "Snub Hexagonal Antiprism",
+      "command": "off_util snu6"
+    },
+    {
+      "name": "Snub Heptagonal Antiprism",
+      "command": "off_util snu7"
+    },
+    {
+      "name": "Snub {7/2}-Antiprism",
+      "command": "off_util snu7/2"
+    },
+    {
+      "name": "Snub {7/3}-Antiprism",
+      "command": "off_util snu7/3"
+    },
+    {
+      "name": "Snub {7/4}-Antiprism",
+      "command": "off_util snu7/4"
+    },
+    {
+      "name": "Snub {7/5}-Antiprism",
+      "command": "off_util snu7/5"
+    }
+  ]
+}

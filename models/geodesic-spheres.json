@@ -1,0 +1,536 @@
+{
+  "Class I": [
+    {
+      "name": "Class I F1 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_1"
+    },
+    {
+      "name": "Class I F1 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o1"
+    },
+    {
+      "name": "Class I F1 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t1"
+    },
+    {
+      "name": "Class I F2 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_2"
+    },
+    {
+      "name": "Class I F2 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o2"
+    },
+    {
+      "name": "Class I F2 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t2"
+    },
+    {
+      "name": "Class I F3 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_3"
+    },
+    {
+      "name": "Class I F3 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o3"
+    },
+    {
+      "name": "Class I F3 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t3"
+    },
+    {
+      "name": "Class I F4 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_4"
+    },
+    {
+      "name": "Class I F4 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o4"
+    },
+    {
+      "name": "Class I F4 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t4"
+    },
+    {
+      "name": "Class I F5 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_5"
+    },
+    {
+      "name": "Class I F5 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o5"
+    },
+    {
+      "name": "Class I F5 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t5"
+    },
+    {
+      "name": "Class I F7 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_7"
+    },
+    {
+      "name": "Class I F7 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o7"
+    },
+    {
+      "name": "Class I F7 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t7"
+    },
+    {
+      "name": "Class I F10 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_10"
+    },
+    {
+      "name": "Class I F10 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o10"
+    },
+    {
+      "name": "Class I F10 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t10"
+    },
+    {
+      "name": "Class I F20 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_20"
+    },
+    {
+      "name": "Class I F20 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o20"
+    },
+    {
+      "name": "Class I F20 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t20"
+    }
+  ],
+  "Class II": [
+    {
+      "name": "Class II F2 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_1_1"
+    },
+    {
+      "name": "Class II F2 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o1_1"
+    },
+    {
+      "name": "Class II F2 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t1_1"
+    },
+    {
+      "name": "Class II F4 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_2_2"
+    },
+    {
+      "name": "Class II F4 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o2_2"
+    },
+    {
+      "name": "Class II F4 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t2_2"
+    },
+    {
+      "name": "Class II F6 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_3_3"
+    },
+    {
+      "name": "Class II F6 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o3_3"
+    },
+    {
+      "name": "Class II F6 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t3_3"
+    },
+    {
+      "name": "Class II F8 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_4_4"
+    },
+    {
+      "name": "Class II F8 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o4_4"
+    },
+    {
+      "name": "Class II F8 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t4_4"
+    },
+    {
+      "name": "Class II F10 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_5_5"
+    },
+    {
+      "name": "Class II F10 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o5_5"
+    },
+    {
+      "name": "Class II F10 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t5_5"
+    },
+    {
+      "name": "Class II F14 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_7_7"
+    },
+    {
+      "name": "Class II F14 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o7_7"
+    },
+    {
+      "name": "Class II F14 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t7_7"
+    },
+    {
+      "name": "Class II F20 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_10_10"
+    },
+    {
+      "name": "Class II F20 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o10_10"
+    },
+    {
+      "name": "Class II F20 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t10_10"
+    },
+    {
+      "name": "Class II F40 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_20_20"
+    },
+    {
+      "name": "Class II F40 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o20_20"
+    },
+    {
+      "name": "Class II F40 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t20_20"
+    }
+  ],
+  "Class III": [
+    {
+      "name": "Class III (2,1) F3 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_2_1"
+    },
+    {
+      "name": "Class III (2,1) F3 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o2_1"
+    },
+    {
+      "name": "Class III (2,1) F3 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t2_1"
+    },
+    {
+      "name": "Class III (3,1) F4 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_3_1"
+    },
+    {
+      "name": "Class III (3,1) F4 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o3_1"
+    },
+    {
+      "name": "Class III (3,1) F4 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t3_1"
+    },
+    {
+      "name": "Class III (3,2) F5 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_3_2"
+    },
+    {
+      "name": "Class III (3,2) F5 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o3_2"
+    },
+    {
+      "name": "Class III (3,2) F5 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t3_2"
+    },
+    {
+      "name": "Class III (4,1) F5 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_4_1"
+    },
+    {
+      "name": "Class III (4,1) F5 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o4_1"
+    },
+    {
+      "name": "Class III (4,1) F5 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t4_1"
+    },
+    {
+      "name": "Class III (4,2) F6 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_4_2"
+    },
+    {
+      "name": "Class III (4,2) F6 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o4_2"
+    },
+    {
+      "name": "Class III (4,2) F6 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t4_2"
+    },
+    {
+      "name": "Class III (4,3) F7 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_4_3"
+    },
+    {
+      "name": "Class III (4,3) F7 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o4_3"
+    },
+    {
+      "name": "Class III (4,3) F7 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t4_3"
+    },
+    {
+      "name": "Class III (5,1) F6 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_5_1"
+    },
+    {
+      "name": "Class III (5,1) F6 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o5_1"
+    },
+    {
+      "name": "Class III (5,1) F6 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t5_1"
+    },
+    {
+      "name": "Class III (5,2) F7 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_5_2"
+    },
+    {
+      "name": "Class III (5,2) F7 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o5_2"
+    },
+    {
+      "name": "Class III (5,2) F7 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t5_2"
+    },
+    {
+      "name": "Class III (5,3) F8 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_5_3"
+    },
+    {
+      "name": "Class III (5,3) F8 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o5_3"
+    },
+    {
+      "name": "Class III (5,3) F8 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t5_3"
+    },
+    {
+      "name": "Class III (5,4) F9 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_5_4"
+    },
+    {
+      "name": "Class III (5,4) F9 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o5_4"
+    },
+    {
+      "name": "Class III (5,4) F9 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t5_4"
+    },
+    {
+      "name": "Class III (7,1) F8 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_7_1"
+    },
+    {
+      "name": "Class III (7,1) F8 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o7_1"
+    },
+    {
+      "name": "Class III (7,1) F8 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t7_1"
+    },
+    {
+      "name": "Class III (7,2) F9 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_7_2"
+    },
+    {
+      "name": "Class III (7,2) F9 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o7_2"
+    },
+    {
+      "name": "Class III (7,2) F9 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t7_2"
+    },
+    {
+      "name": "Class III (7,3) F10 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_7_3"
+    },
+    {
+      "name": "Class III (7,3) F10 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o7_3"
+    },
+    {
+      "name": "Class III (7,3) F10 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t7_3"
+    },
+    {
+      "name": "Class III (7,4) F11 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_7_4"
+    },
+    {
+      "name": "Class III (7,4) F11 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o7_4"
+    },
+    {
+      "name": "Class III (7,4) F11 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t7_4"
+    },
+    {
+      "name": "Class III (7,5) F12 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_7_5"
+    },
+    {
+      "name": "Class III (7,5) F12 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o7_5"
+    },
+    {
+      "name": "Class III (7,5) F12 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t7_5"
+    },
+    {
+      "name": "Class III (10,1) F11 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_10_1"
+    },
+    {
+      "name": "Class III (10,1) F11 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o10_1"
+    },
+    {
+      "name": "Class III (10,1) F11 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t10_1"
+    },
+    {
+      "name": "Class III (10,2) F12 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_10_2"
+    },
+    {
+      "name": "Class III (10,2) F12 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o10_2"
+    },
+    {
+      "name": "Class III (10,2) F12 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t10_2"
+    },
+    {
+      "name": "Class III (10,3) F13 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_10_3"
+    },
+    {
+      "name": "Class III (10,3) F13 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o10_3"
+    },
+    {
+      "name": "Class III (10,3) F13 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t10_3"
+    },
+    {
+      "name": "Class III (10,4) F14 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_10_4"
+    },
+    {
+      "name": "Class III (10,4) F14 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o10_4"
+    },
+    {
+      "name": "Class III (10,4) F14 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t10_4"
+    },
+    {
+      "name": "Class III (10,5) F15 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_10_5"
+    },
+    {
+      "name": "Class III (10,5) F15 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o10_5"
+    },
+    {
+      "name": "Class III (10,5) F15 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t10_5"
+    },
+    {
+      "name": "Class III (10,7) F17 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_10_7"
+    },
+    {
+      "name": "Class III (10,7) F17 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o10_7"
+    },
+    {
+      "name": "Class III (10,7) F17 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t10_7"
+    },
+    {
+      "name": "Class III (20,1) F21 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_20_1"
+    },
+    {
+      "name": "Class III (20,1) F21 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o20_1"
+    },
+    {
+      "name": "Class III (20,1) F21 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t20_1"
+    },
+    {
+      "name": "Class III (20,2) F22 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_20_2"
+    },
+    {
+      "name": "Class III (20,2) F22 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o20_2"
+    },
+    {
+      "name": "Class III (20,2) F22 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t20_2"
+    },
+    {
+      "name": "Class III (20,3) F23 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_20_3"
+    },
+    {
+      "name": "Class III (20,3) F23 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o20_3"
+    },
+    {
+      "name": "Class III (20,3) F23 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t20_3"
+    },
+    {
+      "name": "Class III (20,4) F24 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_20_4"
+    },
+    {
+      "name": "Class III (20,4) F24 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o20_4"
+    },
+    {
+      "name": "Class III (20,4) F24 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t20_4"
+    },
+    {
+      "name": "Class III (20,5) F25 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_20_5"
+    },
+    {
+      "name": "Class III (20,5) F25 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o20_5"
+    },
+    {
+      "name": "Class III (20,5) F25 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t20_5"
+    },
+    {
+      "name": "Class III (20,7) F27 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_20_7"
+    },
+    {
+      "name": "Class III (20,7) F27 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o20_7"
+    },
+    {
+      "name": "Class III (20,7) F27 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t20_7"
+    },
+    {
+      "name": "Class III (20,10) F30 Icosahedral Geodesic Sphere",
+      "command": "off_util geo_20_10"
+    },
+    {
+      "name": "Class III (20,10) F30 Octahedral Geodesic Sphere",
+      "command": "off_util geo_o20_10"
+    },
+    {
+      "name": "Class III (20,10) F30 Tetrahedral Geodesic Sphere",
+      "command": "off_util geo_t20_10"
+    }
+  ]
+}
