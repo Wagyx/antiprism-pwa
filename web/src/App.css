@@ -131,7 +131,8 @@
 }
 
 .field input,
-.field textarea {
+.field textarea,
+.op-command {
   font: inherit;
   font-size: 0.78rem;
   text-transform: none;
@@ -514,6 +515,37 @@
   opacity: 0.55;
   text-transform: none;
   letter-spacing: normal;
+}
+
+.op-command {
+  width: 100%;
+  font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, monospace;
+  font-size: 0.72rem;
+}
+
+.seed-file {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 0.55rem;
+}
+
+.seed-file-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.seed-file-label,
+.seed-file-name {
+  font-size: 0.75rem;
+}
+
+.seed-file-name {
+  opacity: 0.85;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .op-cmdline {

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { saveBlob, saveTextFile } from "../io/saveTextFile";
 import { librariesDatabaseZip, librariesOffZip, libraryOffZip } from "./archive";
+import { migrateLibrary } from "./snapshot";
 import { loadLibraries, readLibraryFile, removeLibraryRecord, saveLibrary } from "./store";
 import {
   addFolder,
@@ -88,8 +89,9 @@ export function useLibrary() {
     loadLibraries()
       .then((docs) => {
         if (cancelled) return;
-        librariesRef.current = docs;
-        setLibraries(docs);
+        const migrated = docs.map(migrateLibrary);
+        librariesRef.current = migrated;
+        setLibraries(migrated);
         setReady(true);
       })
       .catch((error: unknown) => {

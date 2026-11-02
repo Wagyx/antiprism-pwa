@@ -1,3 +1,4 @@
+import { migratePipeline } from "../pipeline/commandStep";
 import { countsFromOff } from "./counts";
 import {
   LIBRARY_FORMAT,
@@ -590,7 +591,6 @@ function normalizeNode(
   if (typeof value.offText !== "string" || !value.offText.trim()) {
     throw new Error(`"${name}" has no OFF output`);
   }
-  const pipeline = Array.isArray(value.pipeline) ? value.pipeline : [];
   let inputFile: LibraryEntry["inputFile"] = null;
   if (isRecord(value.inputFile) && typeof value.inputFile.text === "string") {
     inputFile = {
@@ -599,15 +599,16 @@ function normalizeNode(
       text: value.inputFile.text,
     };
   }
+  const migrated = migratePipeline(value.pipeline, inputFile);
   return {
     type: "entry",
     id: uniqueId,
     name,
     createdAt,
     modifiedAt,
-    inputFile,
+    inputFile: migrated.inputFile,
     offText: value.offText,
-    pipeline: pipeline as LibraryEntry["pipeline"],
+    pipeline: migrated.steps,
     counts: asCounts(value.counts, value.offText, name),
   };
 }

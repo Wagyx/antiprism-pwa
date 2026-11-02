@@ -7,20 +7,20 @@ import {
   useState,
   type PointerEvent as ReactPointerEvent,
 } from "react";
+import { editorKey, type CommandStep } from "./pipeline/commandStep";
 import { runPipeline } from "./pipeline/runPipeline";
 import {
-  createImportFileOp,
   defaultDisplay,
   saveAsOption,
   type DisplayOptions,
-  type PipelineOp,
   type SaveAsFormatId,
 } from "./pipeline/types";
 import { useUndoable } from "./pipeline/useUndoable";
 import { countsFromOff } from "./library/counts";
-import { clonePipeline, inputFromPipeline, pipelineForEditor } from "./library/snapshot";
+import { cloneSteps, inputForEditor, pipelineForEditor } from "./library/snapshot";
 import { findEntry, folderByPath, requireUnique, resolveDestination } from "./library/tree";
-import type { EntryRef, PolyCounts } from "./library/types";
+import type { CliDraft } from "./ui/CliPipelineDialog";
+import type { EntryRef, LibraryInputFile, PolyCounts } from "./library/types";
 import { useLibrary } from "./library/useLibrary";
 import { saveOffFile } from "./io/saveOff";
 import { saveTextFile } from "./io/saveTextFile";
@@ -45,9 +45,6 @@ type EditorSession = {
   location: { libraryId: string; folderIds: string[] };
 };
 
-function opsKey(ops: PipelineOp[]): string {
-  return JSON.stringify(ops);
-}
 
 function Stage({
   offText,
@@ -95,7 +92,7 @@ export default function App() {
     redo,
     canUndo,
     canRedo,
-  } = useUndoable<PipelineOp[]>([]);
+  } = useUndoable<CommandStep[]>([]);
 
   const library = useLibrary();
   const [session, setSession] = useState<EditorSession | null>(null);
@@ -104,6 +101,7 @@ export default function App() {
   const [leaveError, setLeaveError] = useState<string | null>(null);
   const [leavePending, setLeavePending] = useState(false);
 
+  const [inputFile, setInputFile] = useState<LibraryInputFile | null>(null);
   const [display, setDisplay] = useState<DisplayOptions>(defaultDisplay);
   const [cameraResetKey, setCameraResetKey] = useState(0);
   const [offText, setOffText] = useState<string | null>(null);
@@ -121,6 +119,7 @@ export default function App() {
   const exitAfterSave = useRef(false);
   const sessionRef = useRef(session);
   const presentRef = useRef(present);
+  const inputFileRef = useRef(inputFile);
   const saveCurrentRef = useRef<() => void>(() => {});
 
   const clearBusyTimer = () => {
@@ -130,14 +129,14 @@ export default function App() {
     }
   };
 
-  const evaluate = useEffectEvent(async (ops: PipelineOp[], runId: number) => {
+  const evaluate = useEffectEvent(async (ops: CommandStep[], file: LibraryInputFile | null, runId: number) => {
     clearBusyTimer();
     busyTimer.current = window.setTimeout(() => {
       if (runId === latestRun.current) setBusy(true);
     }, 250);
 
     try {
-      const result = await runPipeline(ops);
+      const result = await runPipeline(ops, file);
       if (runId !== latestRun.current) return;
 
       if (!result.ok) {
@@ -177,24 +176,25 @@ export default function App() {
   });
 
   const editorOpen = session !== null;
-  const dirty = session !== null && opsKey(present) !== session.baseline;
+  const dirty = session !== null && editorKey(present, inputFile) !== session.baseline;
 
   useEffect(() => {
     sessionRef.current = session;
     presentRef.current = present;
-  }, [session, present]);
+    inputFileRef.current = inputFile;
+  }, [session, present, inputFile]);
 
   useEffect(() => {
     if (!editorOpen) return;
-    const key = opsKey(present);
+    const key = editorKey(present, inputFile);
     const t = window.setTimeout(() => {
       if (key === lastRunKey.current) return;
       lastRunKey.current = key;
       const runId = ++latestRun.current;
-      void evaluate(present, runId);
+      void evaluate(present, inputFile, runId);
     }, DEBOUNCE_MS);
     return () => window.clearTimeout(t);
-  }, [present, editorOpen]);
+  }, [present, inputFile, editorOpen]);
 
   const countsFor = (off: string): PolyCounts => {
     if (!off.trim()) return { nVertices: 0, nEdges: 0, nFaces: 0 };
@@ -210,8 +210,8 @@ export default function App() {
     return {
       name,
       offText: off,
-      pipeline: clonePipeline(presentRef.current),
-      inputFile: inputFromPipeline(presentRef.current),
+      pipeline: cloneSteps(presentRef.current),
+      inputFile: inputFileRef.current,
       counts: countsFor(off),
     };
   };
@@ -226,9 +226,16 @@ export default function App() {
     setCameraResetKey((key) => key + 1);
   };
 
-  const openSession = (next: EditorSession, ops: PipelineOp[], off: string | null) => {
+  const openSession = (
+    next: EditorSession,
+    ops: CommandStep[],
+    file: LibraryInputFile | null,
+    off: string | null,
+  ) => {
     lastRunKey.current = "";
     presentRef.current = ops;
+    inputFileRef.current = file;
+    setInputFile(file);
     loadStack(ops);
     offTextRef.current = off;
     setOffText(off);
@@ -241,7 +248,6 @@ export default function App() {
 
   const onCreatePolyhedron = () => {
     const dest = resolveDestination(library.libraries, library.nav);
-    const ops = [createImportFileOp()];
     openSession(
       {
         ref: null,
@@ -249,12 +255,13 @@ export default function App() {
         baseline: "",
         location: dest,
       },
-      ops,
+      [],
+      null,
       null,
     );
   };
 
-  const onCreateFromCli = (ops: PipelineOp[]) => {
+  const onCreateFromCli = (draft: CliDraft) => {
     const dest = resolveDestination(library.libraries, library.nav);
     openSession(
       {
@@ -263,7 +270,8 @@ export default function App() {
         baseline: "",
         location: dest,
       },
-      ops,
+      draft.steps,
+      draft.inputFile,
       null,
     );
   };
@@ -274,15 +282,17 @@ export default function App() {
     const hit = findEntry(doc, ref.entryId);
     if (!hit) throw new Error("Entry not found");
     const ops = pipelineForEditor(hit.entry);
+    const file = inputForEditor(hit.entry);
     library.setSelected(ref);
     openSession(
       {
         ref,
         name: hit.entry.name,
-        baseline: opsKey(ops),
+        baseline: editorKey(ops, file),
         location: { libraryId: doc.id, folderIds: hit.folderIds },
       },
       ops,
+      file,
       hit.entry.offText,
     );
   };
@@ -309,7 +319,7 @@ export default function App() {
     if (!current?.ref || !current.name) return false;
     const draft = buildDraft(current.name);
     await library.updateEntry(current.ref, draft);
-    const baseline = opsKey(draft.pipeline);
+    const baseline = editorKey(draft.pipeline, draft.inputFile);
     setSession((value) => (value ? { ...value, baseline } : value));
     return true;
   };
@@ -317,7 +327,7 @@ export default function App() {
   const requestExit = () => {
     const current = sessionRef.current;
     if (!current) return;
-    if (opsKey(presentRef.current) !== current.baseline) {
+    if (editorKey(presentRef.current, inputFileRef.current) !== current.baseline) {
       setLeaveError(null);
       setLeaveOpen(true);
       return;
@@ -473,7 +483,12 @@ export default function App() {
     <div className="app" style={{ ["--panel-width" as string]: `${panelWidth}px` }}>
       {editorOpen && session ? (
         <StackPanel
-          ops={present}
+          steps={present}
+          inputFile={inputFile}
+          onInputFile={(file) => {
+            inputFileRef.current = file;
+            setInputFile(file);
+          }}
           onCommit={commitStack}
           onPatch={patchStack}
           busy={busy}
@@ -547,7 +562,7 @@ export default function App() {
           onSave={async (name, location) => {
             const draft = buildDraft(name);
             const ref = await library.createEntry(draft, location);
-            const baseline = opsKey(draft.pipeline);
+            const baseline = editorKey(draft.pipeline, draft.inputFile);
             const leaving = exitAfterSave.current;
             exitAfterSave.current = false;
             setSaveMode(null);

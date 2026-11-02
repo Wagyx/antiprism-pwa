@@ -1,6 +1,17 @@
 import { useRef, useState } from "react";
 import { readOffFile } from "../io/loadOff";
+import type { LibraryInputFile } from "../library/types";
 import { saveTextFile } from "../io/saveTextFile";
+import {
+  applyViewList,
+  commandGeneratesGeometry,
+  commandTool,
+  conwaySeedOf,
+  readStartingFile,
+  stepFromKind,
+  viewFromCommand,
+  type CommandStep,
+} from "../pipeline/commandStep";
 import {
   isFieldVisible,
   TOOL_PARAM_SCHEMAS,
@@ -11,7 +22,6 @@ import {
   CONWAY_OP_CHOICES,
   CONWAY_OP_CHOICE_BY_ID,
   CONWAY_SEEDS,
-  conwayNotationFromSteps,
   newConwayOpStep,
   type ConwayOpStep,
 } from "../pipeline/conwayInfo";
@@ -20,12 +30,9 @@ import {
   CONWAY_SEED_FAMILIES,
   conwaySeedToken,
   categoryIdForKind,
-  createOp,
-  flagsOpSummary,
   isFlagsTool,
   isTextTool,
   OFF_COLOR_PRESETS,
-  opToCommandLine,
   POLYGON_TYPES,
   SAVE_AS_OPTIONS,
   textToolDownloadName,
@@ -77,9 +84,11 @@ const GEODESIC_METHOD_OPTIONS = [
 ] as const;
 
 type Props = {
-  ops: PipelineOp[];
-  onCommit: (ops: PipelineOp[]) => void;
-  onPatch: (ops: PipelineOp[]) => void;
+  steps: CommandStep[];
+  inputFile: LibraryInputFile | null;
+  onInputFile: (file: LibraryInputFile | null) => void;
+  onCommit: (steps: CommandStep[]) => void;
+  onPatch: (steps: CommandStep[]) => void;
   busy: boolean;
   error: string | null;
   failedStep: number | null;
@@ -111,35 +120,16 @@ function updateOp(ops: PipelineOp[], id: string, patch: Partial<PipelineOp>): Pi
   });
 }
 
-function moveOp(ops: PipelineOp[], index: number, dir: -1 | 1): PipelineOp[] {
+function moveItem<T>(items: T[], index: number, dir: -1 | 1): T[] {
   const j = index + dir;
-  if (j < 0 || j >= ops.length) return ops;
-  const next = ops.slice();
-  [next[index], next[j]] = [next[j], next[index]];
+  if (j < 0 || j >= items.length) return items;
+  const next = items.slice();
+  const current = next[index];
+  const other = next[j];
+  if (current === undefined || other === undefined) return items;
+  next[index] = other;
+  next[j] = current;
   return next;
-}
-
-function opSummary(op: PipelineOp): string {
-  switch (op.kind) {
-    case "polygon":
-      return `${op.polygonType} ${op.numSides}`;
-    case "import_file":
-      return op.fileName
-        ? `${op.format.toUpperCase()} · ${op.fileName}`
-        : "(no file)";
-    case "conway_seed":
-      return conwaySeedToken(op);
-    case "conway":
-      return conwayNotationFromSteps(op.steps) || "…";
-    case "geodesic":
-      return `f=${op.frequency} ${op.faceClass} ${op.method}`;
-    case "off_color":
-      return [op.faces && `f:${op.faces}`, op.edges && `e:${op.edges}`, op.vertices && `v:${op.vertices}`]
-        .filter(Boolean)
-        .join(" ") || "…";
-    default:
-      return flagsOpSummary(op);
-  }
 }
 
 function setParam(
@@ -167,7 +157,8 @@ function FlagsParamFields({
   const schema = TOOL_PARAM_SCHEMAS[op.kind];
 
   const renderField = (field: ParamField) => {
-    const value = op.params[field.key] ?? field.default;
+    const present = Object.prototype.hasOwnProperty.call(op.params, field.key);
+    const value = present ? op.params[field.key] : undefined;
 
     if (field.type === "bool") {
       return (
@@ -195,18 +186,19 @@ function FlagsParamFields({
             min={field.min}
             max={field.max}
             step={field.step ?? 1}
-            value={Number.isFinite(n) ? n : field.default}
+            value={present && Number.isFinite(n) ? n : ""}
             aria-label={field.label}
             onChange={(e) => {
-              const next = Number(e.target.value);
-              onPatch(
-                setParam(
-                  ops,
-                  op,
-                  field.key,
-                  Number.isFinite(next) ? next : field.default,
-                ),
-              );
+              const text = e.target.value;
+              if (text === "") {
+                const params = { ...op.params };
+                delete params[field.key];
+                onPatch(updateOp(ops, op.id, { params }));
+                return;
+              }
+              const next = Number(text);
+              if (!Number.isFinite(next)) return;
+              onPatch(setParam(ops, op, field.key, next));
             }}
             onBlur={() => onCommit(ops)}
           />
@@ -221,9 +213,18 @@ function FlagsParamFields({
           <span>{field.label}</span>
           <MenuSelect
             aria-label={field.label}
-            value={String(value ?? "")}
+            value={present ? String(value ?? "") : ""}
+            fallbackLabel="not set"
             options={field.options}
-            onChange={(v) => onCommit(setParam(ops, op, field.key, v))}
+            onChange={(v) => {
+              if (v === "") {
+                const params = { ...op.params };
+                delete params[field.key];
+                onCommit(updateOp(ops, op.id, { params }));
+                return;
+              }
+              onCommit(setParam(ops, op, field.key, v));
+            }}
           />
           {field.hint ? <p className="hint">{field.hint}</p> : null}
         </label>
@@ -235,7 +236,7 @@ function FlagsParamFields({
         <span>{field.label}</span>
         <input
           type="text"
-          value={String(value ?? "")}
+          value={present ? String(value ?? "") : ""}
           placeholder={field.placeholder}
           aria-label={field.label}
           onChange={(e) =>
@@ -448,8 +449,6 @@ function ConwayOpsFields({
     setSteps(steps, true);
   };
 
-  const notation = conwayNotationFromSteps(op.steps);
-
   return (
     <div className="stack-card-body">
       <div className="conway-ops-stack">
@@ -564,17 +563,97 @@ function ConwayOpsFields({
       >
         Add operator
       </button>
-      <p className="hint">
-        Applied top → bottom
-        {notation ? (
-          <>
-            {" "}
-            (<code>conway -r {notation}</code>)
-          </>
-        ) : null}
-        . Pipes previous OFF in.
-      </p>
+      <p className="hint">Applied top → bottom. Pipes previous OFF in.</p>
     </div>
+  );
+}
+
+function ConwaySeedControls({
+  family,
+  numSides,
+  onFamily,
+  onSides,
+  onCommitSides,
+}: {
+  family: ConwaySeedFamily;
+  numSides: number;
+  onFamily: (family: ConwaySeedFamily) => void;
+  onSides: (numSides: number) => void;
+  onCommitSides: () => void;
+}) {
+  const parametric = CONWAY_PARAMETRIC_SEEDS.has(family);
+  return (
+    <div className="stack-card-body">
+      <label className="field">
+        <span>Seed</span>
+        <MenuSelect
+          aria-label="Conway seed"
+          value={family}
+          options={CONWAY_SEED_FAMILY_OPTIONS}
+          onChange={(next) => onFamily(next as ConwaySeedFamily)}
+        />
+      </label>
+      {parametric ? (
+        <label className="field">
+          <span>Sides (n)</span>
+          <input
+            type="number"
+            min={3}
+            max={48}
+            value={numSides}
+            onChange={(e) => onSides(Math.max(3, Number(e.target.value) || 3))}
+            onBlur={onCommitSides}
+          />
+        </label>
+      ) : null}
+    </div>
+  );
+}
+
+function CommandField({
+  command,
+  onCommit,
+}: {
+  command: string;
+  onCommit: (command: string) => void;
+}) {
+  const [draft, setDraft] = useState(command);
+  const [focused, setFocused] = useState(false);
+  const draftRef = useRef(command);
+  const cancelRef = useRef(false);
+  return (
+    <input
+      className="op-command"
+      aria-label="Command"
+      spellCheck={false}
+      value={focused ? draft : command}
+      onFocus={() => {
+        cancelRef.current = false;
+        draftRef.current = command;
+        setDraft(command);
+        setFocused(true);
+      }}
+      onChange={(event) => {
+        draftRef.current = event.target.value;
+        setDraft(event.target.value);
+      }}
+      onBlur={() => {
+        const cancelled = cancelRef.current;
+        cancelRef.current = false;
+        setFocused(false);
+        if (!cancelled && draftRef.current !== command) onCommit(draftRef.current);
+      }}
+      onKeyDown={(event) => {
+        if (event.key === "Enter") {
+          event.currentTarget.blur();
+        } else if (event.key === "Escape") {
+          cancelRef.current = true;
+          draftRef.current = command;
+          setDraft(command);
+          event.currentTarget.blur();
+        }
+      }}
+    />
   );
 }
 
@@ -615,14 +694,15 @@ function OpFields({
             type="number"
             min={3}
             max={48}
-            value={op.numSides}
-            onChange={(e) =>
+            value={Number.isFinite(op.numSides) ? op.numSides : ""}
+            onChange={(e) => {
+              const text = e.target.value;
               onPatch(
                 updateOp(ops, op.id, {
-                  numSides: Number(e.target.value) || 3,
+                  numSides: text === "" ? Number.NaN : Number(text),
                 }),
-              )
-            }
+              );
+            }}
             onBlur={() => onCommit(ops)}
           />
         </label>
@@ -688,13 +768,37 @@ function OpFields({
   }
 
   if (op.kind === "conway") {
+    const seed = conwaySeedOf(op);
     return (
-      <ConwayOpsFields
-        op={op}
-        ops={ops}
-        onCommit={onCommit}
-        onPatch={onPatch}
-      />
+      <>
+        {seed ? (
+          <ConwaySeedControls
+            family={seed.family}
+            numSides={seed.numSides}
+            onFamily={(family) =>
+              onCommit(
+                ops.map((item) =>
+                  item.id === op.id ? { ...item, conwaySeed: family } : item,
+                ),
+              )
+            }
+            onSides={(numSides) =>
+              onPatch(
+                ops.map((item) =>
+                  item.id === op.id ? { ...item, conwaySeedN: numSides } : item,
+                ),
+              )
+            }
+            onCommitSides={() => onCommit(ops)}
+          />
+        ) : null}
+        <ConwayOpsFields
+          op={op}
+          ops={ops}
+          onCommit={onCommit}
+          onPatch={onPatch}
+        />
+      </>
     );
   }
 
@@ -707,14 +811,15 @@ function OpFields({
             type="number"
             min={1}
             max={32}
-            value={op.frequency}
-            onChange={(e) =>
+            value={Number.isFinite(op.frequency) ? op.frequency : ""}
+            onChange={(e) => {
+              const text = e.target.value;
               onPatch(
                 updateOp(ops, op.id, {
-                  frequency: Math.max(1, Number(e.target.value) || 1),
+                  frequency: text === "" ? Number.NaN : Number(text),
                 }),
-              )
-            }
+              );
+            }}
             onBlur={() => onCommit(ops)}
           />
         </label>
@@ -723,6 +828,7 @@ function OpFields({
           <MenuSelect
             aria-label="Geodesic class"
             value={op.faceClass}
+            fallbackLabel="not set"
             options={GEODESIC_CLASS_OPTIONS}
             onChange={(faceClass) =>
               onCommit(updateOp(ops, op.id, { faceClass }))
@@ -734,6 +840,7 @@ function OpFields({
           <MenuSelect
             aria-label="Geodesic method"
             value={op.method}
+            fallbackLabel="not set"
             options={GEODESIC_METHOD_OPTIONS}
             onChange={(method) =>
               onCommit(
@@ -906,8 +1013,69 @@ function EditorTitle({
   );
 }
 
+function SeedFileBar({
+  file,
+  used,
+  inputRef,
+  onChange,
+}: {
+  file: LibraryInputFile | null;
+  used: boolean;
+  inputRef: { current: HTMLInputElement | null };
+  onChange: (file: LibraryInputFile | null) => void;
+}) {
+  const [loadError, setLoadError] = useState<string | null>(null);
+  return (
+    <div className="seed-file">
+      <div className="seed-file-row">
+        <span className="seed-file-label">Starting polyhedron</span>
+        <button type="button" className="tool-btn" onClick={() => inputRef.current?.click()}>
+          {file ? "Replace" : "Load"}
+        </button>
+        {file ? (
+          <button type="button" className="tool-btn" onClick={() => onChange(null)}>
+            Clear
+          </button>
+        ) : null}
+      </div>
+      <input
+        ref={inputRef}
+        type="file"
+        hidden
+        accept=".off,.obj,text/plain"
+        onChange={(event) => {
+          const picked = event.target.files?.[0];
+          event.target.value = "";
+          if (!picked) return;
+          void readStartingFile(picked)
+            .then((next) => {
+              setLoadError(null);
+              onChange(next);
+            })
+            .catch((reason: unknown) => {
+              setLoadError(reason instanceof Error ? reason.message : String(reason));
+            });
+        }}
+      />
+      {file ? <p className="seed-file-name">{file.fileName}</p> : null}
+      <p className="hint">
+        {file && !used
+          ? "Stored, but not fed in — the first command generates the geometry."
+          : "OFF or OBJ. Used when the first command reads a polyhedron."}
+      </p>
+      {loadError ? (
+        <p className="error" role="alert">
+          {loadError}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
 export function StackPanel({
-  ops,
+  steps,
+  inputFile,
+  onInputFile,
   onCommit,
   onPatch,
   busy,
@@ -924,7 +1092,19 @@ export function StackPanel({
   onExit,
 }: Props) {
   useDismissDetails();
+  const fileRef = useRef<HTMLInputElement>(null);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const views = steps.map(
+    (step) =>
+      viewFromCommand(step) ?? {
+        id: step.id,
+        kind: "off_util" as const,
+        enabled: step.enabled,
+        params: {},
+      },
+  );
+  const first = steps.find((step) => step.enabled && step.command.trim());
+  const fileUsed = !first || !commandGeneratesGeometry(first.command);
 
   const isExpanded = (id: string) => expanded[id] ?? true;
 
@@ -935,11 +1115,18 @@ export function StackPanel({
     }));
   };
 
+  const commitViews = (next: PipelineOp[]) => onCommit(applyViewList(steps, next));
+  const patchViews = (next: PipelineOp[]) => onPatch(applyViewList(steps, next));
+
   const addKind = (kind: PipelineKind, insertAt: number) => {
-    const op = createOp(kind, ops.length === 0);
-    const next = [...ops.slice(0, insertAt), op, ...ops.slice(insertAt)];
+    if (kind === "import_file") {
+      fileRef.current?.click();
+      return;
+    }
+    const step = stepFromKind(kind);
+    const next = [...steps.slice(0, insertAt), step, ...steps.slice(insertAt)];
     onCommit(next);
-    setExpanded((prev) => ({ ...prev, [op.id]: true }));
+    setExpanded((prev) => ({ ...prev, [step.id]: true }));
   };
 
   return (
@@ -974,15 +1161,24 @@ export function StackPanel({
             <span className="busy-spinner" role="status" aria-label="Running" />
           ) : null}
         </div>
-        {ops.length === 0 ? (
-          <p className="stack-empty">Add a seed to begin.</p>
+        <SeedFileBar
+          file={inputFile}
+          used={fileUsed}
+          inputRef={fileRef}
+          onChange={onInputFile}
+        />
+        {steps.length === 0 ? (
+          <p className="stack-empty">Add an operation, or load a starting polyhedron.</p>
         ) : null}
-        {ops.map((op, index) => {
-          const open = isExpanded(op.id) || failedStep === index;
-          const outText = stepText[op.id];
-          const textKind = isTextTool(op.kind) ? op.kind : null;
+        {steps.map((step, index) => {
+          const open = isExpanded(step.id) || failedStep === index;
+          const outText = stepText[step.id];
+          const parsed = viewFromCommand(step);
+          const tool = commandTool(step.command);
+          const kindLabel = parsed?.kind ?? (tool || "command");
+          const textKind = isTextTool(tool) ? tool : null;
           return (
-            <div key={op.id} className="stack-item">
+            <div key={step.id} className="stack-item">
               {index > 0 ? (
                 <AddOpButton
                   variant="between"
@@ -990,7 +1186,7 @@ export function StackPanel({
                 />
               ) : null}
               <div
-                className={`stack-card${failedStep === index ? " is-error" : ""}${open ? " is-open" : ""}${op.enabled ? "" : " is-off"}`}
+                className={`stack-card${failedStep === index ? " is-error" : ""}${open ? " is-open" : ""}${step.enabled ? "" : " is-off"}`}
               >
                 <div className="stack-card-head">
                   <button
@@ -998,43 +1194,45 @@ export function StackPanel({
                     className="stack-card-toggle"
                     aria-expanded={open}
                     aria-label={open ? "Collapse step" : "Expand step"}
-                    onClick={() => toggleExpanded(op.id)}
+                    onClick={() => toggleExpanded(step.id)}
                   >
                     {open ? "▾" : "▸"}
                   </button>
                   <label
-                    className={`op-enable${op.enabled ? "" : " is-off"}`}
+                    className={`op-enable${step.enabled ? "" : " is-off"}`}
                     title={
-                      op.enabled
+                      step.enabled
                         ? "On — included in pipeline"
                         : "Off — skipped"
                     }
                   >
                     <input
                       type="checkbox"
-                      checked={op.enabled}
-                      aria-label={op.enabled ? "Disable step" : "Enable step"}
+                      checked={step.enabled}
+                      aria-label={step.enabled ? "Disable step" : "Enable step"}
                       onChange={() =>
                         onCommit(
-                          updateOp(ops, op.id, { enabled: !op.enabled }),
+                          steps.map((item) =>
+                            item.id === step.id ? { ...item, enabled: !item.enabled } : item,
+                          ),
                         )
                       }
                     />
                   </label>
                   <CategoryIcon
-                    category={categoryIdForKind(op.kind)}
+                    category={parsed ? categoryIdForKind(parsed.kind) : "utility"}
                     className="op-kind-icon"
                   />
-                  <span className="op-kind-name">{op.kind}</span>
-                  <ToolInfoButton kind={op.kind} />
+                  <span className="op-kind-name">{kindLabel}</span>
+                  {parsed ? <ToolInfoButton kind={parsed.kind} /> : null}
                   {!open ? (
                     <button
                       type="button"
                       className="stack-card-summary"
-                      onClick={() => toggleExpanded(op.id)}
-                      title={opSummary(op)}
+                      onClick={() => toggleExpanded(step.id)}
+                      title={step.command}
                     >
-                      {opSummary(op)}
+                      {step.command}
                     </button>
                   ) : null}
                   <div className="stack-card-actions">
@@ -1042,24 +1240,22 @@ export function StackPanel({
                       type="button"
                       aria-label="Move up"
                       disabled={index === 0}
-                      onClick={() => onCommit(moveOp(ops, index, -1))}
+                      onClick={() => onCommit(moveItem(steps, index, -1))}
                     >
                       ↑
                     </button>
                     <button
                       type="button"
                       aria-label="Move down"
-                      disabled={index === ops.length - 1}
-                      onClick={() => onCommit(moveOp(ops, index, 1))}
+                      disabled={index === steps.length - 1}
+                      onClick={() => onCommit(moveItem(steps, index, 1))}
                     >
                       ↓
                     </button>
                     <button
                       type="button"
                       aria-label="Remove step"
-                      onClick={() =>
-                        onCommit(ops.filter((o) => o.id !== op.id))
-                      }
+                      onClick={() => onCommit(steps.filter((item) => item.id !== step.id))}
                     >
                       ×
                     </button>
@@ -1067,23 +1263,34 @@ export function StackPanel({
                 </div>
 
                 {open ? (
-                  <>
-                    <OpFields
-                      op={op}
-                      index={index}
-                      ops={ops}
-                      onCommit={onCommit}
-                      onPatch={onPatch}
+                  <div className="stack-card-body">
+                    <CommandField
+                      command={step.command}
+                      onCommit={(command) =>
+                        onCommit(
+                          steps.map((item) =>
+                            item.id === step.id ? { ...item, command } : item,
+                          ),
+                        )
+                      }
                     />
-                    <p className="op-cmdline" title="Equivalent command line">
-                      <code>{opToCommandLine(op)}</code>
-                    </p>
-                  </>
+                    {parsed ? (
+                      <OpFields
+                        op={parsed}
+                        index={index}
+                        ops={views}
+                        onCommit={commitViews}
+                        onPatch={patchViews}
+                      />
+                    ) : (
+                      <p className="hint">This command has no form fields. Edit the line above.</p>
+                    )}
+                  </div>
                 ) : null}
 
                 {failedStep === index && error ? (
                   <p className="op-error" role="alert">
-                    {formatStepError(error, op.kind, index)}
+                    {formatStepError(error, kindLabel, index)}
                   </p>
                 ) : null}
 
@@ -1113,7 +1320,7 @@ export function StackPanel({
         })}
         <AddOpButton
           variant="end"
-          onPick={(kind) => addKind(kind, ops.length)}
+          onPick={(kind) => addKind(kind, steps.length)}
         />
       </div>
 

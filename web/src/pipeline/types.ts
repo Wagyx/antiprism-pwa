@@ -259,7 +259,7 @@ export type PipelineOp =
   | OffColorOp
   | FlagsOp;
 
-const GENERATOR_SEED_KINDS = new Set<string>([
+export const GENERATOR_SEED_KINDS = new Set<string>([
   "conway_seed",
   "miller",
   "iso_delta",

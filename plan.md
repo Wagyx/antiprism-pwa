@@ -33,8 +33,11 @@ TODOS Library
 
 The application has an editor module that lets the user inspect the polyhedron in a 3D view and call the programs from antiprism. Some operations from antiprism can be piped like the geometry modifiers from Blender.
 
+Let's rework how commands are handled. The raw command pipeline created or loaded by the user is the source of truth. The stack in the editor splits and show the command line operations. Each element does show the command line which should in first instead of last. The text field should be editable. Then the inteface should reflect the fields that it supports and allow modifications back. Also store in the piepline the raw commands instead of the operations.
+Also when creating a polyhedron from CLI, adds an input file for the starting polyhedron.
 
 TODOS:
+- save the raw cli in the json and create a mapper that auto fill in the gui parameters
 - populate an example library based on the examples from the antiprism website
 - move button
 - dropdown buttons have uncecessary down arrow

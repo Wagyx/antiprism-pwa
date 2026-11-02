@@ -17,10 +17,9 @@ import type {
   LibraryLocation,
   LibraryNode,
 } from "../library/types";
-import type { PipelineOp } from "../pipeline/types";
 import { APP_VERSION } from "../version";
 import { AboutButton } from "./AboutButton";
-import { CliPipelineDialog } from "./CliPipelineDialog";
+import { CliPipelineDialog, type CliDraft } from "./CliPipelineDialog";
 import { useDismissDetails } from "./useDismissDetails";
 
 type Props = {
@@ -32,7 +31,7 @@ type Props = {
   query: string;
   onQuery: (query: string) => void;
   selected: EntryRef | null;
-  onSelect: (ref: EntryRef) => void;
+  onSelect: (ref: EntryRef | null) => void;
   onEdit: (ref: EntryRef) => void;
   onCreateLibrary: (name: string) => Promise<void>;
   onRenameLibrary: (libraryId: string, name: string) => Promise<void>;
@@ -48,13 +47,23 @@ type Props = {
   onDeleteLibrary: (libraryId: string) => Promise<void>;
   onDeleteNodes: (libraryId: string, nodeIds: string[]) => Promise<void>;
   onCreatePolyhedron: () => void;
-  onCreateFromCli: (ops: PipelineOp[]) => void;
+  onCreateFromCli: (draft: CliDraft) => void;
 };
 
 type Pick = {
   libraryId: string;
   nodeId: string;
 };
+
+type DirItem =
+  | { key: "up"; kind: "up" }
+  | { key: string; kind: "library"; libraryId: string }
+  | { key: string; kind: "folder"; libraryId: string; nodeId: string }
+  | { key: string; kind: "entry"; libraryId: string; nodeId: string };
+
+function nodeKey(libraryId: string, nodeId: string): string {
+  return `node:${libraryId}:${nodeId}`;
+}
 
 function pickKey(item: Pick): string {
   return `${item.libraryId}:${item.nodeId}`;
@@ -195,6 +204,7 @@ export function LibraryPanel({
   const [draftName, setDraftName] = useState("");
   const [renaming, setRenaming] = useState<RenameState | null>(null);
   const [picked, setPicked] = useState<Pick[]>([]);
+  const [cursorKey, setCursorKey] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Pick[] | null>(null);
   const [confirmLibraryId, setConfirmLibraryId] = useState<string | null>(null);
   const [filters, setFilters] = useState<SearchFilters>(EMPTY_SEARCH_FILTERS);
@@ -202,6 +212,7 @@ export function LibraryPanel({
   const [cliOpen, setCliOpen] = useState(false);
   const renameLock = useRef(false);
   const cancelRename = useRef(false);
+  const gridRef = useRef<HTMLDivElement>(null);
   const anchorRef = useRef<string | null>(null);
   useDismissDetails();
 
@@ -262,6 +273,53 @@ export function LibraryPanel({
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [picked, confirmDelete, confirmLibraryId, moveOpen]);
+
+  const keyboardRef = useRef({
+    blocked: false,
+    items: [] as DirItem[],
+    currentKey: null as string | null,
+    select: (_item: DirItem) => {},
+    open: (_item: DirItem) => {},
+  });
+
+  useEffect(() => {
+    const typing = (target: EventTarget | null) =>
+      target instanceof HTMLInputElement ||
+      target instanceof HTMLTextAreaElement ||
+      target instanceof HTMLSelectElement ||
+      (target instanceof HTMLElement && target.isContentEditable);
+
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight" && event.key !== "Enter") return;
+      if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+      if (typing(event.target)) return;
+      const kb = keyboardRef.current;
+      if (kb.blocked || document.querySelector(".library-panel details[open]")) return;
+      if (event.key === "Enter") {
+        if (event.target instanceof HTMLElement && event.target.closest(".lib-grid article")) return;
+        const item = kb.items.find((candidate) => candidate.key === kb.currentKey);
+        if (!item) return;
+        event.preventDefault();
+        kb.open(item);
+        return;
+      }
+      const count = kb.items.length;
+      if (count === 0) return;
+      const index = kb.items.findIndex((candidate) => candidate.key === kb.currentKey);
+      const next =
+        index < 0
+          ? 0
+          : event.key === "ArrowRight"
+            ? (index + 1) % count
+            : (index - 1 + count) % count;
+      const item = kb.items[next];
+      if (!item) return;
+      event.preventDefault();
+      kb.select(item);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   useEffect(() => {
     if (!confirmDelete && !confirmLibraryId && !moveOpen) return;
@@ -344,6 +402,7 @@ export function LibraryPanel({
     const item = items[index];
     if (!item) return;
     const key = pickKey(item);
+    setCursorKey(nodeKey(item.libraryId, item.nodeId));
     if (event.shiftKey && anchorRef.current) {
       const anchor = items.findIndex((candidate) => pickKey(candidate) === anchorRef.current);
       if (anchor >= 0) {
@@ -461,6 +520,103 @@ export function LibraryPanel({
   }
 
   const visibleNodes = openLibrary && openFolder ? sortedNodes(openFolder.children) : [];
+  const dirItems: DirItem[] = searching
+    ? (search.hits ?? []).map((hit) => ({
+        key: nodeKey(hit.libraryId, hit.entry.id),
+        kind: "entry" as const,
+        libraryId: hit.libraryId,
+        nodeId: hit.entry.id,
+      }))
+    : !openLibrary
+      ? ordered.map((library) => ({
+          key: `library:${library.id}`,
+          kind: "library" as const,
+          libraryId: library.id,
+        }))
+      : openFolder
+        ? [
+            { key: "up" as const, kind: "up" as const },
+            ...visibleNodes.map((node): DirItem =>
+              node.type === "folder"
+                ? {
+                    key: nodeKey(openLibrary.id, node.id),
+                    kind: "folder",
+                    libraryId: openLibrary.id,
+                    nodeId: node.id,
+                  }
+                : {
+                    key: nodeKey(openLibrary.id, node.id),
+                    kind: "entry",
+                    libraryId: openLibrary.id,
+                    nodeId: node.id,
+                  },
+            ),
+          ]
+        : [];
+  const currentKey =
+    (cursorKey && dirItems.some((item) => item.key === cursorKey) ? cursorKey : null) ??
+    (selected
+      ? dirItems.find(
+          (item) =>
+            item.kind === "entry" &&
+            item.libraryId === selected.libraryId &&
+            item.nodeId === selected.entryId,
+        )?.key ?? null
+      : null);
+
+  const selectDirItem = (item: DirItem) => {
+    setCursorKey(item.key);
+    if (item.kind === "entry") {
+      const pick = { libraryId: item.libraryId, nodeId: item.nodeId };
+      setPicked([pick]);
+      anchorRef.current = pickKey(pick);
+      onSelect({ libraryId: item.libraryId, entryId: item.nodeId });
+    } else if (item.kind === "folder") {
+      const pick = { libraryId: item.libraryId, nodeId: item.nodeId };
+      setPicked([pick]);
+      anchorRef.current = pickKey(pick);
+      onSelect(null);
+    } else {
+      setPicked([]);
+      anchorRef.current = null;
+      onSelect(null);
+    }
+    requestAnimationFrame(() => {
+      gridRef.current
+        ?.querySelector(`[data-dir="${CSS.escape(item.key)}"]`)
+        ?.scrollIntoView({ block: "nearest" });
+    });
+  };
+
+  const openDirItem = (item: DirItem) => {
+    if (item.kind === "up") {
+      goUp();
+      return;
+    }
+    if (item.kind === "library") {
+      navigate({ libraryId: item.libraryId, folderIds: [] });
+      return;
+    }
+    if (item.kind === "folder") {
+      navigate({
+        libraryId: item.libraryId,
+        folderIds: [...nav.folderIds, item.nodeId],
+      });
+      return;
+    }
+    void run(() =>
+      Promise.resolve(onEdit({ libraryId: item.libraryId, entryId: item.nodeId })),
+    );
+  };
+
+  keyboardRef.current = {
+    blocked: Boolean(confirmDelete || confirmLibraryId || moveOpen || cliOpen || renaming),
+    items: dirItems,
+    currentKey,
+    select: selectDirItem,
+    open: openDirItem,
+  };
+
   const visiblePicks: Pick[] = searching
     ? (search.hits ?? []).map((hit) => ({ libraryId: hit.libraryId, nodeId: hit.entry.id }))
     : openLibrary
@@ -766,6 +922,7 @@ export function LibraryPanel({
       {!ready ? <p className="hint">Loading libraries…</p> : null}
 
       <div
+        ref={gridRef}
         className="lib-grid"
         onClick={(event) => {
           if (event.target !== event.currentTarget) return;
@@ -781,12 +938,10 @@ export function LibraryPanel({
               <EntryCard
                 key={`${hit.libraryId}:${hit.entry.id}`}
                 entry={hit.entry}
+                dirKey={nodeKey(hit.libraryId, hit.entry.id)}
                 command={hit.command}
                 path={[hit.libraryName, ...hit.folderNames].filter(Boolean).join(" / ")}
-                selected={
-                  selected?.libraryId === hit.libraryId &&
-                  selected.entryId === hit.entry.id
-                }
+                selected={currentKey === nodeKey(hit.libraryId, hit.entry.id)}
                 checked={pickedKeys.has(pickKey({ libraryId: hit.libraryId, nodeId: hit.entry.id }))}
                 onPick={(event) => applyPick(visiblePicks, index, event)}
                 renaming={
@@ -837,7 +992,8 @@ export function LibraryPanel({
           <>
             {openLibrary && openFolder ? (
               <article
-                className="lib-card lib-card-up"
+                className={`lib-card lib-card-up${currentKey === "up" ? " is-selected" : ""}`}
+                data-dir="up"
                 tabIndex={0}
                 aria-label={`Up to ${parentName}`}
                 title="Double-click to open"
@@ -861,6 +1017,7 @@ export function LibraryPanel({
                   <LibraryCard
                     key={library.id}
                     library={library}
+                    selected={currentKey === `library:${library.id}`}
                     renaming={
                       renaming?.kind === "library" && renaming.libraryId === library.id
                         ? renaming
@@ -902,6 +1059,8 @@ export function LibraryPanel({
                     <FolderCard
                       key={node.id}
                       folder={node}
+                      dirKey={nodeKey(openLibrary.id, node.id)}
+                      selected={currentKey === nodeKey(openLibrary.id, node.id)}
                       checked={pickedKeys.has(pickKey({ libraryId: openLibrary.id, nodeId: node.id }))}
                       onPick={(event) => applyPick(visiblePicks, index, event)}
                       renaming={
@@ -945,11 +1104,9 @@ export function LibraryPanel({
                     <EntryCard
                       key={node.id}
                       entry={node}
+                      dirKey={nodeKey(openLibrary.id, node.id)}
                       command={entryCommand(node.pipeline)}
-                      selected={
-                        selected?.libraryId === openLibrary.id &&
-                        selected.entryId === node.id
-                      }
+                      selected={currentKey === nodeKey(openLibrary.id, node.id)}
                       checked={pickedKeys.has(pickKey({ libraryId: openLibrary.id, nodeId: node.id }))}
                       onPick={(event) => applyPick(visiblePicks, index, event)}
                       renaming={
@@ -1009,9 +1166,9 @@ export function LibraryPanel({
       {cliOpen ? (
         <CliPipelineDialog
           onClose={() => setCliOpen(false)}
-          onCreate={(ops) => {
+          onCreate={(draft) => {
             setCliOpen(false);
-            onCreateFromCli(ops);
+            onCreateFromCli(draft);
           }}
         />
       ) : null}
@@ -1300,6 +1457,7 @@ function NameField({
 
 function LibraryCard({
   library,
+  selected,
   onOpen,
   onExportJson,
   onExportZip,
@@ -1307,6 +1465,7 @@ function LibraryCard({
   ...rename
 }: {
   library: LibraryDocument;
+  selected: boolean;
   onOpen: () => void;
   onExportJson: () => void;
   onExportZip: () => void;
@@ -1315,7 +1474,8 @@ function LibraryCard({
   const count = countEntries(library.root);
   return (
     <article
-      className="lib-card"
+      className={`lib-card${selected ? " is-selected" : ""}`}
+      data-dir={`library:${library.id}`}
       tabIndex={0}
       aria-label={library.name}
       title="Double-click to open"
@@ -1345,6 +1505,8 @@ function LibraryCard({
 
 function FolderCard({
   folder,
+  dirKey,
+  selected,
   checked,
   onPick,
   onOpen,
@@ -1352,6 +1514,8 @@ function FolderCard({
   ...rename
 }: {
   folder: LibraryFolder;
+  dirKey: string;
+  selected: boolean;
   checked: boolean;
   onPick: (event: ReactMouseEvent) => void;
   onOpen: () => void;
@@ -1359,7 +1523,8 @@ function FolderCard({
 } & RenameProps) {
   return (
     <article
-      className={`lib-card${checked ? " is-checked" : ""}`}
+      className={`lib-card${checked ? " is-checked" : ""}${selected ? " is-selected" : ""}`}
+      data-dir={dirKey}
       tabIndex={0}
       aria-label={folder.name}
       aria-pressed={checked}
@@ -1393,6 +1558,7 @@ function FolderCard({
 
 function EntryCard({
   entry,
+  dirKey,
   command,
   path,
   selected,
@@ -1406,6 +1572,7 @@ function EntryCard({
   ...rename
 }: {
   entry: LibraryEntry;
+  dirKey: string;
   command: string;
   path?: string;
   selected: boolean;
@@ -1421,6 +1588,7 @@ function EntryCard({
   return (
     <article
       className={`lib-card${checked ? " is-checked" : ""}${selected ? " is-selected" : ""}`}
+      data-dir={dirKey}
       tabIndex={0}
       aria-label={entry.name}
       aria-pressed={checked}

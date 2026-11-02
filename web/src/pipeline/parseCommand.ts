@@ -233,9 +233,19 @@ function parseOffColor(args: string[]): PipelineOp {
   return op;
 }
 
-function parseFlags(kind: FlagsToolKind, argv: string[]): Record<string, ParamValue> {
+function parseFlags(
+  kind: FlagsToolKind,
+  argv: string[],
+  lenient = false,
+): Record<string, ParamValue> {
   const schema = TOOL_PARAM_SCHEMAS[kind];
-  const params = defaultParams(schema);
+  const params: Record<string, ParamValue> = lenient ? {} : defaultParams(schema);
+  const skipUnknown = (index: number): number => {
+    const token = argv[index] ?? "";
+    const next = argv[index + 1];
+    if (token.startsWith("-") && next != null && !next.startsWith("-")) return index + 2;
+    return index + 1;
+  };
   const assigned = new Set<string>();
   const bools = schema.fields
     .filter((field): field is Extract<ParamField, { type: "bool" }> => field.type === "bool")
@@ -263,6 +273,7 @@ function parseFlags(kind: FlagsToolKind, argv: string[]): Record<string, ParamVa
     let field = nextPositional();
     const token = argv[index];
     if (!field) {
+      if (lenient) return skipUnknown(index);
       throw new Error(
         token.startsWith("-") ? `Unknown option "${token}"` : `Unexpected argument "${token}"`,
       );
@@ -276,6 +287,7 @@ function parseFlags(kind: FlagsToolKind, argv: string[]): Record<string, ParamVa
           accepts(candidate, token),
       );
       if (!alt?.visibleWhen) {
+        if (lenient) return skipUnknown(index);
         throw new Error(
           token.startsWith("-") ? `Unknown option "${token}"` : `Unexpected argument "${token}"`,
         );
@@ -318,14 +330,65 @@ function parseFlags(kind: FlagsToolKind, argv: string[]): Record<string, ParamVa
     const field = valued.find((candidate) => argv[index] === candidate.flag);
     if (field) {
       const value = argv[index + 1];
-      if (value == null) throw new Error(`Missing value for ${field.flag}`);
+      if (value == null) {
+        if (lenient) {
+          index += 1;
+          continue;
+        }
+        throw new Error(`Missing value for ${field.flag}`);
+      }
       params[field.key] = coerce(field, value);
       index += 2;
       continue;
     }
     index = takePositional(index);
   }
+  if (lenient) {
+    for (const field of schema.fields) {
+      if (field.uiOnly && params[field.key] == null) params[field.key] = field.default;
+    }
+  }
   return params;
+}
+
+/** Flags the form understands. Unknown tokens are skipped and left out of the result. */
+export function readKnownParams(
+  kind: FlagsToolKind,
+  argv: string[],
+): Record<string, ParamValue> {
+  return parseFlags(kind, argv, true);
+}
+
+/**
+ * One conway command, kept as one step.
+ * Operators are returned in top-to-bottom order. Seed stays attached.
+ */
+export function readConwayArgs(args: string[]): {
+  leftToRight: boolean;
+  steps: ConwayOpStep[];
+  seed: Extract<PipelineOp, { kind: "conway_seed" }> | null;
+} | null {
+  const notationTokens: string[] = [];
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+    if (arg === "-r" || arg === "-R") continue;
+    if (arg.startsWith("-")) {
+      const next = args[i + 1];
+      if (next != null && !next.startsWith("-")) i += 1;
+      continue;
+    }
+    notationTokens.push(arg);
+  }
+  if (notationTokens.length !== 1) return null;
+  try {
+    const parsed = parseNotation(notationTokens[0]);
+    const leftToRight = args.includes("-r") || args.includes("-R");
+    if (!leftToRight) parsed.steps.reverse();
+    const seed = parsed.seed?.kind === "conway_seed" ? parsed.seed : null;
+    return { leftToRight, steps: parsed.steps, seed };
+  } catch {
+    return null;
+  }
 }
 
 function accepts(field: ParamField, token: string): boolean {
@@ -346,12 +409,12 @@ function formatForName(name: string): ImportFileFormat {
   return name.toLowerCase().endsWith(".obj") ? "obj" : "off";
 }
 
-function commandName(token: string): string {
+export function commandName(token: string): string {
   const base = token.split(/[/\\]/).pop() ?? token;
   return base.replace(/\.exe$/i, "");
 }
 
-function splitCommands(source: string): string[] {
+export function splitCommands(source: string): string[] {
   const text = source.replace(/\\\r?\n/g, " ");
   const parts: string[] = [];
   let current = "";
@@ -384,7 +447,7 @@ function splitCommands(source: string): string[] {
   return parts;
 }
 
-function tokenize(input: string): string[] {
+export function tokenize(input: string): string[] {
   const out: string[] = [];
   let current = "";
   let quote: '"' | "'" | null = null;

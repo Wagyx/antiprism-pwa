@@ -1,10 +1,16 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { parsePipelineCommand } from "../pipeline/parseCommand";
-import type { PipelineOp } from "../pipeline/types";
+import type { LibraryInputFile } from "../library/types";
+import { readStartingFile, type CommandStep } from "../pipeline/commandStep";
+import { splitCommands } from "../pipeline/parseCommand";
+
+export type CliDraft = {
+  steps: CommandStep[];
+  inputFile: LibraryInputFile | null;
+};
 
 type Props = {
-  onCreate: (ops: PipelineOp[]) => void;
+  onCreate: (draft: CliDraft) => void;
   onClose: () => void;
 };
 
@@ -12,6 +18,7 @@ export function CliPipelineDialog({ onCreate, onClose }: Props) {
   const titleId = useId();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [text, setText] = useState("");
+  const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -26,9 +33,22 @@ export function CliPipelineDialog({ onCreate, onClose }: Props) {
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  const submit = () => {
+  const submit = async () => {
     try {
-      onCreate(parsePipelineCommand(text));
+      const commands = text.trim() ? splitCommands(text) : [];
+      if (commands.length === 0 && !file) {
+        setError("Paste a pipeline or choose a starting file");
+        return;
+      }
+      const inputFile = file ? await readStartingFile(file) : null;
+      onCreate({
+        steps: commands.map((command) => ({
+          id: crypto.randomUUID(),
+          enabled: true,
+          command,
+        })),
+        inputFile,
+      });
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : String(reason));
     }
@@ -43,7 +63,7 @@ export function CliPipelineDialog({ onCreate, onClose }: Props) {
         aria-labelledby={titleId}
         onSubmit={(event) => {
           event.preventDefault();
-          submit();
+          void submit();
         }}
       >
         <h2 id={titleId}>Polyhedron from CLI</h2>
@@ -61,7 +81,21 @@ export function CliPipelineDialog({ onCreate, onClose }: Props) {
             }}
           />
         </label>
-        <p className="modal-note">Paste an Antiprism pipeline. Separate commands with |.</p>
+        <label className="field">
+          <span>Starting polyhedron</span>
+          <input
+            type="file"
+            accept=".off,.obj,text/plain"
+            onChange={(event) => {
+              setFile(event.target.files?.[0] ?? null);
+              setError(null);
+            }}
+          />
+        </label>
+        <p className="modal-note">
+          Paste an Antiprism pipeline. Separate commands with |. The file is optional and is used
+          when the first command reads a polyhedron.
+        </p>
         {error ? (
           <p className="error" role="alert">
             {error}
@@ -71,7 +105,7 @@ export function CliPipelineDialog({ onCreate, onClose }: Props) {
           <button type="button" className="tool-btn" onClick={onClose}>
             Cancel
           </button>
-          <button type="submit" className="tool-btn" disabled={!text.trim()}>
+          <button type="submit" className="tool-btn" disabled={!text.trim() && !file}>
             Create
           </button>
         </div>

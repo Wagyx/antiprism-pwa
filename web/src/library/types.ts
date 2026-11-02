@@ -1,4 +1,4 @@
-import type { PipelineOp } from "../pipeline/types";
+import type { CommandStep } from "../pipeline/commandStep";
 
 /** On-disk / in-database format id. Import rejects anything else. */
 export const LIBRARY_FORMAT = "antiprism-library";
@@ -27,7 +27,7 @@ export type LibraryEntry = {
   inputFile: LibraryInputFile | null;
   /** Pipeline OFF output. The library viewer reads this directly. */
   offText: string;
-  pipeline: PipelineOp[];
+  pipeline: CommandStep[];
   counts: PolyCounts;
 };
 
@@ -76,7 +76,7 @@ export type EntryRef = {
 export type EntryDraft = {
   name: string;
   offText: string;
-  pipeline: PipelineOp[];
+  pipeline: CommandStep[];
   inputFile: LibraryInputFile | null;
   counts: PolyCounts;
 };
