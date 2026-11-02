@@ -8,6 +8,7 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { editorKey, type CommandStep } from "./pipeline/commandStep";
+import { splitCommands } from "./pipeline/parseCommand";
 import { runPipeline } from "./pipeline/runPipeline";
 import {
   defaultDisplay,
@@ -17,6 +18,7 @@ import {
 } from "./pipeline/types";
 import { useUndoable } from "./pipeline/useUndoable";
 import { countsFromOff } from "./library/counts";
+import { parsePolyhedronCatalog } from "./library/polyhedronCatalog";
 import { cloneSteps, inputForEditor, pipelineForEditor } from "./library/snapshot";
 import { findEntry, folderByPath, requireUnique, resolveDestination } from "./library/tree";
 import type { CliImportRow } from "./ui/CliPipelineDialog";
@@ -278,6 +280,51 @@ export default function App() {
       });
     }
     return library.createEntries(drafts, dest);
+  };
+
+  const onImportCatalog = async (file: File, report: (message: string) => void) => {
+    const groups = parsePolyhedronCatalog(await file.text());
+    const dest = resolveDestination(library.libraries, library.nav);
+    const doc = library.libraries.find((item) => item.id === dest.libraryId);
+    const folder = doc ? folderByPath(doc, dest.folderIds) : null;
+    if (!folder) throw new Error("Folder not found");
+    const taken = folder.children.map((child) => child.name);
+    for (const group of groups) {
+      taken.push(requireUnique(taken, group.name));
+      const entryNames: string[] = [];
+      for (const item of group.items) entryNames.push(requireUnique(entryNames, item.name));
+    }
+
+    const total = groups.reduce((count, group) => count + group.items.length, 0);
+    let done = 0;
+    const built: { name: string; entries: EntryDraft[] }[] = [];
+    for (const group of groups) {
+      const entries: EntryDraft[] = [];
+      for (const item of group.items) {
+        done += 1;
+        report(`Importing ${item.name} (${done} of ${total})…`);
+        const commands = splitCommands(item.command);
+        if (commands.length === 0) throw new Error(`${item.name}: the command is empty`);
+        const steps: CommandStep[] = commands.map((command) => ({
+          id: crypto.randomUUID(),
+          enabled: true,
+          command,
+        }));
+        const result = await runPipeline(steps, null);
+        if (!result.ok || !result.offText?.trim()) {
+          throw new Error(`${item.name}: ${result.error ?? "the pipeline produced no polyhedron"}`);
+        }
+        entries.push({
+          name: item.name,
+          offText: result.offText,
+          pipeline: steps,
+          inputFile: null,
+          counts: countsFor(result.offText),
+        });
+      }
+      built.push({ name: group.name, entries });
+    }
+    return library.createGroups(built, dest);
   };
 
   const onEditEntry = (ref: EntryRef) => {
@@ -553,6 +600,7 @@ export default function App() {
           }}
           onCreatePolyhedron={onCreatePolyhedron}
           onImportFromCli={onImportFromCli}
+          onImportCatalog={onImportCatalog}
         />
       )}
       {resizer}

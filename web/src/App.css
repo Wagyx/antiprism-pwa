@@ -1618,6 +1618,39 @@
   box-shadow: inset 0 0 0 1px rgba(196, 163, 90, 0.35);
 }
 
+.lib-card.is-dragging {
+  opacity: 0.45;
+}
+
+.lib-grid.is-dragging,
+.lib-grid.is-dragging .lib-card,
+.lib-grid.is-dragging .lib-card-up {
+  cursor: grabbing;
+}
+
+.lib-card.is-drop,
+.lib-card-up.is-drop {
+  opacity: 1;
+  border-color: rgba(196, 163, 90, 0.95);
+  background: rgba(196, 163, 90, 0.2);
+  box-shadow: inset 0 0 0 2px rgba(196, 163, 90, 0.75);
+}
+
+.lib-drag-ghost {
+  position: fixed;
+  z-index: 80;
+  pointer-events: none;
+  padding: 0.35rem 0.55rem;
+  border-radius: 6px;
+  border: 1px solid rgba(196, 163, 90, 0.9);
+  background: #1a221c;
+  color: #f4efe4;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
 .lib-card-up {
   font: inherit;
   cursor: pointer;

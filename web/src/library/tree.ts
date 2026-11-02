@@ -32,7 +32,6 @@ export function requireUnique(existing: string[], wanted: string): string {
   const name = wanted.trim();
   if (!name) throw new Error("Name is empty");
   if (name.length > 120) throw new Error("Name is too long");
-  if (/[\\/]/.test(name)) throw new Error("Name cannot contain / or \\");
   const clash = existing.some((other) => other.toLowerCase() === name.toLowerCase());
   if (clash) throw new Error(`"${name}" is already used`);
   return name;
@@ -249,6 +248,54 @@ export function insertEntries(
     return { ...folder, modifiedAt: at, children: [...folder.children, ...entries] };
   });
   return { doc: touch(doc, root), entries: created };
+}
+
+export function insertGroups(
+  doc: LibraryDocument,
+  folderIds: string[],
+  groups: { name: string; entries: EntryDraft[] }[],
+): { doc: LibraryDocument; entry: LibraryEntry | null } {
+  if (groups.length === 0 || groups.every((group) => group.entries.length === 0)) {
+    throw new Error("Nothing to import");
+  }
+  let last: LibraryEntry | null = null;
+  const root = updateFolder(doc.root, folderIds, (folder) => {
+    const names = siblingNames(folder);
+    const at = nowIso();
+    const children = [...folder.children];
+    for (const group of groups) {
+      if (group.entries.length === 0) continue;
+      const entryNames: string[] = [];
+      const entries = group.entries.map((draft) => {
+        const entry: LibraryEntry = {
+          type: "entry",
+          id: crypto.randomUUID(),
+          name: requireUnique(entryNames, draft.name),
+          createdAt: at,
+          modifiedAt: at,
+          inputFile: draft.inputFile,
+          offText: draft.offText,
+          pipeline: draft.pipeline,
+          counts: draft.counts,
+        };
+        entryNames.push(entry.name);
+        last = entry;
+        return entry;
+      });
+      const child: LibraryFolder = {
+        type: "folder",
+        id: crypto.randomUUID(),
+        name: requireUnique(names, group.name),
+        createdAt: at,
+        modifiedAt: at,
+        children: entries,
+      };
+      names.push(child.name);
+      children.push(child);
+    }
+    return { ...folder, modifiedAt: at, children };
+  });
+  return { doc: touch(doc, root), entry: last };
 }
 
 export function insertEntry(

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type MouseEvent as ReactMouseEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { entryCommand } from "../library/snapshot";
 import { searchLibraries, EMPTY_SEARCH_FILTERS, searchFiltersActive, type RangeFilter, type SearchFilters } from "../library/search";
@@ -48,6 +48,7 @@ type Props = {
   onDeleteNodes: (libraryId: string, nodeIds: string[]) => Promise<void>;
   onCreatePolyhedron: () => void;
   onImportFromCli: (rows: CliImportRow[]) => Promise<EntryRef>;
+  onImportCatalog: (file: File, report: (message: string) => void) => Promise<EntryRef | null>;
 };
 
 type Pick = {
@@ -197,8 +198,10 @@ export function LibraryPanel({
   onDeleteNodes,
   onCreatePolyhedron,
   onImportFromCli,
+  onImportCatalog,
 }: Props) {
   const importRef = useRef<HTMLInputElement>(null);
+  const catalogRef = useRef<HTMLInputElement>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [composer, setComposer] = useState<"library" | "folder" | null>(null);
   const [draftName, setDraftName] = useState("");
@@ -210,10 +213,32 @@ export function LibraryPanel({
   const [filters, setFilters] = useState<SearchFilters>(EMPTY_SEARCH_FILTERS);
   const [moveOpen, setMoveOpen] = useState(false);
   const [cliOpen, setCliOpen] = useState(false);
+  const [importStatus, setImportStatus] = useState<string | null>(null);
+  const [draggingIds, setDraggingIds] = useState<string[] | null>(null);
+  const [dropKey, setDropKey] = useState<string | null>(null);
+  const [dragGhost, setDragGhost] = useState<{ x: number; y: number; label: string } | null>(null);
   const renameLock = useRef(false);
   const cancelRename = useRef(false);
   const gridRef = useRef<HTMLDivElement>(null);
   const anchorRef = useRef<string | null>(null);
+  const suppressClick = useRef(false);
+  const dropKeyRef = useRef<string | null>(null);
+  const dragRef = useRef<{
+    pointerId: number;
+    startX: number;
+    startY: number;
+    libraryId: string;
+    nodeIds: string[];
+    label: string;
+    active: boolean;
+  } | null>(null);
+  const actionRef = useRef<{
+    libraryId: string | null;
+    folderIds: string[];
+    onMoveNodes: Props["onMoveNodes"];
+    onMoveUp: Props["onMoveUp"];
+    run: (fn: () => Promise<void>) => Promise<void>;
+  } | null>(null);
   useDismissDetails();
 
   const ordered = sortLibraries(libraries);
@@ -340,6 +365,136 @@ export function LibraryPanel({
     } catch (error) {
       setActionError(error instanceof Error ? error.message : String(error));
     }
+  };
+
+  useEffect(() => {
+    actionRef.current = {
+      libraryId: openLibrary?.id ?? null,
+      folderIds: nav.folderIds,
+      onMoveNodes,
+      onMoveUp,
+      run,
+    };
+  });
+
+  useEffect(() => {
+    const canDrop = (libraryId: string, nodeIds: string[], key: string) => {
+      const action = actionRef.current;
+      if (!action || libraryId !== action.libraryId) return false;
+      if (key === "up") return action.folderIds.length > 0;
+      return nodeIds.some((id) => id !== key);
+    };
+
+    const showDrop = (key: string | null) => {
+      if (dropKeyRef.current === key) return;
+      dropKeyRef.current = key;
+      setDropKey(key);
+    };
+
+    const clearDrag = () => {
+      dragRef.current = null;
+      showDrop(null);
+      setDraggingIds(null);
+      setDragGhost(null);
+    };
+
+    const releaseClick = () => {
+      suppressClick.current = true;
+      window.setTimeout(() => {
+        suppressClick.current = false;
+      }, 50);
+    };
+
+    const onMove = (event: PointerEvent) => {
+      const drag = dragRef.current;
+      if (!drag || event.pointerId !== drag.pointerId) return;
+      if (!drag.active) {
+        const dx = event.clientX - drag.startX;
+        const dy = event.clientY - drag.startY;
+        if (dx * dx + dy * dy < 36) return;
+        drag.active = true;
+        suppressClick.current = true;
+        setDraggingIds(drag.nodeIds);
+      }
+      event.preventDefault();
+      const hit = document.elementFromPoint(event.clientX, event.clientY);
+      const key =
+        hit instanceof Element ? hit.closest("[data-drop]")?.getAttribute("data-drop") ?? null : null;
+      showDrop(key && canDrop(drag.libraryId, drag.nodeIds, key) ? key : null);
+      setDragGhost({
+        x: event.clientX,
+        y: event.clientY,
+        label: drag.nodeIds.length === 1 ? drag.label : `${drag.nodeIds.length} items`,
+      });
+    };
+
+    const onUp = (event: PointerEvent) => {
+      const drag = dragRef.current;
+      if (!drag || event.pointerId !== drag.pointerId) return;
+      const key = dropKeyRef.current;
+      const active = drag.active;
+      const libraryId = drag.libraryId;
+      const nodeIds = drag.nodeIds;
+      clearDrag();
+      if (active) releaseClick();
+      const action = actionRef.current;
+      if (!active || !key || !action || !canDrop(libraryId, nodeIds, key)) return;
+      const ids = key === "up" ? nodeIds : nodeIds.filter((id) => id !== key);
+      if (ids.length === 0) return;
+      const folderIds = key === "up" ? null : [...action.folderIds, key];
+      void action.run(async () => {
+        if (folderIds) await action.onMoveNodes(libraryId, ids, folderIds);
+        else await action.onMoveUp(libraryId, ids);
+        const moved = new Set(ids);
+        setPicked((current) =>
+          current.filter((item) => item.libraryId !== libraryId || !moved.has(item.nodeId)),
+        );
+        setCursorKey((current) =>
+          current && ids.some((id) => current === nodeKey(libraryId, id)) ? null : current,
+        );
+        if (anchorRef.current && ids.some((id) => anchorRef.current === `${libraryId}:${id}`)) {
+          anchorRef.current = null;
+        }
+      });
+    };
+
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || !dragRef.current?.active) return;
+      releaseClick();
+      clearDrag();
+    };
+
+    window.addEventListener("pointermove", onMove, true);
+    window.addEventListener("pointerup", onUp, true);
+    window.addEventListener("pointercancel", onUp, true);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("pointermove", onMove, true);
+      window.removeEventListener("pointerup", onUp, true);
+      window.removeEventListener("pointercancel", onUp, true);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, []);
+
+  const ignoreDragClick = () => {
+    if (!suppressClick.current) return false;
+    suppressClick.current = false;
+    return true;
+  };
+
+  const startDrag = (event: ReactPointerEvent, item: Pick, label: string) => {
+    if (event.button !== 0 || fromCardControl(event.target)) return;
+    const selected = picked.some((entry) => entry.libraryId === item.libraryId && entry.nodeId === item.nodeId);
+    const group = selected ? picked.filter((entry) => entry.libraryId === item.libraryId) : [item];
+    dragRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      libraryId: item.libraryId,
+      nodeIds: group.map((entry) => entry.nodeId),
+      label,
+      active: false,
+    };
   };
 
   const copyCommand = (command: string) => {
@@ -818,6 +973,17 @@ export function LibraryPanel({
                 >
                   Import from CLI
                 </button>
+                <button
+                  type="button"
+                  role="menuitem"
+                  disabled={importStatus !== null}
+                  onClick={(event) => {
+                    closeMenu(event.currentTarget);
+                    catalogRef.current?.click();
+                  }}
+                >
+                  Import JSON
+                </button>
               </div>
             </details>
             <details className="add-op lib-drop">
@@ -865,6 +1031,24 @@ export function LibraryPanel({
           const file = event.target.files?.[0];
           event.target.value = "";
           if (file) void run(() => onImport(file));
+        }}
+      />
+      <input
+        ref={catalogRef}
+        type="file"
+        accept="application/json,.json"
+        hidden
+        onChange={(event) => {
+          const file = event.target.files?.[0];
+          event.target.value = "";
+          if (!file || importStatus) return;
+          void run(async () => {
+            try {
+              await onImportCatalog(file, setImportStatus);
+            } finally {
+              setImportStatus(null);
+            }
+          });
         }}
       />
 
@@ -920,10 +1104,20 @@ export function LibraryPanel({
       ) : null}
 
       {!ready ? <p className="hint">Loading libraries…</p> : null}
+      {importStatus ? <p className="hint">{importStatus}</p> : null}
+
+      {dragGhost
+        ? createPortal(
+            <div className="lib-drag-ghost" style={{ left: dragGhost.x + 14, top: dragGhost.y + 14 }}>
+              {dragGhost.label}
+            </div>,
+            document.body,
+          )
+        : null}
 
       <div
         ref={gridRef}
-        className="lib-grid"
+        className={`lib-grid${draggingIds ? " is-dragging" : ""}`}
         onClick={(event) => {
           if (event.target !== event.currentTarget) return;
           setPicked([]);
@@ -992,11 +1186,16 @@ export function LibraryPanel({
           <>
             {openLibrary && openFolder ? (
               <article
-                className={`lib-card lib-card-up${currentKey === "up" ? " is-selected" : ""}`}
+                className={`lib-card lib-card-up${currentKey === "up" ? " is-selected" : ""}${dropKey === "up" ? " is-drop" : ""}`}
                 data-dir="up"
+                data-drop="up"
                 tabIndex={0}
                 aria-label={`Up to ${parentName}`}
-                title="Double-click to open"
+                title={
+                  nav.folderIds.length > 0
+                    ? "Double-click to open. Drop a selection here to move it to this folder."
+                    : "Double-click to open"
+                }
                 onDoubleClick={goUp}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" && event.target === event.currentTarget) goUp();
@@ -1062,6 +1261,12 @@ export function LibraryPanel({
                       dirKey={nodeKey(openLibrary.id, node.id)}
                       selected={currentKey === nodeKey(openLibrary.id, node.id)}
                       checked={pickedKeys.has(pickKey({ libraryId: openLibrary.id, nodeId: node.id }))}
+                      dragging={draggingIds?.includes(node.id) ?? false}
+                      dropTarget={dropKey === node.id}
+                      ignoreDragClick={ignoreDragClick}
+                      onPointerDown={(event) =>
+                        startDrag(event, { libraryId: openLibrary.id, nodeId: node.id }, node.name)
+                      }
                       onPick={(event) => applyPick(visiblePicks, index, event)}
                       renaming={
                         renaming?.kind === "node" && renaming.nodeId === node.id
@@ -1108,6 +1313,11 @@ export function LibraryPanel({
                       command={entryCommand(node.pipeline)}
                       selected={currentKey === nodeKey(openLibrary.id, node.id)}
                       checked={pickedKeys.has(pickKey({ libraryId: openLibrary.id, nodeId: node.id }))}
+                      dragging={draggingIds?.includes(node.id) ?? false}
+                      ignoreDragClick={ignoreDragClick}
+                      onPointerDown={(event) =>
+                        startDrag(event, { libraryId: openLibrary.id, nodeId: node.id }, node.name)
+                      }
                       onPick={(event) => applyPick(visiblePicks, index, event)}
                       renaming={
                         renaming?.kind === "node" && renaming.nodeId === node.id
@@ -1361,6 +1571,7 @@ function KindIcon({ kind }: { kind: CardKind }) {
     viewBox: "0 0 16 16",
     "aria-hidden": true as const,
     focusable: false as const,
+    draggable: false as const,
   };
   if (kind === "folder") {
     return (
@@ -1514,6 +1725,10 @@ function FolderCard({
   dirKey,
   selected,
   checked,
+  dragging,
+  dropTarget,
+  ignoreDragClick,
+  onPointerDown,
   onPick,
   onOpen,
   onDelete,
@@ -1523,20 +1738,26 @@ function FolderCard({
   dirKey: string;
   selected: boolean;
   checked: boolean;
+  dragging: boolean;
+  dropTarget: boolean;
+  ignoreDragClick: () => boolean;
+  onPointerDown: (event: ReactPointerEvent) => void;
   onPick: (event: ReactMouseEvent) => void;
   onOpen: () => void;
   onDelete: () => void;
 } & RenameProps) {
   return (
     <article
-      className={`lib-card${checked ? " is-checked" : ""}${selected ? " is-selected" : ""}`}
+      className={`lib-card${checked ? " is-checked" : ""}${selected ? " is-selected" : ""}${dragging ? " is-dragging" : ""}${dropTarget ? " is-drop" : ""}`}
       data-dir={dirKey}
+      data-drop={folder.id}
       tabIndex={0}
       aria-label={folder.name}
       aria-pressed={checked}
-      title="Double-click to open"
+      title="Double-click to open. Drop a selection here to move it into this folder."
+      onPointerDown={onPointerDown}
       onClick={(event) => {
-        if (fromCardControl(event.target)) return;
+        if (ignoreDragClick() || fromCardControl(event.target)) return;
         if (event.shiftKey) event.preventDefault();
         onPick(event);
       }}
@@ -1569,6 +1790,9 @@ function EntryCard({
   path,
   selected,
   checked,
+  dragging = false,
+  ignoreDragClick,
+  onPointerDown,
   onPick,
   onOpen,
   onEdit,
@@ -1583,6 +1807,9 @@ function EntryCard({
   path?: string;
   selected: boolean;
   checked: boolean;
+  dragging?: boolean;
+  ignoreDragClick?: () => boolean;
+  onPointerDown?: (event: ReactPointerEvent) => void;
   onPick: (event: ReactMouseEvent) => void;
   onOpen: () => void;
   onEdit: () => void;
@@ -1593,14 +1820,15 @@ function EntryCard({
   const [menuOpen, setMenuOpen] = useState(false);
   return (
     <article
-      className={`lib-card${checked ? " is-checked" : ""}${selected ? " is-selected" : ""}`}
+      className={`lib-card${checked ? " is-checked" : ""}${selected ? " is-selected" : ""}${dragging ? " is-dragging" : ""}`}
       data-dir={dirKey}
       tabIndex={0}
       aria-label={entry.name}
       aria-pressed={checked}
       title={menuOpen ? undefined : command || "Double-click to edit"}
+      onPointerDown={onPointerDown}
       onClick={(event) => {
-        if (fromCardControl(event.target)) return;
+        if (ignoreDragClick?.() || fromCardControl(event.target)) return;
         if (event.shiftKey) event.preventDefault();
         onPick(event);
         onOpen();

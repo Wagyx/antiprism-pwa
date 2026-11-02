@@ -11,6 +11,7 @@ import {
   folderByPath,
   insertEntries,
   insertEntry,
+  insertGroups,
   moveNodes,
   moveNodesUp,
   patchEntry,
@@ -278,6 +279,23 @@ export function useLibrary() {
       return ref;
     });
 
+  const createGroups = (
+    groups: { name: string; entries: EntryDraft[] }[],
+    location: { libraryId: string; folderIds: string[] },
+  ) =>
+    enqueue(async () => {
+      const doc = librariesRef.current.find((library) => library.id === location.libraryId);
+      if (!doc) throw new Error("Library not found");
+      if (!folderByPath(doc, location.folderIds)) throw new Error("Folder not found");
+      const { doc: next, entry } = insertGroups(doc, location.folderIds, groups);
+      await saveLibrary(next);
+      commit(replaceDoc(librariesRef.current, next));
+      if (!entry) return null;
+      const ref = { libraryId: next.id, entryId: entry.id };
+      setSelected(ref);
+      return ref;
+    });
+
   const updateEntry = (ref: EntryRef, draft: EntryDraft) =>
     enqueue(async () => {
       const doc = librariesRef.current.find((library) => library.id === ref.libraryId);
@@ -313,6 +331,7 @@ export function useLibrary() {
     deleteItems,
     createEntry,
     createEntries,
+    createGroups,
     updateEntry,
   };
 }

@@ -1,4 +1,5 @@
 import { libraryOffZip } from "../../web/src/library/archive.ts";
+import { parsePolyhedronCatalog } from "../../web/src/library/polyhedronCatalog.ts";
 import { parseSearch, searchLibraries } from "../../web/src/library/search.ts";
 import {
   addFolder,
@@ -6,6 +7,7 @@ import {
   findNode,
   insertEntries,
   insertEntry,
+  insertGroups,
   moveDestinations,
   moveNodes,
   moveNodesUp,
@@ -173,6 +175,37 @@ try {
   repeated = true;
 }
 assert(repeated, "batch import rejects a repeated name");
+
+const catalog = parsePolyhedronCatalog(
+  JSON.stringify({
+    Platonic: [{ name: "Tetrahedron", command: "off_util tet" }],
+    Catalan: [{ name: "Rhombic Dodecahedron", command: "off_util rd" }],
+  }),
+);
+assert(catalog.length === 2 && catalog[0]?.items[0]?.command === "off_util tet", "catalog groups");
+let catalogFile = false;
+try {
+  parsePolyhedronCatalog(JSON.stringify({ format: "antiprism-library", name: "MyLibrary" }));
+} catch {
+  catalogFile = true;
+}
+assert(catalogFile, "catalog import rejects a library file");
+const grouped = insertGroups(createLibraryDocument("Catalog", ["MyLibrary"]), [], [
+  { name: "Platonic", entries: [{ ...draft, name: "Tetrahedron" }] },
+  { name: "Catalan", entries: [{ ...draft, name: "Rhombic Dodecahedron" }] },
+]);
+const platonic = grouped.doc.root.children.find((child) => child.name === "Platonic");
+assert(
+  platonic?.type === "folder" &&
+    platonic.children.length === 1 &&
+    platonic.children[0]?.name === "Tetrahedron",
+  "catalog group becomes a folder",
+);
+assert(grouped.entry?.name === "Rhombic Dodecahedron", "catalog import keeps the last polyhedron");
+const fraction = insertGroups(createLibraryDocument("Fractions", ["MyLibrary"]), [], [
+  { name: "Prisms", entries: [{ ...draft, name: "{7/2}-Prism" }] },
+]);
+assert(fraction.entry?.name === "{7/2}-Prism", "a polyhedron name may contain /");
 
 const packed = libraryOffZip(doc);
 writeFileSync("/tmp/antiprism-library-off.zip", packed);
