@@ -1,0 +1,92 @@
+{
+  "Platonic": [
+    {
+      "name": "Tetrahedron",
+      "command": "off_util std_tet"
+    },
+    {
+      "name": "Cube",
+      "command": "off_util std_cube"
+    },
+    {
+      "name": "Octahedron",
+      "command": "off_util std_oct"
+    },
+    {
+      "name": "Dodecahedron",
+      "command": "off_util std_dod"
+    },
+    {
+      "name": "Icosahedron",
+      "command": "off_util std_ico"
+    }
+  ],
+  "Archimedean": [
+    {
+      "name": "Truncated Tetrahedron",
+      "command": "off_util std_tr_tet"
+    },
+    {
+      "name": "Truncated Cube",
+      "command": "off_util std_tr_cube"
+    },
+    {
+      "name": "Snub Cube",
+      "command": "off_util std_snub_cube"
+    },
+    {
+      "name": "Truncated Octahedron",
+      "command": "off_util std_tr_oct"
+    },
+    {
+      "name": "Truncated Dodecahedron",
+      "command": "off_util std_tr_dod"
+    },
+    {
+      "name": "Snub Dodecahedron",
+      "command": "off_util std_snub_dod"
+    },
+    {
+      "name": "Truncated Icosahedron",
+      "command": "off_util std_tr_ico"
+    },
+    {
+      "name": "Cuboctahedron",
+      "command": "off_util std_cubo"
+    },
+    {
+      "name": "Truncated Cuboctahedron",
+      "command": "off_util std_tr_cubo"
+    },
+    {
+      "name": "Icosidodecahedron",
+      "command": "off_util std_icosid"
+    },
+    {
+      "name": "Truncated Icosidodecahedron",
+      "command": "off_util std_tr_icosid"
+    },
+    {
+      "name": "Rhombicuboctahedron",
+      "command": "off_util std_rh_cubo"
+    },
+    {
+      "name": "Rhombicosidodecahedron",
+      "command": "off_util std_rh_icosid"
+    }
+  ],
+  "Rhombic": [
+    {
+      "name": "Rhombic Dodecahedron",
+      "command": "off_util std_rd"
+    },
+    {
+      "name": "Rhombic Triacontahedron",
+      "command": "off_util std_rt"
+    },
+    {
+      "name": "Rhombic Enneacontahedron",
+      "command": "off_util std_re"
+    }
+  ]
+}

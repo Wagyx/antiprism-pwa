@@ -1,6 +1,6 @@
 import type { LibraryDocument, LibraryFolder } from "./types";
-import { safeFileName } from "./tree";
-import { buildStoredZip, type ZipFile } from "./zip";
+import { importLibraryDocument, safeFileName } from "./tree";
+import { buildStoredZip, readZip, type ZipFile } from "./zip";
 
 /** OFF files for every entry, with the library's folder names as directories. */
 export function libraryOffFiles(doc: LibraryDocument): ZipFile[] {
@@ -67,6 +67,25 @@ export function librariesDatabaseZip(docs: LibraryDocument[]): Uint8Array {
     bytes: encoder.encode(JSON.stringify(doc, null, 2)),
   }));
   return buildStoredZip(files);
+}
+
+/** Import every library JSON file stored in an exported database zip. */
+export async function libraryDocumentsFromZip(
+  bytes: Uint8Array,
+  existingNames: string[],
+): Promise<LibraryDocument[]> {
+  const files = await readZip(bytes);
+  const jsons = files.filter((file) => file.path.toLowerCase().endsWith(".json"));
+  if (jsons.length === 0) throw new Error("The archive has no library file");
+  const decoder = new TextDecoder();
+  const names = [...existingNames];
+  const docs: LibraryDocument[] = [];
+  for (const file of jsons) {
+    const doc = importLibraryDocument(decoder.decode(file.bytes), names);
+    names.push(doc.name);
+    docs.push(doc);
+  }
+  return docs;
 }
 
 export function librariesOffZip(docs: LibraryDocument[]): Uint8Array {

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { saveBlob, saveTextFile } from "../io/saveTextFile";
-import { librariesDatabaseZip, librariesOffZip, libraryOffZip } from "./archive";
+import { librariesDatabaseZip, librariesOffZip, libraryDocumentsFromZip, libraryOffZip } from "./archive";
 import { migrateLibrary } from "./snapshot";
 import { loadLibraries, readLibraryFile, removeLibraryRecord, saveLibrary } from "./store";
 import {
@@ -29,6 +29,20 @@ import type {
 
 function replaceDoc(libraries: LibraryDocument[], doc: LibraryDocument): LibraryDocument[] {
   return sortLibraries(libraries.map((library) => (library.id === doc.id ? doc : library)));
+}
+
+/**
+ * Library zips hosted beside the production app send no CORS header.
+ * From another origin, ask this app's own server for `/libraries/…`
+ * (Vite proxies that path in development).
+ */
+function libraryRequestUrl(url: string): string {
+  const target = new URL(url, window.location.href);
+  if (target.origin === window.location.origin) return target.href;
+  const marker = "/libraries/";
+  const at = target.pathname.indexOf(marker);
+  if (at < 0) return target.href;
+  return new URL(target.pathname.slice(at + 1), document.baseURI).href;
 }
 
 function correctNav(
@@ -137,6 +151,25 @@ export function useLibrary() {
       );
       await saveLibrary(doc);
       commit([...librariesRef.current, doc]);
+    });
+
+  const importExternal = (url: string) =>
+    enqueue(async () => {
+      let response: Response;
+      try {
+        response = await fetch(libraryRequestUrl(url));
+      } catch {
+        throw new Error("Could not download the library");
+      }
+      if (!response.ok) throw new Error(`Could not download the library (${response.status})`);
+      const docs = await libraryDocumentsFromZip(
+        new Uint8Array(await response.arrayBuffer()),
+        librariesRef.current.map((library) => library.name),
+      );
+      for (const doc of docs) await saveLibrary(doc);
+      commit([...librariesRef.current, ...docs]);
+      const first = docs[0];
+      if (first) updateNav({ libraryId: first.id, folderIds: [] });
     });
 
   const exportJson = async (libraryId: string) => {
@@ -319,6 +352,7 @@ export function useLibrary() {
     createLibrary,
     renameLibraryById,
     importLibrary,
+    importExternal,
     exportJson,
     exportZip,
     exportDatabase,

@@ -84,3 +84,68 @@ export function buildStoredZip(files: ZipFile[]): Uint8Array {
   ev.setUint32(16, offset, true);
   return concat([...locals, centralDir, end]);
 }
+
+function findEndOfCentralDirectory(data: Uint8Array): number {
+  const min = Math.max(0, data.length - 22 - 65535);
+  for (let i = data.length - 22; i >= min; i--) {
+    if (
+      data[i] === 0x50 &&
+      data[i + 1] === 0x4b &&
+      data[i + 2] === 0x05 &&
+      data[i + 3] === 0x06
+    ) {
+      return i;
+    }
+  }
+  throw new Error("The file is not a zip archive");
+}
+
+async function inflateRaw(data: Uint8Array): Promise<Uint8Array> {
+  const copy = new Uint8Array(data.byteLength);
+  copy.set(data);
+  const stream = new Blob([copy.buffer]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+  return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+
+/** Read a zip of stored or deflated files. Directories are skipped. */
+export async function readZip(data: Uint8Array): Promise<ZipFile[]> {
+  const bytes = data.byteOffset === 0 && data.byteLength === data.buffer.byteLength ? data : data.slice();
+  const view = new DataView(bytes.buffer);
+  const eocd = findEndOfCentralDirectory(bytes);
+  const count = view.getUint16(eocd + 10, true);
+  let cursor = view.getUint32(eocd + 16, true);
+  const decoder = new TextDecoder();
+  const files: ZipFile[] = [];
+
+  for (let n = 0; n < count; n++) {
+    if (cursor + 46 > bytes.length || view.getUint32(cursor, true) !== 0x02014b50) {
+      throw new Error("The zip archive is damaged");
+    }
+    const method = view.getUint16(cursor + 10, true);
+    const compressedSize = view.getUint32(cursor + 20, true);
+    const nameLength = view.getUint16(cursor + 28, true);
+    const extraLength = view.getUint16(cursor + 30, true);
+    const commentLength = view.getUint16(cursor + 32, true);
+    const localOffset = view.getUint32(cursor + 42, true);
+    const path = decoder.decode(bytes.subarray(cursor + 46, cursor + 46 + nameLength));
+    cursor += 46 + nameLength + extraLength + commentLength;
+    if (path.endsWith("/")) continue;
+
+    if (localOffset + 30 > bytes.length || view.getUint32(localOffset, true) !== 0x04034b50) {
+      throw new Error("The zip archive is damaged");
+    }
+    const localNameLength = view.getUint16(localOffset + 26, true);
+    const localExtraLength = view.getUint16(localOffset + 28, true);
+    const start = localOffset + 30 + localNameLength + localExtraLength;
+    const compressed = bytes.subarray(start, start + compressedSize);
+    if (start + compressedSize > bytes.length) throw new Error("The zip archive is damaged");
+
+    let fileBytes: Uint8Array;
+    if (method === 0) fileBytes = compressed;
+    else if (method === 8) fileBytes = await inflateRaw(compressed);
+    else throw new Error("The zip archive uses an unsupported compression");
+    files.push({ path, bytes: fileBytes });
+  }
+
+  return files;
+}

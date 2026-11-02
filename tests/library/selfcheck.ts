@@ -1,4 +1,4 @@
-import { libraryOffZip } from "../../web/src/library/archive.ts";
+import { librariesDatabaseZip, libraryDocumentsFromZip, libraryOffZip } from "../../web/src/library/archive.ts";
 import { parsePolyhedronCatalog } from "../../web/src/library/polyhedronCatalog.ts";
 import { parseSearch, searchLibraries } from "../../web/src/library/search.ts";
 import {
@@ -209,5 +209,12 @@ assert(fraction.entry?.name === "{7/2}-Prism", "a polyhedron name may contain /"
 
 const packed = libraryOffZip(doc);
 writeFileSync("/tmp/antiprism-library-off.zip", packed);
+
+const shared = librariesDatabaseZip([createLibraryDocument("Named Models Library", ["MyLibrary"])]);
+const restored = await libraryDocumentsFromZip(shared, ["MyLibrary"]);
+assert(
+  restored.length === 1 && restored[0]?.name === "Named Models Library",
+  "a zipped library json imports",
+);
 
 console.log("library self-check ok");

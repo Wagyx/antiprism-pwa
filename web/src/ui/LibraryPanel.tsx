@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
+import { EXTERNAL_LIBRARIES, type ExternalLibrary } from "../library/externalLibraries";
 import { entryCommand } from "../library/snapshot";
 import { searchLibraries, EMPTY_SEARCH_FILTERS, searchFiltersActive, type RangeFilter, type SearchFilters } from "../library/search";
 import {
@@ -36,6 +37,7 @@ type Props = {
   onCreateLibrary: (name: string) => Promise<void>;
   onRenameLibrary: (libraryId: string, name: string) => Promise<void>;
   onImport: (file: File) => Promise<void>;
+  onImportExternal: (url: string) => Promise<void>;
   onExportJson: (libraryId: string) => Promise<void>;
   onExportZip: (libraryId: string) => Promise<void>;
   onExportDatabase: () => Promise<void>;
@@ -59,6 +61,7 @@ type Pick = {
 type DirItem =
   | { key: "up"; kind: "up" }
   | { key: string; kind: "library"; libraryId: string }
+  | { key: string; kind: "external"; url: string }
   | { key: string; kind: "folder"; libraryId: string; nodeId: string }
   | { key: string; kind: "entry"; libraryId: string; nodeId: string };
 
@@ -186,6 +189,7 @@ export function LibraryPanel({
   onCreateLibrary,
   onRenameLibrary,
   onImport,
+  onImportExternal,
   onExportJson,
   onExportZip,
   onExportDatabase,
@@ -201,6 +205,7 @@ export function LibraryPanel({
   onImportCatalog,
 }: Props) {
   const importRef = useRef<HTMLInputElement>(null);
+  const externalLock = useRef(false);
   const catalogRef = useRef<HTMLInputElement>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [composer, setComposer] = useState<"library" | "folder" | null>(null);
@@ -321,7 +326,12 @@ export function LibraryPanel({
       const kb = keyboardRef.current;
       if (kb.blocked || document.querySelector(".library-panel details[open]")) return;
       if (event.key === "Enter") {
-        if (event.target instanceof HTMLElement && event.target.closest(".lib-grid article")) return;
+        if (
+          event.target instanceof HTMLElement &&
+          event.target.closest(".lib-grid article, .lib-grid a.lib-card")
+        ) {
+          return;
+        }
         const item = kb.items.find((candidate) => candidate.key === kb.currentKey);
         if (!item) return;
         event.preventDefault();
@@ -365,6 +375,21 @@ export function LibraryPanel({
     } catch (error) {
       setActionError(error instanceof Error ? error.message : String(error));
     }
+  };
+
+  const addExternal = (url: string) => {
+    if (externalLock.current) return;
+    externalLock.current = true;
+    const library = EXTERNAL_LIBRARIES.find((entry) => entry.url === url);
+    void run(async () => {
+      setImportStatus(`Downloading ${library?.name ?? "library"}…`);
+      try {
+        await onImportExternal(url);
+      } finally {
+        externalLock.current = false;
+        setImportStatus(null);
+      }
+    });
   };
 
   useEffect(() => {
@@ -683,11 +708,18 @@ export function LibraryPanel({
         nodeId: hit.entry.id,
       }))
     : !openLibrary
-      ? ordered.map((library) => ({
-          key: `library:${library.id}`,
-          kind: "library" as const,
-          libraryId: library.id,
-        }))
+      ? [
+          ...ordered.map((library) => ({
+            key: `library:${library.id}`,
+            kind: "library" as const,
+            libraryId: library.id,
+          })),
+          ...EXTERNAL_LIBRARIES.map((library) => ({
+            key: `external:${library.id}`,
+            kind: "external" as const,
+            url: library.url,
+          })),
+        ]
       : openFolder
         ? [
             { key: "up" as const, kind: "up" as const },
@@ -750,6 +782,10 @@ export function LibraryPanel({
     }
     if (item.kind === "library") {
       navigate({ libraryId: item.libraryId, folderIds: [] });
+      return;
+    }
+    if (item.kind === "external") {
+      addExternal(item.url);
       return;
     }
     if (item.kind === "folder") {
@@ -1211,8 +1247,9 @@ export function LibraryPanel({
               </article>
             ) : null}
 
-            {!openLibrary
-              ? ordered.map((library) => (
+            {!openLibrary ? (
+              <>
+                {ordered.map((library) => (
                   <LibraryCard
                     key={library.id}
                     library={library}
@@ -1249,8 +1286,18 @@ export function LibraryPanel({
                     onExportZip={() => void run(() => onExportZip(library.id))}
                     onDelete={() => setConfirmLibraryId(library.id)}
                   />
-                ))
-              : null}
+                ))}
+                <h2 className="lib-section">External libraries</h2>
+                {EXTERNAL_LIBRARIES.map((library) => (
+                  <ExternalLibraryCard
+                    key={library.id}
+                    library={library}
+                    selected={currentKey === `external:${library.id}`}
+                    onOpen={() => addExternal(library.url)}
+                  />
+                ))}
+              </>
+            ) : null}
 
             {openLibrary && openFolder
               ? visibleNodes.map((node, index) =>
@@ -1717,6 +1764,45 @@ function LibraryCard({
         {count} {count === 1 ? "entry" : "entries"}
       </p>
     </article>
+  );
+}
+
+function ExternalLibraryCard({
+  library,
+  selected,
+  onOpen,
+}: {
+  library: ExternalLibrary;
+  selected: boolean;
+  onOpen: () => void;
+}) {
+  return (
+    <a
+      className={`lib-card${selected ? " is-selected" : ""}`}
+      data-dir={`external:${library.id}`}
+      href={library.url}
+      aria-label={library.name}
+      title="Add this library"
+      onClick={(event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+        event.preventDefault();
+        onOpen();
+      }}
+      onKeyDown={(event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          onOpen();
+        }
+      }}
+    >
+      <div className="lib-card-head">
+        <div className="lib-card-title">
+          <KindIcon kind="library" />
+          <span className="lib-card-name">{library.name}</span>
+        </div>
+      </div>
+      <p className="lib-meta lib-external-url">{library.url}</p>
+    </a>
   );
 }
 

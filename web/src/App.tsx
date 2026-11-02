@@ -577,6 +577,7 @@ export default function App() {
           onCreateLibrary={library.createLibrary}
           onRenameLibrary={library.renameLibraryById}
           onImport={library.importLibrary}
+          onImportExternal={library.importExternal}
           onExportJson={library.exportJson}
           onExportZip={library.exportZip}
           onExportDatabase={library.exportDatabase}
