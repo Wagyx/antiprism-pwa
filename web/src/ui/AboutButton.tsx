@@ -85,7 +85,7 @@ export function AboutButton() {
             <p>
               This application is based on a WASM port of{" "}
               <a href="https://antiprism.com/" target="_blank" rel="noopener noreferrer">
-                Antiprism
+                Antiprism 0.32
               </a>.
             </p>
             <p>Apply the commands and view the result in real time.</p>

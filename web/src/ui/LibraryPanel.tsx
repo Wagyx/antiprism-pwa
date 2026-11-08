@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
+import { BookOpen, Box, EllipsisVertical, Folder, Link } from "lucide-react";
 import { createPortal } from "react-dom";
 import { EXTERNAL_LIBRARIES, type ExternalLibrary } from "../library/externalLibraries";
 import { entryCommand } from "../library/snapshot";
@@ -1579,11 +1580,7 @@ function CardMenu({
       onToggle={(event) => onToggle?.(event.currentTarget.open)}
     >
       <summary className="lib-card-menu-btn" aria-label="Actions">
-        <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
-          <circle cx="8" cy="3.2" r="1.35" fill="currentColor" />
-          <circle cx="8" cy="8" r="1.35" fill="currentColor" />
-          <circle cx="8" cy="12.8" r="1.35" fill="currentColor" />
-        </svg>
+        <EllipsisVertical size={14} strokeWidth={1.5} aria-hidden />
       </summary>
       <div className="add-op-menu" role="menu">
         {children}
@@ -1608,70 +1605,18 @@ function CardMenuItem({ children, onClick }: { children: ReactNode; onClick: () 
   );
 }
 
-type CardKind = "library" | "folder" | "polyhedron";
+type CardKind = "library" | "folder" | "polyhedron" | "link";
+
+const KIND_ICONS = {
+  library: BookOpen,
+  folder: Folder,
+  polyhedron: Box,
+  link: Link,
+} as const;
 
 function KindIcon({ kind }: { kind: CardKind }) {
-  const common = {
-    className: "lib-card-icon",
-    width: 16,
-    height: 16,
-    viewBox: "0 0 16 16",
-    "aria-hidden": true as const,
-    focusable: false as const,
-    draggable: false as const,
-  };
-  if (kind === "folder") {
-    return (
-      <svg {...common}>
-        <path
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.2"
-          strokeLinejoin="round"
-          d="M2.15 4.35h3.35l1.15 1.35h7.2v6.7H2.15v-8.05Z"
-        />
-      </svg>
-    );
-  }
-  if (kind === "polyhedron") {
-    return (
-      <svg {...common}>
-        <path
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.2"
-          strokeLinejoin="round"
-          d="M8 1.7 13.35 4.7v6.2L8 14.05 2.65 10.9V4.7L8 1.7Z"
-        />
-        <path
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.2"
-          strokeLinejoin="round"
-          d="M8 1.7v6.25L13.35 4.7M8 7.95 2.65 4.7M8 7.95v6.1"
-        />
-      </svg>
-    );
-  }
-  return (
-    <svg {...common}>
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.2"
-        strokeLinejoin="round"
-        strokeLinecap="round"
-        d="M2.2 3.35c1.85-.85 3.25-.7 5.8.7 2.55-1.4 3.95-1.55 5.8-.7v8.7c-1.85-.85-3.25-.7-5.8.7-2.55-1.4-3.95-1.55-5.8-.7v-8.7Z"
-      />
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.2"
-        strokeLinecap="round"
-        d="M8 4.15v8.5"
-      />
-    </svg>
-  );
+  const Icon = KIND_ICONS[kind];
+  return <Icon className="lib-card-icon" size={16} strokeWidth={1.5} aria-hidden />;
 }
 
 function CardTitle({
@@ -1797,7 +1742,7 @@ function ExternalLibraryCard({
     >
       <div className="lib-card-head">
         <div className="lib-card-title">
-          <KindIcon kind="library" />
+          <KindIcon kind="link" />
           <span className="lib-card-name">{library.name}</span>
         </div>
       </div>

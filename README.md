@@ -25,6 +25,8 @@ git clone https://github.com/antiprism/antiprism.git antiprism
 # (cd antiprism && git checkout 7805b34)
 ```
 
+The version of Antiprism used is 0.32.
+
 ## Build the Wasm module
 
 From the repository root (with `emcc` on your `PATH`, or emsdk at `~/emsdk` /
