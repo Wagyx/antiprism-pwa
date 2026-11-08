@@ -182,7 +182,26 @@ const catalog = parsePolyhedronCatalog(
     Catalan: [{ name: "Rhombic Dodecahedron", command: "off_util rd" }],
   }),
 );
-assert(catalog.length === 2 && catalog[0]?.items[0]?.command === "off_util tet", "catalog groups");
+assert(
+  catalog.length === 2 &&
+    catalog[0]?.items[0]?.command === "off_util tet" &&
+    catalog[0]?.items[0]?.sourceFile === null,
+  "catalog groups",
+);
+const sourced = parsePolyhedronCatalog(
+  JSON.stringify({
+    Triamonds: [
+      {
+        name: "Misc",
+        sourceFile: { fileName: "Misc.off", text: "OFF\n0 0 0\n" },
+      },
+    ],
+  }),
+);
+assert(
+  sourced[0]?.items[0]?.command === "" && sourced[0]?.items[0]?.sourceFile?.fileName === "Misc.off",
+  "catalog source file is the model input",
+);
 let catalogFile = false;
 try {
   parsePolyhedronCatalog(JSON.stringify({ format: "antiprism-library", name: "MyLibrary" }));

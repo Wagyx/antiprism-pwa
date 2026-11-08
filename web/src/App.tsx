@@ -303,14 +303,24 @@ export default function App() {
       for (const item of group.items) {
         done += 1;
         report(`Importing ${item.name} (${done} of ${total})…`);
-        const commands = splitCommands(item.command);
-        if (commands.length === 0) throw new Error(`${item.name}: the command is empty`);
+        const commands = item.command ? splitCommands(item.command) : [];
+        const source = item.sourceFile;
+        if (commands.length === 0 && !source) {
+          throw new Error(`${item.name}: needs a command or a source file`);
+        }
         const steps: CommandStep[] = commands.map((command) => ({
           id: crypto.randomUUID(),
           enabled: true,
           command,
         }));
-        const result = await runPipeline(steps, null);
+        const inputFile = source
+          ? {
+              fileName: source.fileName,
+              format: source.fileName.toLowerCase().endsWith(".obj") ? "obj" : "off",
+              text: source.text,
+            }
+          : null;
+        const result = await runPipeline(steps, inputFile);
         if (!result.ok || !result.offText?.trim()) {
           throw new Error(`${item.name}: ${result.error ?? "the pipeline produced no polyhedron"}`);
         }
@@ -318,7 +328,7 @@ export default function App() {
           name: item.name,
           offText: result.offText,
           pipeline: steps,
-          inputFile: null,
+          inputFile,
           counts: countsFor(result.offText),
         });
       }

@@ -1793,6 +1793,7 @@ function FolderCard({
   onOpen: () => void;
   onDelete: () => void;
 } & RenameProps) {
+  const count = countEntries(folder);
   return (
     <article
       className={`lib-card${checked ? " is-checked" : ""}${selected ? " is-selected" : ""}${dragging ? " is-dragging" : ""}${dropTarget ? " is-drop" : ""}`}
@@ -1828,7 +1829,7 @@ function FolderCard({
         </CardMenu>
       </div>
       <p className="lib-meta">
-        {folder.children.length} {folder.children.length === 1 ? "item" : "items"}
+        {count} {count === 1 ? "entry" : "entries"}
       </p>
     </article>
   );

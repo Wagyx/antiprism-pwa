@@ -16,4 +16,9 @@ export const EXTERNAL_LIBRARIES: ExternalLibrary[] = [
     name: "Examples of Commands ",
     url: "https://asliceofcuriosity.fr/app/antiprism-pwa/libraries/Commands_Examples.zip",
   },
+  {
+    id: "wagyx",
+    name: "Wagyx Library",
+    url: "https://asliceofcuriosity.fr/app/antiprism-pwa/libraries/Wagyx.zip",
+  },
 ];

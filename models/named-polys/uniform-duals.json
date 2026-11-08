@@ -1,0 +1,330 @@
+{
+  "Tetrahedral": [
+    {
+      "name": "UD1 - Tetrahedron",
+      "command": "off_util UD1"
+    },
+    {
+      "name": "UD2 - Triakis Tetrahedron",
+      "command": "off_util UD2"
+    },
+    {
+      "name": "UD3 - Octahemioctacron",
+      "command": "off_util UD3"
+    },
+    {
+      "name": "UD4 - Tetrahemihexacron",
+      "command": "off_util UD4"
+    }
+  ],
+  "Octahedral": [
+    {
+      "name": "UD5 - Cube",
+      "command": "off_util UD5"
+    },
+    {
+      "name": "UD6 - Octahedron",
+      "command": "off_util UD6"
+    },
+    {
+      "name": "UD7 - Rhombic Dodecahedron",
+      "command": "off_util UD7"
+    },
+    {
+      "name": "UD8 - Tetrakis Hexahedron",
+      "command": "off_util UD8"
+    },
+    {
+      "name": "UD9 - Triakis Octahedron",
+      "command": "off_util UD9"
+    },
+    {
+      "name": "UD10 - Deltoidal Icositetrahedron",
+      "command": "off_util UD10"
+    },
+    {
+      "name": "UD11 - Disdyakis Dodecahedron",
+      "command": "off_util UD11"
+    },
+    {
+      "name": "UD12 - Pentagonal Icositetrahedron",
+      "command": "off_util UD12"
+    },
+    {
+      "name": "UD13 - Small Hexacronic Icositetrahedron",
+      "command": "off_util UD13"
+    },
+    {
+      "name": "UD14 - Great Hexacronic Icositetrahedron",
+      "command": "off_util UD14"
+    },
+    {
+      "name": "UD15 - Hexahemioctacron",
+      "command": "off_util UD15"
+    },
+    {
+      "name": "UD16 - Tetradyakis Hexahedron",
+      "command": "off_util UD16"
+    },
+    {
+      "name": "UD17 - Great Deltoidal Icositetrahedron",
+      "command": "off_util UD17"
+    },
+    {
+      "name": "UD18 - Small Rhombihexacron",
+      "command": "off_util UD18"
+    },
+    {
+      "name": "UD19 - Great Triakis Octahedron",
+      "command": "off_util UD19"
+    },
+    {
+      "name": "UD20 - Great Disdyakis Dodecahedron",
+      "command": "off_util UD20"
+    },
+    {
+      "name": "UD21 - Great Rhombihexacron",
+      "command": "off_util UD21"
+    }
+  ],
+  "Icosahedral": [
+    {
+      "name": "UD22 - Dodecahedron",
+      "command": "off_util UD22"
+    },
+    {
+      "name": "UD23 - Icosahedron",
+      "command": "off_util UD23"
+    },
+    {
+      "name": "UD24 - Rhombic Triacontahedron",
+      "command": "off_util UD24"
+    },
+    {
+      "name": "UD25 - Pentakis Dodecahedron",
+      "command": "off_util UD25"
+    },
+    {
+      "name": "UD26 - Triakis Icosahedron",
+      "command": "off_util UD26"
+    },
+    {
+      "name": "UD27 - Deltoidal Hexecontahedron",
+      "command": "off_util UD27"
+    },
+    {
+      "name": "UD28 - Disdyakis Triacontahedron",
+      "command": "off_util UD28"
+    },
+    {
+      "name": "UD29 - Pentagonal Hexecontahedron",
+      "command": "off_util UD29"
+    },
+    {
+      "name": "UD30 - Small Triambic Icosahedron",
+      "command": "off_util UD30"
+    },
+    {
+      "name": "UD31 - Small Icosacronic Hexecontahedron",
+      "command": "off_util UD31"
+    },
+    {
+      "name": "UD32 - Small Hexagonal Hexecontahedron",
+      "command": "off_util UD32"
+    },
+    {
+      "name": "UD33 - Small Dodecacronic Hexecontahedron",
+      "command": "off_util UD33"
+    },
+    {
+      "name": "UD34 - Great Dodecahedron",
+      "command": "off_util UD34"
+    },
+    {
+      "name": "UD35 - Small Stellated Dodecahedron",
+      "command": "off_util UD35"
+    },
+    {
+      "name": "UD36 - Medial Rhombic Triacontahedron",
+      "command": "off_util UD36"
+    },
+    {
+      "name": "UD37 - Small Stellapentakis Dodecahedron",
+      "command": "off_util UD37"
+    },
+    {
+      "name": "UD38 - Medial Deltoidal Hexecontahedron",
+      "command": "off_util UD38"
+    },
+    {
+      "name": "UD39 - Small Rhombidodecacron",
+      "command": "off_util UD39"
+    },
+    {
+      "name": "UD40 - Medial Pentagonal Hexecontahedron",
+      "command": "off_util UD40"
+    },
+    {
+      "name": "UD41 - Medial Triambic Icosahedron",
+      "command": "off_util UD41"
+    },
+    {
+      "name": "UD42 - Great Ditrigonal Dodecacronic Hexecontahedron",
+      "command": "off_util UD42"
+    },
+    {
+      "name": "UD43 - Small Ditrigonal Dodecacronic Hexecontahedron",
+      "command": "off_util UD43"
+    },
+    {
+      "name": "UD44 - Medial Icosacronic Hexecontahedron",
+      "command": "off_util UD44"
+    },
+    {
+      "name": "UD45 - Tridyakis Icosahedron",
+      "command": "off_util UD45"
+    },
+    {
+      "name": "UD46 - Medial Hexagonal Hexecontahedron",
+      "command": "off_util UD46"
+    },
+    {
+      "name": "UD47 - Great Triambic Icosahedron",
+      "command": "off_util UD47"
+    },
+    {
+      "name": "UD48 - Great Icosacronic Hexecontahedron",
+      "command": "off_util UD48"
+    },
+    {
+      "name": "UD49 - Small Icosihemidodecacron",
+      "command": "off_util UD49"
+    },
+    {
+      "name": "UD50 - Small Dodecicosacron",
+      "command": "off_util UD50"
+    },
+    {
+      "name": "UD51 - Small Dodecahemidodecacron",
+      "command": "off_util UD51"
+    },
+    {
+      "name": "UD52 - Great Icosahedron",
+      "command": "off_util UD52"
+    },
+    {
+      "name": "UD53 - Great Stellated Dodecahedron",
+      "command": "off_util UD53"
+    },
+    {
+      "name": "UD54 - Great Rhombic Triacontahedron",
+      "command": "off_util UD54"
+    },
+    {
+      "name": "UD55 - Great Stellapentakis Dodecahedron",
+      "command": "off_util UD55"
+    },
+    {
+      "name": "UD56 - Rhombicosacron",
+      "command": "off_util UD56"
+    },
+    {
+      "name": "UD57 - Great Pentagonal Hexecontahedron",
+      "command": "off_util UD57"
+    },
+    {
+      "name": "UD58 - Great Pentakis Dodecahedron",
+      "command": "off_util UD58"
+    },
+    {
+      "name": "UD59 - Medial Disdyakis Triacontahedron",
+      "command": "off_util UD59"
+    },
+    {
+      "name": "UD60 - Medial Inverted Pentagonal Hexecontahedron",
+      "command": "off_util UD60"
+    },
+    {
+      "name": "UD61 - Great Dodecacronic Hexecontahedron",
+      "command": "off_util UD61"
+    },
+    {
+      "name": "UD62 - Small Dodecahemicosacron",
+      "command": "off_util UD62"
+    },
+    {
+      "name": "UD63 - Great Dodecicosacron",
+      "command": "off_util UD63"
+    },
+    {
+      "name": "UD64 - Great Hexagonal Hexecontahedron",
+      "command": "off_util UD64"
+    },
+    {
+      "name": "UD65 - Great Dodecahemicosacron",
+      "command": "off_util UD65"
+    },
+    {
+      "name": "UD66 - Great Triakis Icosahedron",
+      "command": "off_util UD66"
+    },
+    {
+      "name": "UD67 - Great Deltoidal Hexecontahedron",
+      "command": "off_util UD67"
+    },
+    {
+      "name": "UD68 - Great Disdyakis Triacontahedron",
+      "command": "off_util UD68"
+    },
+    {
+      "name": "UD69 - Great Inverted Pentagonal Hexecontahedron",
+      "command": "off_util UD69"
+    },
+    {
+      "name": "UD70 - Great Dodecahemidodecacron",
+      "command": "off_util UD70"
+    },
+    {
+      "name": "UD71 - Great Icosihemidodecacron",
+      "command": "off_util UD71"
+    },
+    {
+      "name": "UD72 - Small Hexagrammic Hexecontahedron",
+      "command": "off_util UD72"
+    },
+    {
+      "name": "UD73 - Great Rhombidodecacron",
+      "command": "off_util UD73"
+    },
+    {
+      "name": "UD74 - Great Pentagrammic Hexecontahedron",
+      "command": "off_util UD74"
+    },
+    {
+      "name": "UD75 - Great Dirhombicosidodecacron",
+      "command": "off_util UD75"
+    }
+  ],
+  "Prisms and Antiprisms": [
+    {
+      "name": "UD76 - Pentagonal Dipyramid",
+      "command": "off_util UD76"
+    },
+    {
+      "name": "UD77 - Pentagonal Deltohedron",
+      "command": "off_util UD77"
+    },
+    {
+      "name": "UD78 - Pentagrammic Dipyramid",
+      "command": "off_util UD78"
+    },
+    {
+      "name": "UD79 - Pentagrammic Deltohedron",
+      "command": "off_util UD79"
+    },
+    {
+      "name": "UD80 - Pentagrammic Concave Deltohedron",
+      "command": "off_util UD80"
+    }
+  ]
+}
