@@ -1,0 +1,5525 @@
+[
+  {
+    "program": "bravais",
+    "label": "bravais fcc",
+    "stages": [
+      {
+        "tool": "bravais",
+        "args": [
+          "fcc"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "bravais",
+    "label": "bravais bcc -c s -r 4 -s 3,2",
+    "stages": [
+      {
+        "tool": "bravais",
+        "args": [
+          "bcc",
+          "-c",
+          "s",
+          "-r",
+          "4",
+          "-s",
+          "3,2"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "bravais",
+    "label": "bravais bcc -g 3 -D c",
+    "stages": [
+      {
+        "tool": "bravais",
+        "args": [
+          "bcc",
+          "-g",
+          "3",
+          "-D",
+          "c"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "bravais",
+    "label": "bravais bcc -g 3 -D c -A",
+    "stages": [
+      {
+        "tool": "bravais",
+        "args": [
+          "bcc",
+          "-g",
+          "3",
+          "-D",
+          "c",
+          "-A"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "bravais",
+    "label": "bravais bcc -d c",
+    "stages": [
+      {
+        "tool": "bravais",
+        "args": [
+          "bcc",
+          "-d",
+          "c"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "bravais",
+    "label": "bravais triclinic -a 60,70,80 -v 1,1.5,2 -u",
+    "stages": [
+      {
+        "tool": "bravais",
+        "args": [
+          "triclinic",
+          "-a",
+          "60,70,80",
+          "-v",
+          "1,1.5,2",
+          "-u"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "canonical",
+    "label": "off_util cube | off_trans -S 1,2,3 | canonical",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "cube"
+        ]
+      },
+      {
+        "tool": "off_trans",
+        "args": [
+          "-S",
+          "1,2,3"
+        ]
+      },
+      {
+        "tool": "canonical",
+        "args": []
+      }
+    ]
+  },
+  {
+    "program": "canonical",
+    "label": "geodesic -c 2 ico | canonical -O bd",
+    "stages": [
+      {
+        "tool": "geodesic",
+        "args": [
+          "-c",
+          "2",
+          "ico"
+        ]
+      },
+      {
+        "tool": "canonical",
+        "args": [
+          "-O",
+          "bd"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "canonical",
+    "label": "conway pC | canonical -O bdc -F white,c,128",
+    "stages": [
+      {
+        "tool": "conway",
+        "args": [
+          "pC"
+        ]
+      },
+      {
+        "tool": "canonical",
+        "args": [
+          "-O",
+          "bdc",
+          "-F",
+          "white,c,128"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "canonical",
+    "label": "conway gI | canonical -O bnU -F u,b,128",
+    "stages": [
+      {
+        "tool": "conway",
+        "args": [
+          "gI"
+        ]
+      },
+      {
+        "tool": "canonical",
+        "args": [
+          "-O",
+          "bnU",
+          "-F",
+          "u,b,128"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "canonical",
+    "label": "conway ageC | canonical",
+    "stages": [
+      {
+        "tool": "conway",
+        "args": [
+          "ageC"
+        ]
+      },
+      {
+        "tool": "canonical",
+        "args": []
+      }
+    ]
+  },
+  {
+    "program": "canonical",
+    "label": "conway ageC | canonical -O ST",
+    "stages": [
+      {
+        "tool": "conway",
+        "args": [
+          "ageC"
+        ]
+      },
+      {
+        "tool": "canonical",
+        "args": [
+          "-O",
+          "ST"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "col_util",
+    "label": "col_util -d plot -m map_blue:yellow -M rgb",
+    "stages": [
+      {
+        "tool": "col_util",
+        "args": [
+          "-d",
+          "plot",
+          "-m",
+          "map_blue:yellow",
+          "-M",
+          "rgb"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "col_util",
+    "label": "col_util -d plot -m map_blue:yellow -M hsv -r cylinder",
+    "stages": [
+      {
+        "tool": "col_util",
+        "args": [
+          "-d",
+          "plot",
+          "-m",
+          "map_blue:yellow",
+          "-M",
+          "hsv",
+          "-r",
+          "cylinder"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "col_util",
+    "label": "col_util -d plot -m map_blue:yellow -M hsl -p -y -r conic",
+    "stages": [
+      {
+        "tool": "col_util",
+        "args": [
+          "-d",
+          "plot",
+          "-m",
+          "map_blue:yellow",
+          "-M",
+          "hsl",
+          "-p",
+          "-y",
+          "-r",
+          "conic"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "col_util",
+    "label": "col_util -d plot -m map_blue:yellow -M hsl -p -y -s 0.8,1.01,2,3 -r cube",
+    "stages": [
+      {
+        "tool": "col_util",
+        "args": [
+          "-d",
+          "plot",
+          "-m",
+          "map_blue:yellow",
+          "-M",
+          "hsl",
+          "-p",
+          "-y",
+          "-s",
+          "0.8,1.01,2,3",
+          "-r",
+          "cube"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "col_util",
+    "label": "col_util -d plot -m map_red:green:blue -M hsl -p -v 1,2,3,4",
+    "stages": [
+      {
+        "tool": "col_util",
+        "args": [
+          "-d",
+          "plot",
+          "-m",
+          "map_red:green:blue",
+          "-M",
+          "hsl",
+          "-p",
+          "-v",
+          "1,2,3,4"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "col_util",
+    "label": "col_util -d plot -m map_red:green:blue -M hsl -p -v 1,2,3,4 -c",
+    "stages": [
+      {
+        "tool": "col_util",
+        "args": [
+          "-d",
+          "plot",
+          "-m",
+          "map_red:green:blue",
+          "-M",
+          "hsl",
+          "-p",
+          "-v",
+          "1,2,3,4",
+          "-c"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "col_util",
+    "label": "col_util -m rainbow -M rgb",
+    "stages": [
+      {
+        "tool": "col_util",
+        "args": [
+          "-m",
+          "rainbow",
+          "-M",
+          "rgb"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "col_util",
+    "label": "col_util -m rainbow -M hsl -r cylinder",
+    "stages": [
+      {
+        "tool": "col_util",
+        "args": [
+          "-m",
+          "rainbow",
+          "-M",
+          "hsl",
+          "-r",
+          "cylinder"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "col_util",
+    "label": "col_util -m rainbow -M hsl -r hexagonal",
+    "stages": [
+      {
+        "tool": "col_util",
+        "args": [
+          "-m",
+          "rainbow",
+          "-M",
+          "hsl",
+          "-r",
+          "hexagonal"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "col_util",
+    "label": "col_util -m rainbow -M hsl -r hexagonal -S",
+    "stages": [
+      {
+        "tool": "col_util",
+        "args": [
+          "-m",
+          "rainbow",
+          "-M",
+          "hsl",
+          "-r",
+          "hexagonal",
+          "-S"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "col_util",
+    "label": "col_util -d wheel -m map_red:green:blue",
+    "stages": [
+      {
+        "tool": "col_util",
+        "args": [
+          "-d",
+          "wheel",
+          "-m",
+          "map_red:green:blue"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "col_util",
+    "label": "col_util -d grid -m rainbow",
+    "stages": [
+      {
+        "tool": "col_util",
+        "args": [
+          "-d",
+          "grid",
+          "-m",
+          "rainbow"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "col_util",
+    "label": "col_util -d grid -m rainbow*10 -I -w b",
+    "stages": [
+      {
+        "tool": "col_util",
+        "args": [
+          "-d",
+          "grid",
+          "-m",
+          "rainbow*10",
+          "-I",
+          "-w",
+          "b"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "conway",
+    "label": "conway dmO | poly_form -a r",
+    "stages": [
+      {
+        "tool": "conway",
+        "args": [
+          "dmO"
+        ]
+      },
+      {
+        "tool": "poly_form",
+        "args": [
+          "-a",
+          "r"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "conway",
+    "label": "conway tk4Y4 | canonical",
+    "stages": [
+      {
+        "tool": "conway",
+        "args": [
+          "tk4Y4"
+        ]
+      },
+      {
+        "tool": "canonical",
+        "args": []
+      }
+    ]
+  },
+  {
+    "program": "conway",
+    "label": "conway eesD -g",
+    "stages": [
+      {
+        "tool": "conway",
+        "args": [
+          "eesD",
+          "-g"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "conway",
+    "label": "conway s ant5/2",
+    "stages": [
+      {
+        "tool": "conway",
+        "args": [
+          "s",
+          "ant5/2"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "conway",
+    "label": "conway s geo_3",
+    "stages": [
+      {
+        "tool": "conway",
+        "args": [
+          "s",
+          "geo_3"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "conway",
+    "label": "conway Gd geo_3",
+    "stages": [
+      {
+        "tool": "conway",
+        "args": [
+          "Gd",
+          "geo_3"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "conway",
+    "label": "conway w^2D -i 5000 | off_color_radial",
+    "stages": [
+      {
+        "tool": "conway",
+        "args": [
+          "w^2D",
+          "-i",
+          "5000"
+        ]
+      },
+      {
+        "tool": "off_color_radial",
+        "args": []
+      }
+    ]
+  },
+  {
+    "program": "conway",
+    "label": "conway L_2:3aC",
+    "stages": [
+      {
+        "tool": "conway",
+        "args": [
+          "L_2:3aC"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "conway",
+    "label": "conway L_2gC -F w",
+    "stages": [
+      {
+        "tool": "conway",
+        "args": [
+          "L_2gC",
+          "-F",
+          "w"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "geodesic",
+    "label": "geodesic -c 2 -f 4 ico",
+    "stages": [
+      {
+        "tool": "geodesic",
+        "args": [
+          "-c",
+          "2",
+          "-f",
+          "4",
+          "ico"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "geodesic",
+    "label": "geodesic -c 2 -F 4 ico",
+    "stages": [
+      {
+        "tool": "geodesic",
+        "args": [
+          "-c",
+          "2",
+          "-F",
+          "4",
+          "ico"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "geodesic",
+    "label": "geodesic -M p -c 1,2 -f 3 oct",
+    "stages": [
+      {
+        "tool": "geodesic",
+        "args": [
+          "-M",
+          "p",
+          "-c",
+          "1,2",
+          "-f",
+          "3",
+          "oct"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_delta",
+    "label": "iso_delta 9",
+    "stages": [
+      {
+        "tool": "iso_delta",
+        "args": [
+          "9"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_delta",
+    "label": "iso_delta -c k -n 5/2 -k 2 -a 3",
+    "stages": [
+      {
+        "tool": "iso_delta",
+        "args": [
+          "-c",
+          "k",
+          "-n",
+          "5/2",
+          "-k",
+          "2",
+          "-a",
+          "3"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite 5",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "5"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite 3/2",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "3/2"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite 5 3 2",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "5",
+          "3",
+          "2"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite 5 3",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "5",
+          "3"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite I1",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "I1"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": []
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite -l list 3",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "-l",
+          "list",
+          "3"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite -l list 3 3",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "-l",
+          "list",
+          "3",
+          "3"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite -l 2",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "-l",
+          "2"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite -l 2 3",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "-l",
+          "2",
+          "3"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite -l 2 3 3",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "-l",
+          "2",
+          "3",
+          "3"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite -A 2.5 3 4",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "-A",
+          "2.5",
+          "3",
+          "4"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite -A 2.5 4 3",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "-A",
+          "2.5",
+          "4",
+          "3"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite -C 2.5 3 4",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "-C",
+          "2.5",
+          "3",
+          "4"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite -A 1 -B 2 3 4",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "-A",
+          "1",
+          "-B",
+          "2",
+          "3",
+          "4"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite -A 1 -C 2 3 4",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "-A",
+          "1",
+          "-C",
+          "2",
+          "3",
+          "4"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite -B 2 -C 2 3 4",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "-B",
+          "2",
+          "-C",
+          "2",
+          "3",
+          "4"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite -A 1 -B 1 3",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "-A",
+          "1",
+          "-B",
+          "1",
+          "3"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite -A -2.5 5 3 2",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "-A",
+          "-2.5",
+          "5",
+          "3",
+          "2"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite -A 2.5 5 3/2 2",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "-A",
+          "2.5",
+          "5",
+          "3/2",
+          "2"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite -c A -A 2.5 4 3",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "-c",
+          "A",
+          "-A",
+          "2.5",
+          "4",
+          "3"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite -c B -A 2.5 4 3",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "-c",
+          "B",
+          "-A",
+          "2.5",
+          "4",
+          "3"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite -c C -A 2.5 4 3",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "-c",
+          "C",
+          "-A",
+          "2.5",
+          "4",
+          "3"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite -c K -A 3 3 -l 5",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "-c",
+          "K",
+          "-A",
+          "3",
+          "3",
+          "-l",
+          "5"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite -c K -A 3 3 -l 6",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "-c",
+          "K",
+          "-A",
+          "3",
+          "3",
+          "-l",
+          "6"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite -A 0.2 5/4 5/3 | pol_recip",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "-A",
+          "0.2",
+          "5/4",
+          "5/3"
+        ]
+      },
+      {
+        "tool": "pol_recip",
+        "args": []
+      }
+    ]
+  },
+  {
+    "program": "iso_kite",
+    "label": "iso_kite 3 2 4",
+    "stages": [
+      {
+        "tool": "iso_kite",
+        "args": [
+          "3",
+          "2",
+          "4"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "kcycle",
+    "label": "kcycle -a 40",
+    "stages": [
+      {
+        "tool": "kcycle",
+        "args": [
+          "-a",
+          "40"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "kcycle",
+    "label": "off_color -f P icosahedron | kcycle -i - -n 8 -a -90 4,9,10,11",
+    "stages": [
+      {
+        "tool": "off_color",
+        "args": [
+          "-f",
+          "P",
+          "icosahedron"
+        ]
+      },
+      {
+        "tool": "kcycle",
+        "args": [
+          "-i",
+          "-",
+          "-n",
+          "8",
+          "-a",
+          "-90",
+          "4,9,10,11"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "leonardo",
+    "label": "leonardo std_rhombicuboctahedron",
+    "stages": [
+      {
+        "tool": "leonardo",
+        "args": [
+          "std_rhombicuboctahedron"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "leonardo",
+    "label": "leonardo -x std_rhombicuboctahedron",
+    "stages": [
+      {
+        "tool": "leonardo",
+        "args": [
+          "-x",
+          "std_rhombicuboctahedron"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "leonardo",
+    "label": "leonardo -w 0.3 std_rhombicuboctahedron",
+    "stages": [
+      {
+        "tool": "leonardo",
+        "args": [
+          "-w",
+          "0.3",
+          "std_rhombicuboctahedron"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "leonardo",
+    "label": "leonardo -w 0.3 -l 0.05 std_rhombicuboctahedron",
+    "stages": [
+      {
+        "tool": "leonardo",
+        "args": [
+          "-w",
+          "0.3",
+          "-l",
+          "0.05",
+          "std_rhombicuboctahedron"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "leonardo",
+    "label": "off_color -f P geo_3_d -m map_orange:purple:white | leonardo -x",
+    "stages": [
+      {
+        "tool": "off_color",
+        "args": [
+          "-f",
+          "P",
+          "geo_3_d",
+          "-m",
+          "map_orange:purple:white"
+        ]
+      },
+      {
+        "tool": "leonardo",
+        "args": [
+          "-x"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "leonardo",
+    "label": "off_color -e P geo_3_d -m map_orange:purple:white | leonardo -e",
+    "stages": [
+      {
+        "tool": "off_color",
+        "args": [
+          "-e",
+          "P",
+          "geo_3_d",
+          "-m",
+          "map_orange:purple:white"
+        ]
+      },
+      {
+        "tool": "leonardo",
+        "args": [
+          "-e"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "leonardo",
+    "label": "unitile2d -s m -w 29 -l 2 | off_color -f P -m map_darkblue:white | leonardo -m -w 0.15",
+    "stages": [
+      {
+        "tool": "unitile2d",
+        "args": [
+          "-s",
+          "m",
+          "-w",
+          "29",
+          "-l",
+          "2"
+        ]
+      },
+      {
+        "tool": "off_color",
+        "args": [
+          "-f",
+          "P",
+          "-m",
+          "map_darkblue:white"
+        ]
+      },
+      {
+        "tool": "leonardo",
+        "args": [
+          "-m",
+          "-w",
+          "0.15"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "miller",
+    "label": "miller 9",
+    "stages": [
+      {
+        "tool": "miller",
+        "args": [
+          "9"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "miller",
+    "label": "miller m_E -F h -E n -V e",
+    "stages": [
+      {
+        "tool": "miller",
+        "args": [
+          "m_E",
+          "-F",
+          "h",
+          "-E",
+          "n",
+          "-V",
+          "e"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "n_icons",
+    "label": "n_icons",
+    "stages": [
+      {
+        "tool": "n_icons",
+        "args": []
+      }
+    ]
+  },
+  {
+    "program": "n_icons",
+    "label": "n_icons -s",
+    "stages": [
+      {
+        "tool": "n_icons",
+        "args": [
+          "-s"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "n_icons",
+    "label": "n_icons -H",
+    "stages": [
+      {
+        "tool": "n_icons",
+        "args": [
+          "-H"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "n_icons",
+    "label": "n_icons -n 20 -t 5 -F s",
+    "stages": [
+      {
+        "tool": "n_icons",
+        "args": [
+          "-n",
+          "20",
+          "-t",
+          "5",
+          "-F",
+          "s"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "n_icons",
+    "label": "n_icons -n 20 -t 5 -F s -m map_red:orange:yellow%",
+    "stages": [
+      {
+        "tool": "n_icons",
+        "args": [
+          "-n",
+          "20",
+          "-t",
+          "5",
+          "-F",
+          "s",
+          "-m",
+          "map_red:orange:yellow%"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "n_icons",
+    "label": "n_icons -n 20 -t 5 -F s -m map_red:orange:yellow% -T 128",
+    "stages": [
+      {
+        "tool": "n_icons",
+        "args": [
+          "-n",
+          "20",
+          "-t",
+          "5",
+          "-F",
+          "s",
+          "-m",
+          "map_red:orange:yellow%",
+          "-T",
+          "128"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "n_icons",
+    "label": "n_icons -n 30 -t 5 -F n -m map_white%,f -E s",
+    "stages": [
+      {
+        "tool": "n_icons",
+        "args": [
+          "-n",
+          "30",
+          "-t",
+          "5",
+          "-F",
+          "n",
+          "-m",
+          "map_white%,f",
+          "-E",
+          "s"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "n_icons",
+    "label": "n_icons -n 12/4 -t 2 -F c",
+    "stages": [
+      {
+        "tool": "n_icons",
+        "args": [
+          "-n",
+          "12/4",
+          "-t",
+          "2",
+          "-F",
+          "c"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "n_icons",
+    "label": "n_icons -n 12/4 -t 2 -F c -z 2 -M 36,27",
+    "stages": [
+      {
+        "tool": "n_icons",
+        "args": [
+          "-n",
+          "12/4",
+          "-t",
+          "2",
+          "-F",
+          "c",
+          "-z",
+          "2",
+          "-M",
+          "36,27"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "n_icons",
+    "label": "n_icons -n 12/4 -t 2 -F c -z 3 -M 36,27",
+    "stages": [
+      {
+        "tool": "n_icons",
+        "args": [
+          "-n",
+          "12/4",
+          "-t",
+          "2",
+          "-F",
+          "c",
+          "-z",
+          "3",
+          "-M",
+          "36,27"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "n_icons",
+    "label": "n_icons -L p -N 3,30 -J",
+    "stages": [
+      {
+        "tool": "n_icons",
+        "args": [
+          "-L",
+          "p",
+          "-N",
+          "3,30",
+          "-J"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "n_icons",
+    "label": "n_icons -L h -N 3,30 -K 2,100 -D 3 -J -B",
+    "stages": [
+      {
+        "tool": "n_icons",
+        "args": [
+          "-L",
+          "h",
+          "-N",
+          "3,30",
+          "-K",
+          "2,100",
+          "-D",
+          "3",
+          "-J",
+          "-B"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off2crds",
+    "label": "off2crds cube",
+    "stages": [
+      {
+        "tool": "off2crds",
+        "args": [
+          "cube"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off2dae",
+    "label": "off2dae -x ef -v b ico",
+    "stages": [
+      {
+        "tool": "off2dae",
+        "args": [
+          "-x",
+          "ef",
+          "-v",
+          "b",
+          "ico"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off2dae",
+    "label": "off2dae -x f ico",
+    "stages": [
+      {
+        "tool": "off2dae",
+        "args": [
+          "-x",
+          "f",
+          "ico"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off2dae",
+    "label": "off2dae -x ve ico",
+    "stages": [
+      {
+        "tool": "off2dae",
+        "args": [
+          "-x",
+          "ve",
+          "ico"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off2dae",
+    "label": "off2dae -v 0.01 -e 0.008 ico",
+    "stages": [
+      {
+        "tool": "off2dae",
+        "args": [
+          "-v",
+          "0.01",
+          "-e",
+          "0.008",
+          "ico"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off2dae",
+    "label": "off2dae -V red std_ico",
+    "stages": [
+      {
+        "tool": "off2dae",
+        "args": [
+          "-V",
+          "red",
+          "std_ico"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off2dae",
+    "label": "off2dae -K 5 ico",
+    "stages": [
+      {
+        "tool": "off2dae",
+        "args": [
+          "-K",
+          "5",
+          "ico"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off2obj",
+    "label": "off2obj cube",
+    "stages": [
+      {
+        "tool": "off2obj",
+        "args": [
+          "cube"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off2pov",
+    "label": "off2pov -x f icosahedron",
+    "stages": [
+      {
+        "tool": "off2pov",
+        "args": [
+          "-x",
+          "f",
+          "icosahedron"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off2pov",
+    "label": "off2pov -x ve icosahedron",
+    "stages": [
+      {
+        "tool": "off2pov",
+        "args": [
+          "-x",
+          "ve",
+          "icosahedron"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off2pov",
+    "label": "off2pov -v 0.01 -e 0.008 icosahedron",
+    "stages": [
+      {
+        "tool": "off2pov",
+        "args": [
+          "-v",
+          "0.01",
+          "-e",
+          "0.008",
+          "icosahedron"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off2vrml",
+    "label": "off2vrml -x f icosahedron",
+    "stages": [
+      {
+        "tool": "off2vrml",
+        "args": [
+          "-x",
+          "f",
+          "icosahedron"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off2vrml",
+    "label": "off2vrml -x ef icosahedron",
+    "stages": [
+      {
+        "tool": "off2vrml",
+        "args": [
+          "-x",
+          "ef",
+          "icosahedron"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off2vrml",
+    "label": "off2vrml -v 0.01 -e 0.008 icosahedron",
+    "stages": [
+      {
+        "tool": "off2vrml",
+        "args": [
+          "-v",
+          "0.01",
+          "-e",
+          "0.008",
+          "icosahedron"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off2vrml",
+    "label": "polygon anti 5/3 | off2vrml -F 0.3,0.6,0.8,0.5",
+    "stages": [
+      {
+        "tool": "polygon",
+        "args": [
+          "anti",
+          "5/3"
+        ]
+      },
+      {
+        "tool": "off2vrml",
+        "args": [
+          "-F",
+          "0.3,0.6,0.8,0.5"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_color",
+    "label": "off_color -f N cuboctahedron",
+    "stages": [
+      {
+        "tool": "off_color",
+        "args": [
+          "-f",
+          "N",
+          "cuboctahedron"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_color",
+    "label": "off_color -f N -m map_3=0.0/0.0/0.0:4=1.0/1.0/1.0 cuboctahedron",
+    "stages": [
+      {
+        "tool": "off_color",
+        "args": [
+          "-f",
+          "N",
+          "-m",
+          "map_3=0.0/0.0/0.0:4=1.0/1.0/1.0",
+          "cuboctahedron"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_color",
+    "label": "off_color -f N -m map_3=black:4=white cuboctahedron",
+    "stages": [
+      {
+        "tool": "off_color",
+        "args": [
+          "-f",
+          "N",
+          "-m",
+          "map_3=black:4=white",
+          "cuboctahedron"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_color",
+    "label": "off_color -f U geo_2",
+    "stages": [
+      {
+        "tool": "off_color",
+        "args": [
+          "-f",
+          "U",
+          "geo_2"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_color",
+    "label": "off_color -f U -r V0.4 geo_2",
+    "stages": [
+      {
+        "tool": "off_color",
+        "args": [
+          "-f",
+          "U",
+          "-r",
+          "V0.4",
+          "geo_2"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_color",
+    "label": "off_color -f U -m rnd_H0.4:0.7 geo_2",
+    "stages": [
+      {
+        "tool": "off_color",
+        "args": [
+          "-f",
+          "U",
+          "-m",
+          "rnd_H0.4:0.7",
+          "geo_2"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_color",
+    "label": "off_color -f U -m rand_S0.3 geo_2",
+    "stages": [
+      {
+        "tool": "off_color",
+        "args": [
+          "-f",
+          "U",
+          "-m",
+          "rand_S0.3",
+          "geo_2"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_color",
+    "label": "off_color -f U -m f,rnd_H0.4:0.7 -e U -m e,rnd_H0.9:1.2 geo_2",
+    "stages": [
+      {
+        "tool": "off_color",
+        "args": [
+          "-f",
+          "U",
+          "-m",
+          "f,rnd_H0.4:0.7",
+          "-e",
+          "U",
+          "-m",
+          "e,rnd_H0.9:1.2",
+          "geo_2"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_color",
+    "label": "off_color -f 1.0,1.0,1.0 -e L -v L geo_5",
+    "stages": [
+      {
+        "tool": "off_color",
+        "args": [
+          "-f",
+          "1.0,1.0,1.0",
+          "-e",
+          "L",
+          "-v",
+          "L",
+          "geo_5"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_color_radial",
+    "label": "off_color -e white -v white geo_7_4_d | off_color_radial -A 2",
+    "stages": [
+      {
+        "tool": "off_color",
+        "args": [
+          "-e",
+          "white",
+          "-v",
+          "white",
+          "geo_7_4_d"
+        ]
+      },
+      {
+        "tool": "off_color_radial",
+        "args": [
+          "-A",
+          "2"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_color_radial",
+    "label": "off_color -e white -v white geo_7_4_d | off_color_radial -A 2 -r",
+    "stages": [
+      {
+        "tool": "off_color",
+        "args": [
+          "-e",
+          "white",
+          "-v",
+          "white",
+          "geo_7_4_d"
+        ]
+      },
+      {
+        "tool": "off_color_radial",
+        "args": [
+          "-A",
+          "2",
+          "-r"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_color_radial",
+    "label": "off_color -e white -v white geo_7_4_d | off_color_radial -A 2 -m gray",
+    "stages": [
+      {
+        "tool": "off_color",
+        "args": [
+          "-e",
+          "white",
+          "-v",
+          "white",
+          "geo_7_4_d"
+        ]
+      },
+      {
+        "tool": "off_color_radial",
+        "args": [
+          "-A",
+          "2",
+          "-m",
+          "gray"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_color_radial",
+    "label": "conway a^5C | off_color_radial -f f0,3",
+    "stages": [
+      {
+        "tool": "conway",
+        "args": [
+          "a^5C"
+        ]
+      },
+      {
+        "tool": "off_color_radial",
+        "args": [
+          "-f",
+          "f0,3"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_normals",
+    "label": "off_normals dod -O white",
+    "stages": [
+      {
+        "tool": "off_normals",
+        "args": [
+          "dod",
+          "-O",
+          "white"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_normals",
+    "label": "off_util -O n rt | off_normals -e -E r",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-O",
+          "n",
+          "rt"
+        ]
+      },
+      {
+        "tool": "off_normals",
+        "args": [
+          "-e",
+          "-E",
+          "r"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_normals",
+    "label": "off_normals icosidodecahedron -s e -O white -e | off_color -r A0.3,f",
+    "stages": [
+      {
+        "tool": "off_normals",
+        "args": [
+          "icosidodecahedron",
+          "-s",
+          "e",
+          "-O",
+          "white",
+          "-e"
+        ]
+      },
+      {
+        "tool": "off_color",
+        "args": [
+          "-r",
+          "A0.3,f"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_query",
+    "label": "off_query -I - VF -d 6 cubo",
+    "stages": [
+      {
+        "tool": "off_query",
+        "args": [
+          "-I",
+          "-",
+          "VF",
+          "-d",
+          "6",
+          "cubo"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_query",
+    "label": "off_query -I 5-10,50-60,100 El -d 6 geo_4_1",
+    "stages": [
+      {
+        "tool": "off_query",
+        "args": [
+          "-I",
+          "5-10,50-60,100",
+          "El",
+          "-d",
+          "6",
+          "geo_4_1"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_query",
+    "label": "off_trans -s e icosahedron | off_query -e 0,11 El",
+    "stages": [
+      {
+        "tool": "off_trans",
+        "args": [
+          "-s",
+          "e",
+          "icosahedron"
+        ]
+      },
+      {
+        "tool": "off_query",
+        "args": [
+          "-e",
+          "0,11",
+          "El"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_query",
+    "label": "off_trans -s e icosahedron | off_query -f 0,1,11 Fa",
+    "stages": [
+      {
+        "tool": "off_trans",
+        "args": [
+          "-s",
+          "e",
+          "icosahedron"
+        ]
+      },
+      {
+        "tool": "off_query",
+        "args": [
+          "-f",
+          "0,1,11",
+          "Fa"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_query",
+    "label": "off_trans -s e icosahedron | off_query -v 1.0,0.0,0.0 -f 0,x0,11 Fa",
+    "stages": [
+      {
+        "tool": "off_trans",
+        "args": [
+          "-s",
+          "e",
+          "icosahedron"
+        ]
+      },
+      {
+        "tool": "off_query",
+        "args": [
+          "-v",
+          "1.0,0.0,0.0",
+          "-f",
+          "0,x0,11",
+          "Fa"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_report",
+    "label": "off_report -S A -C A cube",
+    "stages": [
+      {
+        "tool": "off_report",
+        "args": [
+          "-S",
+          "A",
+          "-C",
+          "A",
+          "cube"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_report",
+    "label": "off_trans -s e icosahedron | off_report -S G",
+    "stages": [
+      {
+        "tool": "off_trans",
+        "args": [
+          "-s",
+          "e",
+          "icosahedron"
+        ]
+      },
+      {
+        "tool": "off_report",
+        "args": [
+          "-S",
+          "G"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_report",
+    "label": "pol_recip cuboctahedron | off_report -S Sa -C SD",
+    "stages": [
+      {
+        "tool": "pol_recip",
+        "args": [
+          "cuboctahedron"
+        ]
+      },
+      {
+        "tool": "off_report",
+        "args": [
+          "-S",
+          "Sa",
+          "-C",
+          "SD"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_trans",
+    "label": "off_trans -T -1,-1,0 std_cube",
+    "stages": [
+      {
+        "tool": "off_trans",
+        "args": [
+          "-T",
+          "-1,-1,0",
+          "std_cube"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_trans",
+    "label": "off_trans -T 1,1,0 -R 0,0,1,45 -T 1,1,0 std_cube",
+    "stages": [
+      {
+        "tool": "off_trans",
+        "args": [
+          "-T",
+          "1,1,0",
+          "-R",
+          "0,0,1,45",
+          "-T",
+          "1,1,0",
+          "std_cube"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util cube oct",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "cube",
+          "oct"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_color -f red cube",
+    "stages": [
+      {
+        "tool": "off_color",
+        "args": [
+          "-f",
+          "red",
+          "cube"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_color -f yellow cube",
+    "stages": [
+      {
+        "tool": "off_color",
+        "args": [
+          "-f",
+          "yellow",
+          "cube"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -M v std_cube std_cube",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-M",
+          "v",
+          "std_cube",
+          "std_cube"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -A v0,0,1:blue -A f8,0,2:yellow -A e8,4,6:green cube",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-A",
+          "v0,0,1:blue",
+          "-A",
+          "f8,0,2:yellow",
+          "-A",
+          "e8,4,6:green",
+          "cube"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -A v0,0,1:blue null | poly_kscope -s O | conv_hull",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-A",
+          "v0,0,1:blue",
+          "null"
+        ]
+      },
+      {
+        "tool": "poly_kscope",
+        "args": [
+          "-s",
+          "O"
+        ]
+      },
+      {
+        "tool": "conv_hull",
+        "args": []
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -D v0 cube",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-D",
+          "v0",
+          "cube"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -D f1 cube",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-D",
+          "f1",
+          "cube"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -D f1,5 cube",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-D",
+          "f1,5",
+          "cube"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -D f1-3 cube",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-D",
+          "f1-3",
+          "cube"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -D f-2,4- cube",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-D",
+          "f-2,4-",
+          "cube"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -D f0,1% cube",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-D",
+          "f0,1%",
+          "cube"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -D E0 uc4",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-D",
+          "E0",
+          "uc4"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -D F0 uc4",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-D",
+          "F0",
+          "uc4"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -D fv0 cube",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-D",
+          "fv0",
+          "cube"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -D Fv1 uc4",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-D",
+          "Fv1",
+          "uc4"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -D vf3 uc4",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-D",
+          "vf3",
+          "uc4"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -D vF0 uc4",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-D",
+          "vF0",
+          "uc4"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -e -D fv0 cube",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-e",
+          "-D",
+          "fv0",
+          "cube"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "pol_recip -a cube | off_util -e -D F0",
+    "stages": [
+      {
+        "tool": "pol_recip",
+        "args": [
+          "-a",
+          "cube"
+        ]
+      },
+      {
+        "tool": "off_util",
+        "args": [
+          "-e",
+          "-D",
+          "F0"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -K f0 uc4",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-K",
+          "f0",
+          "uc4"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -K ev1 uc4",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-K",
+          "ev1",
+          "uc4"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -K fv1 uc4",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-K",
+          "fv1",
+          "uc4"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -K Ev1 uc4",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-K",
+          "Ev1",
+          "uc4"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -K Fv1 uc4",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-K",
+          "Fv1",
+          "uc4"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -K E0% uc4",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-K",
+          "E0%",
+          "uc4"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -K F0% uc4",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-K",
+          "F0%",
+          "uc4"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -O p cube | off_report",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-O",
+          "p",
+          "cube"
+        ]
+      },
+      {
+        "tool": "off_report",
+        "args": []
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -t tri tr_cube",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-t",
+          "tri",
+          "tr_cube"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -t tri -g tr_cube",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-t",
+          "tri",
+          "-g",
+          "tr_cube"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -s ico -x e",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-s",
+          "ico",
+          "-x",
+          "e"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -s ico",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-s",
+          "ico"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -D v0 -c red cube",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-D",
+          "v0",
+          "-c",
+          "red",
+          "cube"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -D f0,1 -c none cube",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-D",
+          "f0,1",
+          "-c",
+          "none",
+          "cube"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -D f0,2 -c none oct",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-D",
+          "f0,2",
+          "-c",
+          "none",
+          "oct"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -T 1/3 rd",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-T",
+          "1/3",
+          "rd"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -T 1/3,4 rd",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-T",
+          "1/3,4",
+          "rd"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -S rd",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-S",
+          "rd"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -d 3 tet",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-d",
+          "3",
+          "tet"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "off_util",
+    "label": "off_util -u 0,0,z ico",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-u",
+          "0,0,z",
+          "ico"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "planar",
+    "label": "planar -d tile uc6",
+    "stages": [
+      {
+        "tool": "planar",
+        "args": [
+          "-d",
+          "tile",
+          "uc6"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "planar",
+    "label": "polygon pri 12/4 | off_color -f K | planar -d tile",
+    "stages": [
+      {
+        "tool": "polygon",
+        "args": [
+          "pri",
+          "12/4"
+        ]
+      },
+      {
+        "tool": "off_color",
+        "args": [
+          "-f",
+          "K"
+        ]
+      },
+      {
+        "tool": "planar",
+        "args": [
+          "-d",
+          "tile"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "planar",
+    "label": "polygon pri 12/4 | off_color -f K | planar -d merge",
+    "stages": [
+      {
+        "tool": "polygon",
+        "args": [
+          "pri",
+          "12/4"
+        ]
+      },
+      {
+        "tool": "off_color",
+        "args": [
+          "-f",
+          "K"
+        ]
+      },
+      {
+        "tool": "planar",
+        "args": [
+          "-d",
+          "merge"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "planar",
+    "label": "planar -d tile -M rgb uc21_n5/2k4 -E v",
+    "stages": [
+      {
+        "tool": "planar",
+        "args": [
+          "-d",
+          "tile",
+          "-M",
+          "rgb",
+          "uc21_n5/2k4",
+          "-E",
+          "v"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "planar",
+    "label": "planar -d tile -M rgb uc21_n5/2k4",
+    "stages": [
+      {
+        "tool": "planar",
+        "args": [
+          "-d",
+          "tile",
+          "-M",
+          "rgb",
+          "uc21_n5/2k4"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "planar",
+    "label": "planar -d tile -M rgb -p 2 uc21_n5/2k4",
+    "stages": [
+      {
+        "tool": "planar",
+        "args": [
+          "-d",
+          "tile",
+          "-M",
+          "rgb",
+          "-p",
+          "2",
+          "uc21_n5/2k4"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "planar",
+    "label": "planar -d tile -W w -m map_white:red uc75",
+    "stages": [
+      {
+        "tool": "planar",
+        "args": [
+          "-d",
+          "tile",
+          "-W",
+          "w",
+          "-m",
+          "map_white:red",
+          "uc75"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "pol_recip",
+    "label": "pol_recip oct",
+    "stages": [
+      {
+        "tool": "pol_recip",
+        "args": [
+          "oct"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "pol_recip",
+    "label": "pol_recip -a oct",
+    "stages": [
+      {
+        "tool": "pol_recip",
+        "args": [
+          "-a",
+          "oct"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "pol_recip",
+    "label": "pol_recip -a -r f cubo | off_color -r A0.4,f",
+    "stages": [
+      {
+        "tool": "pol_recip",
+        "args": [
+          "-a",
+          "-r",
+          "f",
+          "cubo"
+        ]
+      },
+      {
+        "tool": "off_color",
+        "args": [
+          "-r",
+          "A0.4,f"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "pol_recip",
+    "label": "pol_recip -a -r F cubo | off_color -r A0.4,f",
+    "stages": [
+      {
+        "tool": "pol_recip",
+        "args": [
+          "-a",
+          "-r",
+          "F",
+          "cubo"
+        ]
+      },
+      {
+        "tool": "off_color",
+        "args": [
+          "-r",
+          "A0.4,f"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "pol_recip",
+    "label": "pol_recip -a -c 0,0,0.2 -r 2,3,5 pyr5 | off_color -r A0.4,f",
+    "stages": [
+      {
+        "tool": "pol_recip",
+        "args": [
+          "-a",
+          "-c",
+          "0,0,0.2",
+          "-r",
+          "2,3,5",
+          "pyr5"
+        ]
+      },
+      {
+        "tool": "off_color",
+        "args": [
+          "-r",
+          "A0.4,f"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "pol_recip",
+    "label": "pol_recip -a -c 0,0,-0.4 -r 2,3,5 pyr5 | off_color -r A0.4,f",
+    "stages": [
+      {
+        "tool": "pol_recip",
+        "args": [
+          "-a",
+          "-c",
+          "0,0,-0.4",
+          "-r",
+          "2,3,5",
+          "pyr5"
+        ]
+      },
+      {
+        "tool": "off_color",
+        "args": [
+          "-r",
+          "A0.4,f"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "pol_recip",
+    "label": "polygon ant -s antih 4 | canonical | pol_recip -a",
+    "stages": [
+      {
+        "tool": "polygon",
+        "args": [
+          "ant",
+          "-s",
+          "antih",
+          "4"
+        ]
+      },
+      {
+        "tool": "canonical",
+        "args": []
+      },
+      {
+        "tool": "pol_recip",
+        "args": [
+          "-a"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "pol_recip",
+    "label": "polygon ant -s antih 4 | canonical | pol_recip -a -c M -n 10000",
+    "stages": [
+      {
+        "tool": "polygon",
+        "args": [
+          "ant",
+          "-s",
+          "antih",
+          "4"
+        ]
+      },
+      {
+        "tool": "canonical",
+        "args": []
+      },
+      {
+        "tool": "pol_recip",
+        "args": [
+          "-a",
+          "-c",
+          "M",
+          "-n",
+          "10000"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "pol_recip",
+    "label": "polygon -l 1.5 pyr 7 | off_color -f blue | pol_recip -c M -n 50000 -a",
+    "stages": [
+      {
+        "tool": "polygon",
+        "args": [
+          "-l",
+          "1.5",
+          "pyr",
+          "7"
+        ]
+      },
+      {
+        "tool": "off_color",
+        "args": [
+          "-f",
+          "blue"
+        ]
+      },
+      {
+        "tool": "pol_recip",
+        "args": [
+          "-c",
+          "M",
+          "-n",
+          "50000",
+          "-a"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "pol_recip",
+    "label": "polygon -l 1.5 pyr 7 | off_color -f blue | pol_recip -C 0,0,-1 -c M -n 50000 -a",
+    "stages": [
+      {
+        "tool": "polygon",
+        "args": [
+          "-l",
+          "1.5",
+          "pyr",
+          "7"
+        ]
+      },
+      {
+        "tool": "off_color",
+        "args": [
+          "-f",
+          "blue"
+        ]
+      },
+      {
+        "tool": "pol_recip",
+        "args": [
+          "-C",
+          "0,0,-1",
+          "-c",
+          "M",
+          "-n",
+          "50000",
+          "-a"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "pol_recip",
+    "label": "polygon -l 1.5 pyr 7 | off_color -f blue | pol_recip -c e -n 50000 -a",
+    "stages": [
+      {
+        "tool": "polygon",
+        "args": [
+          "-l",
+          "1.5",
+          "pyr",
+          "7"
+        ]
+      },
+      {
+        "tool": "off_color",
+        "args": [
+          "-f",
+          "blue"
+        ]
+      },
+      {
+        "tool": "pol_recip",
+        "args": [
+          "-c",
+          "e",
+          "-n",
+          "50000",
+          "-a"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "pol_recip",
+    "label": "pol_recip -c 0,0,0.05 -r 0,1 -a pyr3",
+    "stages": [
+      {
+        "tool": "pol_recip",
+        "args": [
+          "-c",
+          "0,0,0.05",
+          "-r",
+          "0,1",
+          "-a",
+          "pyr3"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "pol_recip",
+    "label": "pol_recip -c 0,0,-0.05 -r 0,1 -a pyr3",
+    "stages": [
+      {
+        "tool": "pol_recip",
+        "args": [
+          "-c",
+          "0,0,-0.05",
+          "-r",
+          "0,1",
+          "-a",
+          "pyr3"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "pol_recip",
+    "label": "pol_recip -c 0,0,0.00 -r 0,1 -a pyr3",
+    "stages": [
+      {
+        "tool": "pol_recip",
+        "args": [
+          "-c",
+          "0,0,0.00",
+          "-r",
+          "0,1",
+          "-a",
+          "pyr3"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "pol_recip",
+    "label": "pol_recip -c 0,0,0.00 -x -r 0,1 -a pyr3",
+    "stages": [
+      {
+        "tool": "pol_recip",
+        "args": [
+          "-c",
+          "0,0,0.00",
+          "-x",
+          "-r",
+          "0,1",
+          "-a",
+          "pyr3"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "poly_form",
+    "label": "off_trans -y D3v ico | to_nfold 6 | poly_form -s 15",
+    "stages": [
+      {
+        "tool": "off_trans",
+        "args": [
+          "-y",
+          "D3v",
+          "ico"
+        ]
+      },
+      {
+        "tool": "to_nfold",
+        "args": [
+          "6"
+        ]
+      },
+      {
+        "tool": "poly_form",
+        "args": [
+          "-s",
+          "15"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "poly_form",
+    "label": "poly_form -n 100000 -s 15 -l 14 -y geo_5_3",
+    "stages": [
+      {
+        "tool": "poly_form",
+        "args": [
+          "-n",
+          "100000",
+          "-s",
+          "15",
+          "-l",
+          "14",
+          "-y",
+          "geo_5_3"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "poly_form",
+    "label": "off_trans geo_3 -S 0",
+    "stages": [
+      {
+        "tool": "off_trans",
+        "args": [
+          "geo_3",
+          "-S",
+          "0"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "poly_form",
+    "label": "poly_form -n 100000 -a e -s 100 geo_3_3_d",
+    "stages": [
+      {
+        "tool": "poly_form",
+        "args": [
+          "-n",
+          "100000",
+          "-a",
+          "e",
+          "-s",
+          "100",
+          "geo_3_3_d"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "poly_form",
+    "label": "poly_form -n 100000 -a e -s 100 -y geo_3_3_d",
+    "stages": [
+      {
+        "tool": "poly_form",
+        "args": [
+          "-n",
+          "100000",
+          "-a",
+          "e",
+          "-s",
+          "100",
+          "-y",
+          "geo_3_3_d"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "poly_form",
+    "label": "poly_form -a u geo_3_3 | poly_form -a e -s 100",
+    "stages": [
+      {
+        "tool": "poly_form",
+        "args": [
+          "-a",
+          "u",
+          "geo_3_3"
+        ]
+      },
+      {
+        "tool": "poly_form",
+        "args": [
+          "-a",
+          "e",
+          "-s",
+          "100"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "poly_form",
+    "label": "poly_form -a u geo_3_3 | poly_form -a e -s 100 | poly_form -n -1 -y",
+    "stages": [
+      {
+        "tool": "poly_form",
+        "args": [
+          "-a",
+          "u",
+          "geo_3_3"
+        ]
+      },
+      {
+        "tool": "poly_form",
+        "args": [
+          "-a",
+          "e",
+          "-s",
+          "100"
+        ]
+      },
+      {
+        "tool": "poly_form",
+        "args": [
+          "-n",
+          "-1",
+          "-y"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "poly_form",
+    "label": "poly_form -n 100000 -a e -E 1,1.2,1.5 -y -s 50 geo_3_3_d",
+    "stages": [
+      {
+        "tool": "poly_form",
+        "args": [
+          "-n",
+          "100000",
+          "-a",
+          "e",
+          "-E",
+          "1,1.2,1.5",
+          "-y",
+          "-s",
+          "50",
+          "geo_3_3_d"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "polygon",
+    "label": "polygon -e 2 -l 2 pri 4",
+    "stages": [
+      {
+        "tool": "polygon",
+        "args": [
+          "-e",
+          "2",
+          "-l",
+          "2",
+          "pri",
+          "4"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "polygon",
+    "label": "polygon pyr 6",
+    "stages": [
+      {
+        "tool": "polygon",
+        "args": [
+          "pyr",
+          "6"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "polygon",
+    "label": "polygon -e 1 -E 1 ant 5/2",
+    "stages": [
+      {
+        "tool": "polygon",
+        "args": [
+          "-e",
+          "1",
+          "-E",
+          "1",
+          "ant",
+          "5/2"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "polygon",
+    "label": "polygon -e 1 -E 1 ant 5/3",
+    "stages": [
+      {
+        "tool": "polygon",
+        "args": [
+          "-e",
+          "1",
+          "-E",
+          "1",
+          "ant",
+          "5/3"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "polygon",
+    "label": "polygon -e 1 -E 1 -s gyro dip 5/3",
+    "stages": [
+      {
+        "tool": "polygon",
+        "args": [
+          "-e",
+          "1",
+          "-E",
+          "1",
+          "-s",
+          "gyro",
+          "dip",
+          "5/3"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "polygon",
+    "label": "polygon -s trap dip 6",
+    "stages": [
+      {
+        "tool": "polygon",
+        "args": [
+          "-s",
+          "trap",
+          "dip",
+          "6"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "polygon",
+    "label": "polygon -s trap -a 45 dip 6",
+    "stages": [
+      {
+        "tool": "polygon",
+        "args": [
+          "-s",
+          "trap",
+          "-a",
+          "45",
+          "dip",
+          "6"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "repel",
+    "label": "repel -N 24 -l 15 | conv_hull",
+    "stages": [
+      {
+        "tool": "repel",
+        "args": [
+          "-N",
+          "24",
+          "-l",
+          "15"
+        ]
+      },
+      {
+        "tool": "conv_hull",
+        "args": []
+      }
+    ]
+  },
+  {
+    "program": "repel",
+    "label": "repel -N 24 -s 1 -l 15 | conv_hull",
+    "stages": [
+      {
+        "tool": "repel",
+        "args": [
+          "-N",
+          "24",
+          "-s",
+          "1",
+          "-l",
+          "15"
+        ]
+      },
+      {
+        "tool": "conv_hull",
+        "args": []
+      }
+    ]
+  },
+  {
+    "program": "sph_rings",
+    "label": "sph_rings 12 24 | conv_hull",
+    "stages": [
+      {
+        "tool": "sph_rings",
+        "args": [
+          "12",
+          "24"
+        ]
+      },
+      {
+        "tool": "conv_hull",
+        "args": []
+      }
+    ]
+  },
+  {
+    "program": "sph_rings",
+    "label": "sph_rings -s 12 24 | conv_hull",
+    "stages": [
+      {
+        "tool": "sph_rings",
+        "args": [
+          "-s",
+          "12",
+          "24"
+        ]
+      },
+      {
+        "tool": "conv_hull",
+        "args": []
+      }
+    ]
+  },
+  {
+    "program": "sph_rings",
+    "label": "sph_rings 12",
+    "stages": [
+      {
+        "tool": "sph_rings",
+        "args": [
+          "12"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "stellate",
+    "label": "stellate ico -f 0 -s I",
+    "stages": [
+      {
+        "tool": "stellate",
+        "args": [
+          "ico",
+          "-f",
+          "0",
+          "-s",
+          "I"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "stellate",
+    "label": "off_trans -y D5 ico | stellate -f 0,18 -f 3,4,47 -s D5v",
+    "stages": [
+      {
+        "tool": "off_trans",
+        "args": [
+          "-y",
+          "D5",
+          "ico"
+        ]
+      },
+      {
+        "tool": "stellate",
+        "args": [
+          "-f",
+          "0,18",
+          "-f",
+          "3,4,47",
+          "-s",
+          "D5v"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k o,1,1,0,e",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "o,1,1,0,e"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -t O[3,3],1,1",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-t",
+          "O[3,3],1,1"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k o,1,1,0 -r 2",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "o,1,1,0",
+          "-r",
+          "2"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -t O[4,3],1,1 -r 2",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-t",
+          "O[4,3],1,1",
+          "-r",
+          "2"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k o,1,0,1 -a 28.53243959961367 -C f",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "o,1,0,1",
+          "-a",
+          "28.53243959961367",
+          "-C",
+          "f"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -t O[4,2],1,1 -a 28.53243959961367 -C f",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-t",
+          "O[4,2],1,1",
+          "-a",
+          "28.53243959961367",
+          "-C",
+          "f"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k t,1,1,0 -C s -a 15",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "t,1,1,0",
+          "-C",
+          "s",
+          "-a",
+          "15"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -t T[3,3],1,1 -C s -a 15",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-t",
+          "T[3,3],1,1",
+          "-C",
+          "s",
+          "-a",
+          "15"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -s 5:2 -a 2e",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-s",
+          "5:2",
+          "-a",
+          "2e"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -c 5,5,d",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-c",
+          "5,5,d"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -c 5,5,h",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-c",
+          "5,5,h"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k t,2,3,*,e -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "t,2,3,*,e",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k o,2,3,*,e -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "o,2,3,*,e",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k o,3,2,*,e -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "o,3,2,*,e",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,2,3,*,e -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,2,3,*,e",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,3,2,*,e -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,3,2,*,e",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k t,1,2,*,v -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "t,1,2,*,v",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k o,1,2,*,v -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "o,1,2,*,v",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k o,2,1,*,v -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "o,2,1,*,v",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,1,2,*,v -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,1,2,*,v",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,2,1,*,v -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,2,1,*,v",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k o,2,2,0,v -r 1.06680419358835388 -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "o,2,2,0,v",
+          "-r",
+          "1.06680419358835388",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k o,3,3,0,v -r 1.04966777114351 -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "o,3,3,0,v",
+          "-r",
+          "1.04966777114351",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,2,2,0,v -r 1.09818547139510914 -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,2,2,0,v",
+          "-r",
+          "1.09818547139510914",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,3,3,0,v -r 1.0726110096817 -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,3,3,0,v",
+          "-r",
+          "1.0726110096817",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k t,2,0,3,e -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "t,2,0,3,e",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k t,2,0,3,v -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "t,2,0,3,v",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k o,1,0,2,v -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "o,1,0,2,v",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k o,3,4,*,e -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "o,3,4,*,e",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k o,3,4,*,v -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "o,3,4,*,v",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k o,*,2,3,e -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "o,*,2,3,e",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k o,*,2,3,v -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "o,*,2,3,v",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,3,5,*,e -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,3,5,*,e",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,3,5,*,v -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,3,5,*,v",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,2,*,5,e -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,2,*,5,e",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,2,*,5,v -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,2,*,5,v",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,*,2,3,e -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,*,2,3,e",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,*,2,3,v -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,*,2,3,v",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k o,*,3,*,e -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "o,*,3,*,e",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,1,2,*,v -F n -m kaplan -r 1.07046626932,1",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,1,2,*,v",
+          "-F",
+          "n",
+          "-m",
+          "kaplan",
+          "-r",
+          "1.07046626932,1"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,2,*,3,e -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,2,*,3,e",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,2,2,*,1 -F n -m kaplan -r 2.03614784182,1",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,2,2,*,1",
+          "-F",
+          "n",
+          "-m",
+          "kaplan",
+          "-r",
+          "2.03614784182,1"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,2,1,*,1 -F n -m kaplan -r 1.9021130325885",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,2,1,*,1",
+          "-F",
+          "n",
+          "-m",
+          "kaplan",
+          "-r",
+          "1.9021130325885"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,2,2,*,1 -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,2,2,*,1",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,4,3,*,e -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,4,3,*,e",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,2,3,*,1 -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,2,3,*,1",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,2,3,*,1 -F n -m kaplan -r 1.583841856265,1",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,2,3,*,1",
+          "-F",
+          "n",
+          "-m",
+          "kaplan",
+          "-r",
+          "1.583841856265,1"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,2,4,*,e -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,2,4,*,e",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,2,4,*,1 -F n -m kaplan -r 1.05398768021455,1",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,2,4,*,1",
+          "-F",
+          "n",
+          "-m",
+          "kaplan",
+          "-r",
+          "1.05398768021455,1"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,3,1,*,1 -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,3,1,*,1",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,3,2,*,1 -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,3,2,*,1",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,*,2,2,1 -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,*,2,2,1",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,*,1,4,e -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,*,1,4,e",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,3,4,*,v -F n -m kaplan -r 1.5665309813,1 -l 8",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,3,4,*,v",
+          "-F",
+          "n",
+          "-m",
+          "kaplan",
+          "-r",
+          "1.5665309813,1",
+          "-l",
+          "8"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,3,4,*,e -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,3,4,*,e",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,3,5,0,v -F n -m kaplan -r 1.3159206178527,1",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,3,5,0,v",
+          "-F",
+          "n",
+          "-m",
+          "kaplan",
+          "-r",
+          "1.3159206178527,1"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,4,2,*,e -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,4,2,*,e",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,*,1,4,1 -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,*,1,4,1",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,1,*,2,1 -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,1,*,2,1",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,1,*,3,e -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,1,*,3,e",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "symmetro",
+    "label": "symmetro -k i,2,*,3,1 -F n -m kaplan",
+    "stages": [
+      {
+        "tool": "symmetro",
+        "args": [
+          "-k",
+          "i,2,*,3,1",
+          "-F",
+          "n",
+          "-m",
+          "kaplan"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "tetra59",
+    "label": "tetra59 -L i",
+    "stages": [
+      {
+        "tool": "tetra59",
+        "args": [
+          "-L",
+          "i"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "tetra59",
+    "label": "tetra59 -L d",
+    "stages": [
+      {
+        "tool": "tetra59",
+        "args": [
+          "-L",
+          "d"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "tetra59",
+    "label": "tetra59 -L p",
+    "stages": [
+      {
+        "tool": "tetra59",
+        "args": [
+          "-L",
+          "p"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "tetra59",
+    "label": "tetra59 12",
+    "stages": [
+      {
+        "tool": "tetra59",
+        "args": [
+          "12"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "tetra59",
+    "label": "tetra59 48 -F r",
+    "stages": [
+      {
+        "tool": "tetra59",
+        "args": [
+          "48",
+          "-F",
+          "r"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "tetra59",
+    "label": "tetra59 -s 2 -a 40",
+    "stages": [
+      {
+        "tool": "tetra59",
+        "args": [
+          "-s",
+          "2",
+          "-a",
+          "40"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "tetra59",
+    "label": "tetra59 24 -z",
+    "stages": [
+      {
+        "tool": "tetra59",
+        "args": [
+          "24",
+          "-z"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "tetra59",
+    "label": "tetra59 29 -z",
+    "stages": [
+      {
+        "tool": "tetra59",
+        "args": [
+          "29",
+          "-z"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "tetra59",
+    "label": "tetra59 13 -d c -p 1",
+    "stages": [
+      {
+        "tool": "tetra59",
+        "args": [
+          "13",
+          "-d",
+          "c",
+          "-p",
+          "1"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "to_nfold",
+    "label": "to_nfold 6 pri5",
+    "stages": [
+      {
+        "tool": "to_nfold",
+        "args": [
+          "6",
+          "pri5"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "to_nfold",
+    "label": "to_nfold 3 pri5",
+    "stages": [
+      {
+        "tool": "to_nfold",
+        "args": [
+          "3",
+          "pri5"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "to_nfold",
+    "label": "to_nfold 7/2 pri5",
+    "stages": [
+      {
+        "tool": "to_nfold",
+        "args": [
+          "7/2",
+          "pri5"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "to_nfold",
+    "label": "to_nfold 5/3 dip5/2",
+    "stages": [
+      {
+        "tool": "to_nfold",
+        "args": [
+          "5/3",
+          "dip5/2"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "to_nfold",
+    "label": "to_nfold 4 j_snub_disphenoid",
+    "stages": [
+      {
+        "tool": "to_nfold",
+        "args": [
+          "4",
+          "j_snub_disphenoid"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "to_nfold",
+    "label": "to_nfold 2 j_snub_square_antiprism",
+    "stages": [
+      {
+        "tool": "to_nfold",
+        "args": [
+          "2",
+          "j_snub_square_antiprism"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "to_nfold",
+    "label": "unitile2d -s t | off_trans -R 90,0,0 | to_nfold 11/2",
+    "stages": [
+      {
+        "tool": "unitile2d",
+        "args": [
+          "-s",
+          "t"
+        ]
+      },
+      {
+        "tool": "off_trans",
+        "args": [
+          "-R",
+          "90,0,0"
+        ]
+      },
+      {
+        "tool": "to_nfold",
+        "args": [
+          "11/2"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "to_nfold",
+    "label": "to_nfold 7 ant5/3",
+    "stages": [
+      {
+        "tool": "to_nfold",
+        "args": [
+          "7",
+          "ant5/3"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "to_nfold",
+    "label": "to_nfold 7 ant5/3 -x 0",
+    "stages": [
+      {
+        "tool": "to_nfold",
+        "args": [
+          "7",
+          "ant5/3",
+          "-x",
+          "0"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "to_nfold",
+    "label": "to_nfold 2 ant5/3 -p 0,-1",
+    "stages": [
+      {
+        "tool": "to_nfold",
+        "args": [
+          "2",
+          "ant5/3",
+          "-p",
+          "0,-1"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "to_nfold",
+    "label": "to_nfold 2 snu4 -p 10,0.2",
+    "stages": [
+      {
+        "tool": "to_nfold",
+        "args": [
+          "2",
+          "snu4",
+          "-p",
+          "10,0.2"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "unitile2d",
+    "label": "unitile2d -s K -R 1.5 6 | off_color -f N",
+    "stages": [
+      {
+        "tool": "unitile2d",
+        "args": [
+          "-s",
+          "K",
+          "-R",
+          "1.5",
+          "6"
+        ]
+      },
+      {
+        "tool": "off_color",
+        "args": [
+          "-f",
+          "N"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "unitile2d",
+    "label": "unitile2d -s r -l 40 -w 40 9 | off_color -f N",
+    "stages": [
+      {
+        "tool": "unitile2d",
+        "args": [
+          "-s",
+          "r",
+          "-l",
+          "40",
+          "-w",
+          "40",
+          "9"
+        ]
+      },
+      {
+        "tool": "off_color",
+        "args": [
+          "-f",
+          "N"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "unitile2d",
+    "label": "unitile2d -s T -w 12 -l 160 -r 0.6 -d 7,3 2 | off_color -f P",
+    "stages": [
+      {
+        "tool": "unitile2d",
+        "args": [
+          "-s",
+          "T",
+          "-w",
+          "12",
+          "-l",
+          "160",
+          "-r",
+          "0.6",
+          "-d",
+          "7,3",
+          "2"
+        ]
+      },
+      {
+        "tool": "off_color",
+        "args": [
+          "-f",
+          "P"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "waterman",
+    "label": "waterman -r rt20 fcc",
+    "stages": [
+      {
+        "tool": "waterman",
+        "args": [
+          "-r",
+          "rt20",
+          "fcc"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "waterman",
+    "label": "waterman -r rt100 fcc -F y",
+    "stages": [
+      {
+        "tool": "waterman",
+        "args": [
+          "-r",
+          "rt100",
+          "fcc",
+          "-F",
+          "y"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "waterman",
+    "label": "waterman -q 0.5,0.5,0.5 -r rt100 fcc -F y",
+    "stages": [
+      {
+        "tool": "waterman",
+        "args": [
+          "-q",
+          "0.5,0.5,0.5",
+          "-r",
+          "rt100",
+          "fcc",
+          "-F",
+          "y"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "wythoff",
+    "label": "wythoff -c list",
+    "stages": [
+      {
+        "tool": "wythoff",
+        "args": [
+          "-c",
+          "list"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "wythoff",
+    "label": "wythoff -M -p [VEF]0V,0E,0F,0V0E0F schwarz_2_3_5p",
+    "stages": [
+      {
+        "tool": "wythoff",
+        "args": [
+          "-M",
+          "-p",
+          "[VEF]0V,0E,0F,0V0E0F",
+          "schwarz_2_3_5p"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "wythoff",
+    "label": "wythoff -M -p [V]0E,0F schwarz_2_3_5p",
+    "stages": [
+      {
+        "tool": "wythoff",
+        "args": [
+          "-M",
+          "-p",
+          "[V]0E,0F",
+          "schwarz_2_3_5p"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "wythoff",
+    "label": "wythoff -M -p [VE]0V,0E,0v0e schwarz_2_3_5p",
+    "stages": [
+      {
+        "tool": "wythoff",
+        "args": [
+          "-M",
+          "-p",
+          "[VE]0V,0E,0v0e",
+          "schwarz_2_3_5p"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "wythoff",
+    "label": "wythoff -M -p [VEF]0v0e,0e0f,0f0v schwarz_2_3_5p",
+    "stages": [
+      {
+        "tool": "wythoff",
+        "args": [
+          "-M",
+          "-p",
+          "[VEF]0v0e,0e0f,0f0v",
+          "schwarz_2_3_5p"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "wythoff",
+    "label": "wythoff -p [E]0V,0F cube",
+    "stages": [
+      {
+        "tool": "wythoff",
+        "args": [
+          "-p",
+          "[E]0V,0F",
+          "cube"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "wythoff",
+    "label": "unitile2d -s t -w 8 -l 24 2 | wythoff -c s -M",
+    "stages": [
+      {
+        "tool": "unitile2d",
+        "args": [
+          "-s",
+          "t",
+          "-w",
+          "8",
+          "-l",
+          "24",
+          "2"
+        ]
+      },
+      {
+        "tool": "wythoff",
+        "args": [
+          "-c",
+          "s",
+          "-M"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "wythoff",
+    "label": "off_color -f U dod | wythoff -c p -C a | wythoff -c o_4 -C a | off_util -S",
+    "stages": [
+      {
+        "tool": "off_color",
+        "args": [
+          "-f",
+          "U",
+          "dod"
+        ]
+      },
+      {
+        "tool": "wythoff",
+        "args": [
+          "-c",
+          "p",
+          "-C",
+          "a"
+        ]
+      },
+      {
+        "tool": "wythoff",
+        "args": [
+          "-c",
+          "o_4",
+          "-C",
+          "a"
+        ]
+      },
+      {
+        "tool": "off_util",
+        "args": [
+          "-S"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "wythoff",
+    "label": "off_color cube -v S,Ci -e grey | wythoff -c o_4 -C a,v",
+    "stages": [
+      {
+        "tool": "off_color",
+        "args": [
+          "cube",
+          "-v",
+          "S,Ci",
+          "-e",
+          "grey"
+        ]
+      },
+      {
+        "tool": "wythoff",
+        "args": [
+          "-c",
+          "o_4",
+          "-C",
+          "a,v"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "wythoff",
+    "label": "off_color cube -e S,Ci | wythoff -c o_4 -C a,e",
+    "stages": [
+      {
+        "tool": "off_color",
+        "args": [
+          "cube",
+          "-e",
+          "S,Ci"
+        ]
+      },
+      {
+        "tool": "wythoff",
+        "args": [
+          "-c",
+          "o_4",
+          "-C",
+          "a,e"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "wythoff",
+    "label": "off_color cube -f S,Ci -e grey | wythoff -c o_4 -C a,f",
+    "stages": [
+      {
+        "tool": "off_color",
+        "args": [
+          "cube",
+          "-f",
+          "S,Ci",
+          "-e",
+          "grey"
+        ]
+      },
+      {
+        "tool": "wythoff",
+        "args": [
+          "-c",
+          "o_4",
+          "-C",
+          "a,f"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "wythoff",
+    "label": "off_color cube -f S,Ci -e grey | wythoff -c o_4 -C a,white",
+    "stages": [
+      {
+        "tool": "off_color",
+        "args": [
+          "cube",
+          "-f",
+          "S,Ci",
+          "-e",
+          "grey"
+        ]
+      },
+      {
+        "tool": "wythoff",
+        "args": [
+          "-c",
+          "o_4",
+          "-C",
+          "a,white"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "zono",
+    "label": "zono -P 50",
+    "stages": [
+      {
+        "tool": "zono",
+        "args": [
+          "-P",
+          "50"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "zono",
+    "label": "zono -P 50,5",
+    "stages": [
+      {
+        "tool": "zono",
+        "args": [
+          "-P",
+          "50,5"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "zono",
+    "label": "zono ico",
+    "stages": [
+      {
+        "tool": "zono",
+        "args": [
+          "ico"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "zono",
+    "label": "zono -m i ico",
+    "stages": [
+      {
+        "tool": "zono",
+        "args": [
+          "-m",
+          "i",
+          "ico"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "zono",
+    "label": "zono -m i -u ico",
+    "stages": [
+      {
+        "tool": "zono",
+        "args": [
+          "-m",
+          "i",
+          "-u",
+          "ico"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "zono",
+    "label": "zono -S ico -u -C red tet",
+    "stages": [
+      {
+        "tool": "zono",
+        "args": [
+          "-S",
+          "ico",
+          "-u",
+          "-C",
+          "red",
+          "tet"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "zono",
+    "label": "off_util -s std_pol10 | off_trans -R 90,0,0 | zono -T std_pol10 -",
+    "stages": [
+      {
+        "tool": "off_util",
+        "args": [
+          "-s",
+          "std_pol10"
+        ]
+      },
+      {
+        "tool": "off_trans",
+        "args": [
+          "-R",
+          "90,0,0"
+        ]
+      },
+      {
+        "tool": "zono",
+        "args": [
+          "-T",
+          "std_pol10",
+          "-"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "zono",
+    "label": "off_trans -T 0,0,1 std_pol12 | off_util -Dv3-",
+    "stages": [
+      {
+        "tool": "off_trans",
+        "args": [
+          "-T",
+          "0,0,1",
+          "std_pol12"
+        ]
+      },
+      {
+        "tool": "off_util",
+        "args": [
+          "-Dv3-"
+        ]
+      }
+    ]
+  },
+  {
+    "program": "zono",
+    "label": "off_trans -T 0,0,1 std_pol12 | off_util -Dv-2",
+    "stages": [
+      {
+        "tool": "off_trans",
+        "args": [
+          "-T",
+          "0,0,1",
+          "std_pol12"
+        ]
+      },
+      {
+        "tool": "off_util",
+        "args": [
+          "-Dv-2"
+        ]
+      }
+    ]
+  }
+]

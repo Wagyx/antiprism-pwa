@@ -23,6 +23,7 @@ mkdir -p "$OUT_DIR" "$OBJ_DIR"/{base,qhull,muparser,tesselator,src}
 # Force-include wasm config (VERSION, …) instead of antiprism/config.h / HAVE_CONFIG_H.
 CXXFLAGS=(
   -O2
+  -fexceptions
   -std=c++17
   -DSUPDIR=\"/share\"
   -I"$WASM_DIR"
@@ -44,7 +45,7 @@ compile_one() {
   local src="$1"
   local obj="$2"
   local extra=("${@:3}")
-  if [[ ! -f "$obj" || "$src" -nt "$obj" || "$WASM_DIR/config.h" -nt "$obj" ]]; then
+  if [[ ! -f "$obj" || "$src" -nt "$obj" || "$WASM_DIR/config.h" -nt "$obj" || "$WASM_DIR/build.sh" -nt "$obj" ]]; then
     echo "  CC $(basename "$src")"
     em++ "${CXXFLAGS[@]}" "${extra[@]}" -c "$src" -o "$obj"
   fi
@@ -180,7 +181,7 @@ em++ -O2 -std=c++17 \
   -c "$WASM_DIR/bindings.cpp" -o "$OBJ_DIR/bindings.o"
 
 echo "==> Linking antiprism.js / antiprism.wasm"
-em++ -O2 \
+em++ -O2 -fexceptions \
   "${BASE_OBJS[@]}" \
   "${QHULL_OBJS[@]}" \
   "${MUP_OBJS[@]}" \
