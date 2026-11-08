@@ -21,7 +21,7 @@ export default defineConfig({
         "wasm/antiprism.js",
       ],
       manifest: {
-        name: "Antiprism PWA",
+        name: "Antiprism App",
         short_name: "Antiprism",
         description: "Offline polyhedra generator and viewer powered by Antiprism Wasm",
         theme_color: "#1a2332",

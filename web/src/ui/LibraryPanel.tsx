@@ -305,6 +305,7 @@ export function LibraryPanel({
     return () => window.removeEventListener("keydown", onKey);
   }, [picked, confirmDelete, confirmLibraryId, moveOpen]);
 
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const keyboardRef = useRef({
     blocked: false,
     items: [] as DirItem[],
@@ -323,9 +324,19 @@ export function LibraryPanel({
     const onKey = (event: KeyboardEvent) => {
       if (event.key !== "ArrowLeft" && event.key !== "ArrowRight" && event.key !== "Enter") return;
       if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
-      if (typing(event.target)) return;
       const kb = keyboardRef.current;
-      if (kb.blocked || document.querySelector(".library-panel details[open]")) return;
+      const searchInput = searchInputRef.current;
+      if (event.target === searchInput && searchInput instanceof HTMLInputElement) {
+        if (event.key === "Enter") return;
+        const start = searchInput.selectionStart ?? 0;
+        const end = searchInput.selectionEnd ?? 0;
+        const collapsed = start === end;
+        if (event.key === "ArrowRight" && !(collapsed && end === searchInput.value.length)) return;
+        if (event.key === "ArrowLeft" && !(collapsed && start === 0)) return;
+      } else if (typing(event.target)) {
+        return;
+      }
+      if (kb.blocked || document.querySelector(".library-panel details[open]:not(.lib-advanced)")) return;
       if (event.key === "Enter") {
         if (
           event.target instanceof HTMLElement &&
@@ -770,9 +781,11 @@ export function LibraryPanel({
       onSelect(null);
     }
     requestAnimationFrame(() => {
-      gridRef.current
-        ?.querySelector(`[data-dir="${CSS.escape(item.key)}"]`)
-        ?.scrollIntoView({ block: "nearest" });
+      const card = gridRef.current?.querySelector<HTMLElement>(
+        `[data-dir="${CSS.escape(item.key)}"]`,
+      );
+      card?.scrollIntoView({ block: "nearest" });
+      card?.focus({ preventScroll: true });
     });
   };
 
@@ -873,7 +886,7 @@ export function LibraryPanel({
         />
         <div className="brand-text">
           <div className="brand-title-row">
-            <h1>Antiprism PWA</h1>
+            <h1>Antiprism App</h1>
             <AboutButton />
           </div>
           <p className="brand-version">v{APP_VERSION}</p>
@@ -882,6 +895,7 @@ export function LibraryPanel({
       <label className="field">
         <span>Search</span>
         <input
+          ref={searchInputRef}
           value={query}
           placeholder="name or command"
           onChange={(event) => changeQuery(event.target.value)}
@@ -1229,9 +1243,11 @@ export function LibraryPanel({
                 tabIndex={0}
                 aria-label={`Up to ${parentName}`}
                 title={
-                  nav.folderIds.length > 0
-                    ? "Double-click to open. Drop a selection here to move it to this folder."
-                    : "Double-click to open"
+                  currentKey === "up"
+                    ? undefined
+                    : nav.folderIds.length > 0
+                      ? "Double-click to open. Drop a selection here to move it to this folder."
+                      : "Double-click to open"
                 }
                 onDoubleClick={goUp}
                 onKeyDown={(event) => {
@@ -1687,7 +1703,7 @@ function LibraryCard({
       data-dir={`library:${library.id}`}
       tabIndex={0}
       aria-label={library.name}
-      title="Double-click to open"
+      title={selected ? undefined : "Double-click to open"}
       onDoubleClick={(event) => {
         if (fromCardControl(event.target)) return;
         onOpen();
@@ -1727,7 +1743,7 @@ function ExternalLibraryCard({
       data-dir={`external:${library.id}`}
       href={library.url}
       aria-label={library.name}
-      title="Add this library"
+      title={selected ? undefined : "Add this library"}
       onClick={(event) => {
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
         event.preventDefault();
@@ -1785,7 +1801,11 @@ function FolderCard({
       tabIndex={0}
       aria-label={folder.name}
       aria-pressed={checked}
-      title="Double-click to open. Drop a selection here to move it into this folder."
+      title={
+        selected
+          ? undefined
+          : "Double-click to open. Drop a selection here to move it into this folder."
+      }
       onPointerDown={onPointerDown}
       onClick={(event) => {
         if (ignoreDragClick() || fromCardControl(event.target)) return;
@@ -1856,7 +1876,7 @@ function EntryCard({
       tabIndex={0}
       aria-label={entry.name}
       aria-pressed={checked}
-      title={menuOpen ? undefined : command || "Double-click to edit"}
+      title={selected || menuOpen ? undefined : command || "Double-click to edit"}
       onPointerDown={onPointerDown}
       onClick={(event) => {
         if (ignoreDragClick?.() || fromCardControl(event.target)) return;

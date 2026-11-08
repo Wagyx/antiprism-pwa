@@ -1141,7 +1141,7 @@ export function StackPanel({
         />
         <div className="brand-text">
           <div className="brand-title-row">
-            <h1>Antiprism PWA</h1>
+            <h1>Antiprism App</h1>
             <AboutButton />
           </div>
           <p className="brand-version">v{APP_VERSION}</p>
