@@ -1,0 +1,36 @@
+{
+  "poly_form": [
+    {
+      "name": "Turn an icosahedron 3-fold axis into a six-fold axis, and make the resulting faces regular",
+      "command": "off_trans -y D3v ico | to_nfold 6 | poly_form -s 15"
+    },
+    {
+      "name": "Make the faces of a (3,5) icosahedral geodesic sphere into regular triangles, while ensuring that the icosahedral symme…",
+      "command": "poly_form -n 100000 -s 15 -l 14 -y geo_5_3"
+    },
+    {
+      "name": "Make a geometric representation of a polyhedron having only face data, in this case a geodesic sphere has all its coord…",
+      "command": "off_trans geo_3 -S 0"
+    },
+    {
+      "name": "Make an equal edge tiling on a sphere, and use -y to constrain to the — poly_form -n 100000 -a e -s 100 geo_3_3_d",
+      "command": "poly_form -n 100000 -a e -s 100 geo_3_3_d"
+    },
+    {
+      "name": "Make an equal edge tiling on a sphere, and use -y to constrain to the — poly_form -n 100000 -a e -s 100 -y geo_3_3_d",
+      "command": "poly_form -n 100000 -a e -s 100 -y geo_3_3_d"
+    },
+    {
+      "name": "An equal-edge tiling on a sphere may not be solvable, but the result — poly_form -a u geo_3_3 | poly_form -a e -s 100",
+      "command": "poly_form -a u geo_3_3 | poly_form -a e -s 100"
+    },
+    {
+      "name": "An equal-edge tiling on a sphere may not be — poly_form -a u geo_3_3 | poly_form -a e -s 100 | poly_form -n -1 -y",
+      "command": "poly_form -a u geo_3_3 | poly_form -a e -s 100 | poly_form -n -1 -y"
+    },
+    {
+      "name": "Solve an equal-edge model on an ellipsoid",
+      "command": "poly_form -n 100000 -a e -E 1,1.2,1.5 -y -s 50 geo_3_3_d"
+    }
+  ]
+}

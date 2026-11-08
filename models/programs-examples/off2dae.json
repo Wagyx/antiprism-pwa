@@ -1,0 +1,28 @@
+{
+  "off2dae": [
+    {
+      "name": "Display icosahedron vertices as a ball pack",
+      "command": "off2dae -x ef -v b ico"
+    },
+    {
+      "name": "Display an icosahedron without its faces",
+      "command": "off2dae -x f ico"
+    },
+    {
+      "name": "Display an icosahedron without its vertex or edge elements",
+      "command": "off2dae -x ve ico"
+    },
+    {
+      "name": "Display an icosahedron with thin vertex and edge elements",
+      "command": "off2dae -v 0.01 -e 0.008 ico"
+    },
+    {
+      "name": "Set default vertex colour, for uncoloured vertices, to red",
+      "command": "off2dae -V red std_ico"
+    },
+    {
+      "name": "Increase smooth level to 5. This will make vertex and edge elements have more polygons and so look smoother.",
+      "command": "off2dae -K 5 ico"
+    }
+  ]
+}

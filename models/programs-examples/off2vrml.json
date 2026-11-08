@@ -1,0 +1,20 @@
+{
+  "off2vrml": [
+    {
+      "name": "Display an icosahedron without its faces",
+      "command": "off2vrml -x f icosahedron"
+    },
+    {
+      "name": "Display an icosahedron without its vertex or edge elements",
+      "command": "off2vrml -x ef icosahedron"
+    },
+    {
+      "name": "Display an icosahedron with thin vertex and edge elements",
+      "command": "off2vrml -v 0.01 -e 0.008 icosahedron"
+    },
+    {
+      "name": "Display a polyhedron with self-intersecting polygons, using transparent faces",
+      "command": "polygon anti 5/3 | off2vrml -F 0.3,0.6,0.8,0.5"
+    }
+  ]
+}

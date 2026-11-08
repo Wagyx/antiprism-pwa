@@ -1,0 +1,16 @@
+{
+  "off_report": [
+    {
+      "name": "Full report",
+      "command": "off_report -S A -C A cube"
+    },
+    {
+      "name": "Volume and area of a unit edged icosahedron",
+      "command": "off_trans -s e icosahedron | off_report -S G"
+    },
+    {
+      "name": "Report all angle information for a rhombic dodecahedron",
+      "command": "pol_recip cuboctahedron | off_report -S Sa -C SD"
+    }
+  ]
+}

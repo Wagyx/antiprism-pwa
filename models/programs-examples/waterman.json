@@ -1,0 +1,16 @@
+{
+  "waterman": [
+    {
+      "name": "Make a Root 10 Waterman polyhedron",
+      "command": "waterman -r rt20 fcc"
+    },
+    {
+      "name": "Make a Root 50 Waterman polyhedron, with symmetrically coloured faces",
+      "command": "waterman -r rt100 fcc -F y"
+    },
+    {
+      "name": "Make a Root 50 Waterman polyhedron centred on an octahedron centre, with symmetrically coloured faces",
+      "command": "waterman -q 0.5,0.5,0.5 -r rt100 fcc -F y"
+    }
+  ]
+}

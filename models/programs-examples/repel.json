@@ -1,0 +1,12 @@
+{
+  "repel": [
+    {
+      "name": "Make a snub cube",
+      "command": "repel -N 24 -l 15 | conv_hull"
+    },
+    {
+      "name": "Make a snub cube in fewer iterations by not using adaptive shortening",
+      "command": "repel -N 24 -s 1 -l 15 | conv_hull"
+    }
+  ]
+}

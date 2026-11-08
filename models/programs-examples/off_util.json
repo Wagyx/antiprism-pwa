@@ -1,0 +1,164 @@
+{
+  "off_util": [
+    {
+      "name": "Combine two files/models into a single file",
+      "command": "off_util cube oct"
+    },
+    {
+      "name": "Combine two files/models into a single file, and merge all elements. The first off_util — off_color -f red cube",
+      "command": "off_color -f red cube"
+    },
+    {
+      "name": "Combine two files/models into a single file, and merge all elements. The first off_util — off_color -f yellow cube",
+      "command": "off_color -f yellow cube"
+    },
+    {
+      "name": "Combine two files/models into a single file, and merge coincident vertices only",
+      "command": "off_util -M v std_cube std_cube"
+    },
+    {
+      "name": "Add elements to a model",
+      "command": "off_util -A v0,0,1:blue -A f8,0,2:yellow -A e8,4,6:green cube"
+    },
+    {
+      "name": "Add elements to an empty geometry, to create a model from scratch",
+      "command": "off_util -A v0,0,1:blue null | poly_kscope -s O | conv_hull"
+    },
+    {
+      "name": "Delete elements from a model. The following commands: delete vertex 0, delete face 1, delete — off_util -D v0 cube",
+      "command": "off_util -D v0 cube"
+    },
+    {
+      "name": "Delete elements from a model. The following commands: delete vertex 0, delete face 1, delete — off_util -D f1 cube",
+      "command": "off_util -D f1 cube"
+    },
+    {
+      "name": "Delete elements from a model. The following commands: delete vertex 0, delete face 1, delete — off_util -D f1,5 cube",
+      "command": "off_util -D f1,5 cube"
+    },
+    {
+      "name": "Delete elements from a model. The following commands: delete vertex 0, delete face 1, delete — off_util -D f1-3 cube",
+      "command": "off_util -D f1-3 cube"
+    },
+    {
+      "name": "Delete elements from a model. The following commands: delete vertex 0, delete face 1, delete — off_util -D f-2,4- cube",
+      "command": "off_util -D f-2,4- cube"
+    },
+    {
+      "name": "Delete elements from a model. The following commands: delete vertex 0, delete face 1, delete — off_util -D f0,1% cube",
+      "command": "off_util -D f0,1% cube"
+    },
+    {
+      "name": "Delete edge or face parts of a model. The following commands: delete edge part 0, delete face — off_util -D E0 uc4",
+      "command": "off_util -D E0 uc4"
+    },
+    {
+      "name": "Delete edge or face parts of a model. The following commands: delete edge part 0, delete face — off_util -D F0 uc4",
+      "command": "off_util -D F0 uc4"
+    },
+    {
+      "name": "Delete elements from a model which are connected to other elements. The following commands — off_util -D fv0 cube",
+      "command": "off_util -D fv0 cube"
+    },
+    {
+      "name": "Delete elements from a model which are connected to other elements. The following commands — off_util -D Fv1 uc4",
+      "command": "off_util -D Fv1 uc4"
+    },
+    {
+      "name": "Delete elements from a model which are connected to other elements. The following commands — off_util -D vf3 uc4",
+      "command": "off_util -D vf3 uc4"
+    },
+    {
+      "name": "Delete elements from a model which are connected to other elements. The following commands — off_util -D vF0 uc4",
+      "command": "off_util -D vF0 uc4"
+    },
+    {
+      "name": "Use -e to convert implicit edges to explicit edges before a delete to preserve the edges — off_util -e -D fv0 cube",
+      "command": "off_util -e -D fv0 cube"
+    },
+    {
+      "name": "Use -e to convert implicit edges to explicit edges before a delete to preserve — pol_recip -a cube | off_util -e -D F0",
+      "command": "pol_recip -a cube | off_util -e -D F0"
+    },
+    {
+      "name": "Keep elements from a model. -K is not exactly an opposite to -D , as when it keeps elements it — off_util -K f0 uc4",
+      "command": "off_util -K f0 uc4"
+    },
+    {
+      "name": "Keep elements from a model. -K is not exactly an opposite to -D , as when it keeps elements it — off_util -K ev1 uc4",
+      "command": "off_util -K ev1 uc4"
+    },
+    {
+      "name": "Keep elements from a model. -K is not exactly an opposite to -D , as when it keeps elements it — off_util -K fv1 uc4",
+      "command": "off_util -K fv1 uc4"
+    },
+    {
+      "name": "Keep elements from a model. -K is not exactly an opposite to -D , as when it keeps elements it — off_util -K Ev1 uc4 (2)",
+      "command": "off_util -K Ev1 uc4"
+    },
+    {
+      "name": "Keep elements from a model. -K is not exactly an opposite to -D , as when it keeps elements it — off_util -K Fv1 uc4 (2)",
+      "command": "off_util -K Fv1 uc4"
+    },
+    {
+      "name": "Keep elements from a model, inverting selection. When using % with -K , the elements that would — off_util -K E0% uc4",
+      "command": "off_util -K E0% uc4"
+    },
+    {
+      "name": "Keep elements from a model, inverting selection. When using % with -K , the elements that would — off_util -K F0% uc4",
+      "command": "off_util -K F0% uc4"
+    },
+    {
+      "name": "Orient the faces a model. The signed volume of the oriented model will be positive.",
+      "command": "off_util -O p cube | off_report"
+    },
+    {
+      "name": "Triangulate a model, any new internal edges and vertices will be coloured invisible — off_util -t tri tr_cube",
+      "command": "off_util -t tri tr_cube"
+    },
+    {
+      "name": "Triangulate a model, any new internal edges and vertices will be coloured invisible — off_util -t tri -g tr_cube",
+      "command": "off_util -t tri -g tr_cube"
+    },
+    {
+      "name": "Remove particular elements, e.g. remove edges from the previous skeleton model",
+      "command": "off_util -s ico -x e"
+    },
+    {
+      "name": "Make an edge skeleton by replacing faces with their surrounding edges",
+      "command": "off_util -s ico"
+    },
+    {
+      "name": "Close a polyhedron. The first command deletes a cube vertex and closes the opening. The — off_util -D v0 -c red cube",
+      "command": "off_util -D v0 -c red cube"
+    },
+    {
+      "name": "Close a polyhedron. The first command deletes a cube vertex and closes the opening — off_util -D f0,1 -c none cube",
+      "command": "off_util -D f0,1 -c none cube"
+    },
+    {
+      "name": "Close a polyhedron. The first command deletes a cube vertex and closes the opening. The — off_util -D f0,2 -c none oct",
+      "command": "off_util -D f0,2 -c none oct"
+    },
+    {
+      "name": "Truncate all vertices, or all 4-way vertices, to 1/3 along the edges — off_util -T 1/3 rd",
+      "command": "off_util -T 1/3 rd"
+    },
+    {
+      "name": "Truncate all vertices, or all 4-way vertices, to 1/3 along the edges — off_util -T 1/3,4 rd",
+      "command": "off_util -T 1/3,4 rd"
+    },
+    {
+      "name": "Project a model onto a unit sphere, the resulting polyhedron may have non-planar faces",
+      "command": "off_util -S rd"
+    },
+    {
+      "name": "Truncate the number of decimal places for coordinates in the output",
+      "command": "off_util -d 3 tet"
+    },
+    {
+      "name": "Make a net of a polyhedron (very basic)",
+      "command": "off_util -u 0,0,z ico"
+    }
+  ]
+}

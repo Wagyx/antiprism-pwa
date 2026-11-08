@@ -1,0 +1,12 @@
+{
+  "miller": [
+    {
+      "name": "View stellation number 9 in the list",
+      "command": "miller 9"
+    },
+    {
+      "name": "View the E shell with face and edge connectivity by color",
+      "command": "miller m_E -F h -E n -V e"
+    }
+  ]
+}

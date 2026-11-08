@@ -1,0 +1,12 @@
+{
+  "kcycle": [
+    {
+      "name": "Tetrahedron kaleidocycle rotated 40 degrees from horizontal",
+      "command": "kcycle -a 40"
+    },
+    {
+      "name": "Ring of 16 icosahedra, each given a proper coloring, rotated 90 degrees, and displayed in antiview",
+      "command": "off_color -f P icosahedron | kcycle -i - -n 8 -a -90 4,9,10,11"
+    }
+  ]
+}

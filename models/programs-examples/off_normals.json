@@ -1,0 +1,16 @@
+{
+  "off_normals": [
+    {
+      "name": "Show the normals of a dodecahedron. Outward normals will be colored white",
+      "command": "off_normals dod -O white"
+    },
+    {
+      "name": "Show the normals of a rhombic triacontahedron which has been oriented for negative volume so normals are reversed. Norm…",
+      "command": "off_util -O n rt | off_normals -e -E r"
+    },
+    {
+      "name": "Show the edge normals of an icosidodecahedron",
+      "command": "off_normals icosidodecahedron -s e -O white -e | off_color -r A0.3,f"
+    }
+  ]
+}

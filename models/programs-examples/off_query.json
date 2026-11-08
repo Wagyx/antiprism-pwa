@@ -1,0 +1,24 @@
+{
+  "off_query": [
+    {
+      "name": "List the angles around each vertex of a cuboctahedron",
+      "command": "off_query -I - VF -d 6 cubo"
+    },
+    {
+      "name": "List the edge lengths of edges 5 to 10, 50 to 60 and 100 of a geodesic sphere",
+      "command": "off_query -I 5-10,50-60,100 El -d 6 geo_4_1"
+    },
+    {
+      "name": "Find the distance between opposite vertices of a unit-edged icosahedron.",
+      "command": "off_trans -s e icosahedron | off_query -e 0,11 El"
+    },
+    {
+      "name": "Find the angles between three vertices not on the same face",
+      "command": "off_trans -s e icosahedron | off_query -f 0,1,11 Fa"
+    },
+    {
+      "name": "Find the angles between two vertices and a supplied extra vertex. In this example an extra face is added which includes…",
+      "command": "off_trans -s e icosahedron | off_query -v 1.0,0.0,0.0 -f 0,x0,11 Fa"
+    }
+  ]
+}

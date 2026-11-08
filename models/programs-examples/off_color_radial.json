@@ -1,0 +1,20 @@
+{
+  "off_color_radial": [
+    {
+      "name": "Color faces of a geodesic sphere symmetrically in radial bands Also generate symmetry axes with -d axes",
+      "command": "off_color -e white -v white geo_7_4_d | off_color_radial -A 2"
+    },
+    {
+      "name": "Same model with colors reversed",
+      "command": "off_color -e white -v white geo_7_4_d | off_color_radial -A 2 -r"
+    },
+    {
+      "name": "Same model grayscale",
+      "command": "off_color -e white -v white geo_7_4_d | off_color_radial -A 2 -m gray"
+    },
+    {
+      "name": "Color a figure from conway notation from faces 0 and 3",
+      "command": "conway a^5C | off_color_radial -f f0,3"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "tetra59": [
+    {
+      "name": "List of 59 tetrahedra with rational dihedral angles in integer factors",
+      "command": "tetra59 -L i"
+    },
+    {
+      "name": "List of 59 tetrahedra with rational dihedral angles in degrees",
+      "command": "tetra59 -L d"
+    },
+    {
+      "name": "List of 59 tetrahedra matching pairs",
+      "command": "tetra59 -L p"
+    },
+    {
+      "name": "Display a tetrahedra",
+      "command": "tetra59 12"
+    },
+    {
+      "name": "Display a tetrahedra with a unique color given by its regge class",
+      "command": "tetra59 48 -F r"
+    },
+    {
+      "name": "Display special case 2 tetrahedron with angle set at 40 degrees",
+      "command": "tetra59 -s 2 -a 40"
+    },
+    {
+      "name": "Compare two tetrahedra of the same volume in the same Regge class — tetra59 24 -z",
+      "command": "tetra59 24 -z"
+    },
+    {
+      "name": "Compare two tetrahedra of the same volume in the same Regge class — tetra59 29 -z",
+      "command": "tetra59 29 -z"
+    },
+    {
+      "name": "Compare two tetrahedra of the same volume in the same Regge class use the -p option to find the match of the dihedral p…",
+      "command": "tetra59 13 -d c -p 1"
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "pol_recip": [
+    {
+      "name": "Make the dual of an octahedron, a cube.",
+      "command": "pol_recip oct"
+    },
+    {
+      "name": "Make the dual pair of an octahedron and a cube.",
+      "command": "pol_recip -a oct"
+    },
+    {
+      "name": "Make the dual pair of a cuboctahedron and rhombic dodecahedron, with — pol_recip -a -r f cubo | off_color -r A0.4,f",
+      "command": "pol_recip -a -r f cubo | off_color -r A0.4,f"
+    },
+    {
+      "name": "Make the dual pair of a cuboctahedron and rhombic dodecahedron, with — pol_recip -a -r F cubo | off_color -r A0.4,f (2)",
+      "command": "pol_recip -a -r F cubo | off_color -r A0.4,f"
+    },
+    {
+      "name": "Specify a face plane of a polyhedron by three of its — pol_recip -a -c 0,0,0.2 -r 2,3,5 pyr5 | off_color -r A0.4,f",
+      "command": "pol_recip -a -c 0,0,0.2 -r 2,3,5 pyr5 | off_color -r A0.4,f"
+    },
+    {
+      "name": "Specify a face plane of a polyhedron by three of its — pol_recip -a -c 0,0,-0.4 -r 2,3,5 pyr5 | off_color -r A0.4,f",
+      "command": "pol_recip -a -c 0,0,-0.4 -r 2,3,5 pyr5 | off_color -r A0.4,f"
+    },
+    {
+      "name": "A canonical antihemaphrodite is self-dual, but not in the centroid — polygon ant -s antih 4 | canonical | pol_recip -a",
+      "command": "polygon ant -s antih 4 | canonical | pol_recip -a"
+    },
+    {
+      "name": "A canonical antihemaphrodite is self-dual, but not — polygon ant -s antih 4 | canonical | pol_recip -a -c M -n 10000",
+      "command": "polygon ant -s antih 4 | canonical | pol_recip -a -c M -n 10000"
+    },
+    {
+      "name": "Pyramids have a number interesting — polygon -l 1.5 pyr 7 | off_color -f blue | pol_recip -c M -n 50000 -a",
+      "command": "polygon -l 1.5 pyr 7 | off_color -f blue | pol_recip -c M -n 50000 -a"
+    },
+    {
+      "name": "Pyramids have a number interesting — polygon -l 1.5 pyr 7 | off_color -f blue | pol_recip -C 0,0,-1 -c M -n 50000 -a",
+      "command": "polygon -l 1.5 pyr 7 | off_color -f blue | pol_recip -C 0,0,-1 -c M -n 50000 -a"
+    },
+    {
+      "name": "Pyramids have a number interesting — polygon -l 1.5 pyr 7 | off_color -f blue | pol_recip -c e -n 50000 -a",
+      "command": "polygon -l 1.5 pyr 7 | off_color -f blue | pol_recip -c e -n 50000 -a"
+    },
+    {
+      "name": "When a polyhedron has a face plane passing through the reciprocation centre — pol_recip -c 0,0,0.05 -r 0,1 -a pyr3",
+      "command": "pol_recip -c 0,0,0.05 -r 0,1 -a pyr3"
+    },
+    {
+      "name": "When a polyhedron has a face plane passing through the reciprocation centre — pol_recip -c 0,0,-0.05 -r 0,1 -a pyr3",
+      "command": "pol_recip -c 0,0,-0.05 -r 0,1 -a pyr3"
+    },
+    {
+      "name": "When a polyhedron has a face plane passing through the reciprocation centre — pol_recip -c 0,0,0.00 -r 0,1 -a pyr3",
+      "command": "pol_recip -c 0,0,0.00 -r 0,1 -a pyr3"
+    },
+    {
+      "name": "When a polyhedron has a face plane passing through the reciprocation centre — pol_recip -c 0,0,0.00 -x -r 0,1 -a pyr3",
+      "command": "pol_recip -c 0,0,0.00 -x -r 0,1 -a pyr3"
+    }
+  ]
+}

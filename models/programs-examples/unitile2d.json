@@ -1,0 +1,16 @@
+{
+  "unitile2d": [
+    {
+      "name": "Display a chunky figure-8 Klein bottle",
+      "command": "unitile2d -s K -R 1.5 6 | off_color -f N"
+    },
+    {
+      "name": "Display the Roman surface, using a larger number of tiles",
+      "command": "unitile2d -s r -l 40 -w 40 9 | off_color -f N"
+    },
+    {
+      "name": "General \"trefoil\" with triangle tiling and 7/3 path",
+      "command": "unitile2d -s T -w 12 -l 160 -r 0.6 -d 7,3 2 | off_color -f P"
+    }
+  ]
+}

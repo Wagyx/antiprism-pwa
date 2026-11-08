@@ -1,0 +1,52 @@
+{
+  "wythoff": [
+    {
+      "name": "List the Conway operators for lots of examples of the constructive notation",
+      "command": "wythoff -c list"
+    },
+    {
+      "name": "Wythoff equivalents to |pqr, p|qr, pq|r, pqr|, for (2 3 5). The — wythoff -M -p [VEF]0V,0E,0F,0V0E0F schwarz_2_3_5p",
+      "command": "wythoff -M -p [VEF]0V,0E,0F,0V0E0F schwarz_2_3_5p"
+    },
+    {
+      "name": "Wythoff equivalents to |pqr, p|qr, pq|r, pqr|, for (2 3 5). The base model — wythoff -M -p [V]0E,0F schwarz_2_3_5p",
+      "command": "wythoff -M -p [V]0E,0F schwarz_2_3_5p"
+    },
+    {
+      "name": "Wythoff equivalents to |pqr, p|qr, pq|r, pqr|, for (2 3 5). The base — wythoff -M -p [VE]0V,0E,0v0e schwarz_2_3_5p",
+      "command": "wythoff -M -p [VE]0V,0E,0v0e schwarz_2_3_5p"
+    },
+    {
+      "name": "Wythoff equivalents to |pqr, p|qr, pq|r, pqr|, for (2 3 5). The — wythoff -M -p [VEF]0v0e,0e0f,0f0v schwarz_2_3_5p",
+      "command": "wythoff -M -p [VEF]0v0e,0e0f,0f0v schwarz_2_3_5p"
+    },
+    {
+      "name": "By default a polyhedron is processed by the Conway 'meta' operation before applying the constructive notation. Here is…",
+      "command": "wythoff -p [E]0V,0F cube"
+    },
+    {
+      "name": "If the base polyhedron is already like a meta tiling, i.e. 2-colourable triangle faces and even order vertices, then it…",
+      "command": "unitile2d -s t -w 8 -l 24 2 | wythoff -c s -M"
+    },
+    {
+      "name": "Models may be coloured using the colours from the base model, in this example the faces of a dodecahedron are coloured…",
+      "command": "off_color -f U dod | wythoff -c p -C a | wythoff -c o_4 -C a | off_util -S"
+    },
+    {
+      "name": "The associated element colouring associates local tiles to — off_color cube -v S,Ci -e grey | wythoff -c o_4 -C a,v",
+      "command": "off_color cube -v S,Ci -e grey | wythoff -c o_4 -C a,v"
+    },
+    {
+      "name": "The associated element colouring associates local tiles to the — off_color cube -e S,Ci | wythoff -c o_4 -C a,e",
+      "command": "off_color cube -e S,Ci | wythoff -c o_4 -C a,e"
+    },
+    {
+      "name": "The associated element colouring associates local tiles to — off_color cube -f S,Ci -e grey | wythoff -c o_4 -C a,f",
+      "command": "off_color cube -f S,Ci -e grey | wythoff -c o_4 -C a,f"
+    },
+    {
+      "name": "The associated element colouring associates local tiles — off_color cube -f S,Ci -e grey | wythoff -c o_4 -C a,white",
+      "command": "off_color cube -f S,Ci -e grey | wythoff -c o_4 -C a,white"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "col_util": [
+    {
+      "name": "RGB cube centroid of blue and yellow",
+      "command": "col_util -d plot -m map_blue:yellow -M rgb"
+    },
+    {
+      "name": "HSV cylinder centroid of blue and yellow",
+      "command": "col_util -d plot -m map_blue:yellow -M hsv -r cylinder"
+    },
+    {
+      "name": "Blend in conic container in HSL mode and RYB mode",
+      "command": "col_util -d plot -m map_blue:yellow -M hsl -p -y -r conic"
+    },
+    {
+      "name": "Blend in cubic contain in HSL model and RYB mode with different saturation modifiers",
+      "command": "col_util -d plot -m map_blue:yellow -M hsl -p -y -s 0.8,1.01,2,3 -r cube"
+    },
+    {
+      "name": "Compare additive and subtractive colouring in cubic — col_util -d plot -m map_red:green:blue -M hsl -p -v 1,2,3,4",
+      "command": "col_util -d plot -m map_red:green:blue -M hsl -p -v 1,2,3,4"
+    },
+    {
+      "name": "Compare additive and subtractive colouring in cubic — col_util -d plot -m map_red:green:blue -M hsl -p -v 1,2,3,4 -c",
+      "command": "col_util -d plot -m map_red:green:blue -M hsl -p -v 1,2,3,4 -c"
+    },
+    {
+      "name": "Plot rainbow colour map in RGB cube",
+      "command": "col_util -m rainbow -M rgb"
+    },
+    {
+      "name": "Plot rainbow colour map in HSL cylinder, hexagonal dipyramid, or heptagonal — col_util -m rainbow -M hsl -r cylinder",
+      "command": "col_util -m rainbow -M hsl -r cylinder"
+    },
+    {
+      "name": "Plot rainbow colour map in HSL cylinder, hexagonal dipyramid, or heptagonal — col_util -m rainbow -M hsl -r hexagonal",
+      "command": "col_util -m rainbow -M hsl -r hexagonal"
+    },
+    {
+      "name": "Plot rainbow colour map in HSL cylinder, hexagonal dipyramid, or — col_util -m rainbow -M hsl -r hexagonal -S",
+      "command": "col_util -m rainbow -M hsl -r hexagonal -S"
+    },
+    {
+      "name": "Display a color wheel of red green and blue",
+      "command": "col_util -d wheel -m map_red:green:blue"
+    },
+    {
+      "name": "Display rainbow colour map as a grid or as a color bars — col_util -d grid -m rainbow",
+      "command": "col_util -d grid -m rainbow"
+    },
+    {
+      "name": "Display rainbow colour map as a grid or as a color bars — col_util -d grid -m rainbow*10 -I -w b",
+      "command": "col_util -d grid -m rainbow*10 -I -w b"
+    }
+  ]
+}

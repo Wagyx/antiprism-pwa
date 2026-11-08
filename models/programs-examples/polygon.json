@@ -1,0 +1,32 @@
+{
+  "polygon": [
+    {
+      "name": "A cube with edges of 2 units",
+      "command": "polygon -e 2 -l 2 pri 4"
+    },
+    {
+      "name": "A hexagonal based pyramid",
+      "command": "polygon pyr 6"
+    },
+    {
+      "name": "A uniform pentagrammic antiprism",
+      "command": "polygon -e 1 -E 1 ant 5/2"
+    },
+    {
+      "name": "A uniform pentagrammic crossed antiprism",
+      "command": "polygon -e 1 -E 1 ant 5/3"
+    },
+    {
+      "name": "A uniform crossed gyroelongated pentagrammic dipyramid",
+      "command": "polygon -e 1 -E 1 -s gyro dip 5/3"
+    },
+    {
+      "name": "A hexagonal trapezohedron",
+      "command": "polygon -s trap dip 6"
+    },
+    {
+      "name": "A twisted hexagonal trapezohedron",
+      "command": "polygon -s trap -a 45 dip 6"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "off_trans": [
+    {
+      "name": "Std_cube is a cube with vertices (±1, ,±1, ±1). To rotate 45 degrees it about the edge running from (1,1,1) to (1,1,-1)…",
+      "command": "off_trans -T -1,-1,0 std_cube"
+    },
+    {
+      "name": "This can be combined as",
+      "command": "off_trans -T 1,1,0 -R 0,0,1,45 -T 1,1,0 std_cube"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "off2obj": [
+    {
+      "name": "Convert cube resource model to Wavefront OBJ format",
+      "command": "off2obj cube"
+    }
+  ]
+}

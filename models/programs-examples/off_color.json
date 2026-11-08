@@ -1,0 +1,40 @@
+{
+  "off_color": [
+    {
+      "name": "Make a cuboctahedron with the triangle faces a different colour to the square faces",
+      "command": "off_color -f N cuboctahedron"
+    },
+    {
+      "name": "Even easier, create the colour map on the command — off_color -f N -m map_3=0.0/0.0/0.0:4=1.0/1.0/1.0 cuboctahedron",
+      "command": "off_color -f N -m map_3=0.0/0.0/0.0:4=1.0/1.0/1.0 cuboctahedron"
+    },
+    {
+      "name": "Even easier, create the colour map on the command line, with — off_color -f N -m map_3=black:4=white cuboctahedron",
+      "command": "off_color -f N -m map_3=black:4=white cuboctahedron"
+    },
+    {
+      "name": "Colour faces with unique colours",
+      "command": "off_color -f U geo_2"
+    },
+    {
+      "name": "Make dark colours for U by decreasing the value of the default map",
+      "command": "off_color -f U -r V0.4 geo_2"
+    },
+    {
+      "name": "Rather than changing a map with -r an map with the desired colours could be — off_color -f U -m rnd_H0.4:0.7 geo_2",
+      "command": "off_color -f U -m rnd_H0.4:0.7 geo_2"
+    },
+    {
+      "name": "Rather than changing a map with -r an map with the desired colours could be chosen — off_color -f U -m rand_S0.3 geo_2",
+      "command": "off_color -f U -m rand_S0.3 geo_2"
+    },
+    {
+      "name": "Colour different elements with different maps",
+      "command": "off_color -f U -m f,rnd_H0.4:0.7 -e U -m e,rnd_H0.9:1.2 geo_2"
+    },
+    {
+      "name": "Colour edges and vertices with a rainbow effect",
+      "command": "off_color -f 1.0,1.0,1.0 -e L -v L geo_5"
+    }
+  ]
+}

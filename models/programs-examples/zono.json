@@ -1,0 +1,40 @@
+{
+  "zono": [
+    {
+      "name": "A largish polar zonohedron",
+      "command": "zono -P 50"
+    },
+    {
+      "name": "A largish rhombic spirallohedron",
+      "command": "zono -P 50,5"
+    },
+    {
+      "name": "Rhombic triacontahedron",
+      "command": "zono ico"
+    },
+    {
+      "name": "Non-Archimedean truncated octahedron",
+      "command": "zono -m i ico"
+    },
+    {
+      "name": "Archimedean truncated octahedron",
+      "command": "zono -m i -u ico"
+    },
+    {
+      "name": "Make a unit star from tetrahedron vertices and use to add red zones to a icosahedron",
+      "command": "zono -S ico -u -C red tet"
+    },
+    {
+      "name": "Rhombic torus as a translation surface",
+      "command": "off_util -s std_pol10 | off_trans -R 90,0,0 | zono -T std_pol10 -"
+    },
+    {
+      "name": "Spirallohedron from translation surface — off_trans -T 0,0,1 std_pol12 | off_util -Dv3-",
+      "command": "off_trans -T 0,0,1 std_pol12 | off_util -Dv3-"
+    },
+    {
+      "name": "Spirallohedron from translation surface — off_trans -T 0,0,1 std_pol12 | off_util -Dv-2",
+      "command": "off_trans -T 0,0,1 std_pol12 | off_util -Dv-2"
+    }
+  ]
+}

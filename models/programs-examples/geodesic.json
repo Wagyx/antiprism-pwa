@@ -1,0 +1,16 @@
+{
+  "geodesic": [
+    {
+      "name": "A Class II icosahedral geodesic sphere with a pattern frequency of 4",
+      "command": "geodesic -c 2 -f 4 ico"
+    },
+    {
+      "name": "A Class II icosahedral geodesic sphere with a final step frequency of 4",
+      "command": "geodesic -c 2 -F 4 ico"
+    },
+    {
+      "name": "A planar octahedron with a Class III 1,2 pattern repeated 3 times along an edge",
+      "command": "geodesic -M p -c 1,2 -f 3 oct"
+    }
+  ]
+}

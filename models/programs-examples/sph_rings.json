@@ -1,0 +1,16 @@
+{
+  "sph_rings": [
+    {
+      "name": "A globe",
+      "command": "sph_rings 12 24 | conv_hull"
+    },
+    {
+      "name": "Stagger the rings on the globe",
+      "command": "sph_rings -s 12 24 | conv_hull"
+    },
+    {
+      "name": "As many points as will fit on the 12 rings",
+      "command": "sph_rings 12"
+    }
+  ]
+}

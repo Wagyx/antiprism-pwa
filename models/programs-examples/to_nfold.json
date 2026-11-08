@@ -1,0 +1,48 @@
+{
+  "to_nfold": [
+    {
+      "name": "Increase rotational symmetry, e.g. pentagonal prism to hexagonal prism",
+      "command": "to_nfold 6 pri5"
+    },
+    {
+      "name": "Decrease rotational symmetry, e.g. pentagonal prism to triangular prism",
+      "command": "to_nfold 3 pri5"
+    },
+    {
+      "name": "Change rotational symmetry with a fraction, the denominator introduces a step, e.g. pentagonal prism to {7/2}-prism",
+      "command": "to_nfold 7/2 pri5"
+    },
+    {
+      "name": "Change the basic step of a model, e.g. pentagramic dipyramid to pentagonal pyramid (2*3 = 1 mod(5))",
+      "command": "to_nfold 5/3 dip5/2"
+    },
+    {
+      "name": "Open an edge, taken as a digon, e.g. convert snub disphenoid to (non-Johnson) snub square antiprism",
+      "command": "to_nfold 4 j_snub_disphenoid"
+    },
+    {
+      "name": "Close a polygon down to a digon, e.g. convert snub square antiprism to (non-Johnson) snub disphenoid",
+      "command": "to_nfold 2 j_snub_square_antiprism"
+    },
+    {
+      "name": "Convert a polyhedral torus",
+      "command": "unitile2d -s t | off_trans -R 90,0,0 | to_nfold 11/2"
+    },
+    {
+      "name": "A 5/2 crossed-antiprism has oblique faces that cycle the axis, and the result of regular — to_nfold 7 ant5/3",
+      "command": "to_nfold 7 ant5/3"
+    },
+    {
+      "name": "A 5/2 crossed-antiprism has oblique faces that cycle the axis, and the result of regular — to_nfold 7 ant5/3 -x 0",
+      "command": "to_nfold 7 ant5/3 -x 0"
+    },
+    {
+      "name": "Uncross a crossed-antiprism (the fraction parameter is required, but not used)",
+      "command": "to_nfold 2 ant5/3 -p 0,-1"
+    },
+    {
+      "name": "Dimple a ring of vertices of a snub-antiprism (the fraction parameter is required, but not used)",
+      "command": "to_nfold 2 snu4 -p 10,0.2"
+    }
+  ]
+}

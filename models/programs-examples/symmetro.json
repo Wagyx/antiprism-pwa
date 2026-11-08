@@ -1,0 +1,248 @@
+{
+  "symmetro": [
+    {
+      "name": "Make a Cuboctahedron (U7) — symmetro -k o,1,1,0,e",
+      "command": "symmetro -k o,1,1,0,e"
+    },
+    {
+      "name": "Make a Cuboctahedron (U7) — symmetro -t O[3,3],1,1",
+      "command": "symmetro -t O[3,3],1,1"
+    },
+    {
+      "name": "Like a Rhombicuboctahedron, but scale the squares on the 4-fold axes by 2. — symmetro -k o,1,1,0 -r 2",
+      "command": "symmetro -k o,1,1,0 -r 2"
+    },
+    {
+      "name": "Like a Rhombicuboctahedron, but scale the squares on the 4-fold axes by 2. — symmetro -t O[4,3],1,1 -r 2",
+      "command": "symmetro -t O[4,3],1,1 -r 2"
+    },
+    {
+      "name": "Make an approximate Snub Cube (U12) — symmetro -k o,1,0,1 -a 28.53243959961367 -C f",
+      "command": "symmetro -k o,1,0,1 -a 28.53243959961367 -C f"
+    },
+    {
+      "name": "Make an approximate Snub Cube (U12) — symmetro -t O[4,2],1,1 -a 28.53243959961367 -C f",
+      "command": "symmetro -t O[4,2],1,1 -a 28.53243959961367 -C f"
+    },
+    {
+      "name": "Make a 'twister' by suppressing the convex hull and varying the twist parameter — symmetro -k t,1,1,0 -C s -a 15",
+      "command": "symmetro -k t,1,1,0 -C s -a 15"
+    },
+    {
+      "name": "Make a 'twister' by suppressing the convex hull and varying the twist parameter — symmetro -t T[3,3],1,1 -C s -a 15",
+      "command": "symmetro -t T[3,3],1,1 -C s -a 15"
+    },
+    {
+      "name": "Make an Small Stellated Dodecahedron (U34)",
+      "command": "symmetro -s 5:2 -a 2e"
+    },
+    {
+      "name": "Make an Icosidodecahedron (U24)",
+      "command": "symmetro -c 5,5,d"
+    },
+    {
+      "name": "Make an Pentagonal Orthobirotunda (Johnson Solid J34)",
+      "command": "symmetro -c 5,5,h"
+    },
+    {
+      "name": "Bowtie models from Kaplan-Hart paper Figure 3 in order of appearance — symmetro -k t,2,3,*,e -F n -m kaplan",
+      "command": "symmetro -k t,2,3,*,e -F n -m kaplan"
+    },
+    {
+      "name": "Bowtie models from Kaplan-Hart paper Figure 3 in order of appearance — symmetro -k o,2,3,*,e -F n -m kaplan",
+      "command": "symmetro -k o,2,3,*,e -F n -m kaplan"
+    },
+    {
+      "name": "Bowtie models from Kaplan-Hart paper Figure 3 in order of appearance — symmetro -k o,3,2,*,e -F n -m kaplan",
+      "command": "symmetro -k o,3,2,*,e -F n -m kaplan"
+    },
+    {
+      "name": "Bowtie models from Kaplan-Hart paper Figure 3 in order of appearance — symmetro -k i,2,3,*,e -F n -m kaplan",
+      "command": "symmetro -k i,2,3,*,e -F n -m kaplan"
+    },
+    {
+      "name": "Bowtie models from Kaplan-Hart paper Figure 3 in order of appearance — symmetro -k i,3,2,*,e -F n -m kaplan",
+      "command": "symmetro -k i,3,2,*,e -F n -m kaplan"
+    },
+    {
+      "name": "Bowtie models from Kaplan-Hart paper Figure 3 in order of appearance — symmetro -k t,1,2,*,v -F n -m kaplan",
+      "command": "symmetro -k t,1,2,*,v -F n -m kaplan"
+    },
+    {
+      "name": "Bowtie models from Kaplan-Hart paper Figure 3 in order of appearance — symmetro -k o,1,2,*,v -F n -m kaplan",
+      "command": "symmetro -k o,1,2,*,v -F n -m kaplan"
+    },
+    {
+      "name": "Bowtie models from Kaplan-Hart paper Figure 3 in order of appearance — symmetro -k o,2,1,*,v -F n -m kaplan",
+      "command": "symmetro -k o,2,1,*,v -F n -m kaplan"
+    },
+    {
+      "name": "Bowtie models from Kaplan-Hart paper Figure 3 in order of appearance — symmetro -k i,1,2,*,v -F n -m kaplan",
+      "command": "symmetro -k i,1,2,*,v -F n -m kaplan"
+    },
+    {
+      "name": "Bowtie models from Kaplan-Hart paper Figure 3 in order of appearance — symmetro -k i,2,1,*,v -F n -m kaplan",
+      "command": "symmetro -k i,2,1,*,v -F n -m kaplan"
+    },
+    {
+      "name": "Jamnitzer models from Kaplan-Hart paper Figure 7 in — symmetro -k o,2,2,0,v -r 1.06680419358835388 -F n -m kaplan",
+      "command": "symmetro -k o,2,2,0,v -r 1.06680419358835388 -F n -m kaplan"
+    },
+    {
+      "name": "Jamnitzer models from Kaplan-Hart paper Figure 7 in order — symmetro -k o,3,3,0,v -r 1.04966777114351 -F n -m kaplan",
+      "command": "symmetro -k o,3,3,0,v -r 1.04966777114351 -F n -m kaplan"
+    },
+    {
+      "name": "Jamnitzer models from Kaplan-Hart paper Figure 7 in — symmetro -k i,2,2,0,v -r 1.09818547139510914 -F n -m kaplan",
+      "command": "symmetro -k i,2,2,0,v -r 1.09818547139510914 -F n -m kaplan"
+    },
+    {
+      "name": "Jamnitzer models from Kaplan-Hart paper Figure 7 in order of — symmetro -k i,3,3,0,v -r 1.0726110096817 -F n -m kaplan",
+      "command": "symmetro -k i,3,3,0,v -r 1.0726110096817 -F n -m kaplan"
+    },
+    {
+      "name": "LCM models from Kaplan-Hart paper Figure 8 in order of appearance — symmetro -k t,2,0,3,e -F n -m kaplan",
+      "command": "symmetro -k t,2,0,3,e -F n -m kaplan"
+    },
+    {
+      "name": "LCM models from Kaplan-Hart paper Figure 8 in order of appearance — symmetro -k t,2,0,3,v -F n -m kaplan",
+      "command": "symmetro -k t,2,0,3,v -F n -m kaplan"
+    },
+    {
+      "name": "LCM models from Kaplan-Hart paper Figure 8 in order of appearance — symmetro -k o,1,0,2,v -F n -m kaplan",
+      "command": "symmetro -k o,1,0,2,v -F n -m kaplan"
+    },
+    {
+      "name": "LCM models from Kaplan-Hart paper Figure 8 in order of appearance — symmetro -k o,3,4,*,e -F n -m kaplan",
+      "command": "symmetro -k o,3,4,*,e -F n -m kaplan"
+    },
+    {
+      "name": "LCM models from Kaplan-Hart paper Figure 8 in order of appearance — symmetro -k o,3,4,*,v -F n -m kaplan",
+      "command": "symmetro -k o,3,4,*,v -F n -m kaplan"
+    },
+    {
+      "name": "LCM models from Kaplan-Hart paper Figure 8 in order of appearance — symmetro -k o,*,2,3,e -F n -m kaplan",
+      "command": "symmetro -k o,*,2,3,e -F n -m kaplan"
+    },
+    {
+      "name": "LCM models from Kaplan-Hart paper Figure 8 in order of appearance — symmetro -k o,*,2,3,v -F n -m kaplan",
+      "command": "symmetro -k o,*,2,3,v -F n -m kaplan"
+    },
+    {
+      "name": "LCM models from Kaplan-Hart paper Figure 8 in order of appearance — symmetro -k i,3,5,*,e -F n -m kaplan",
+      "command": "symmetro -k i,3,5,*,e -F n -m kaplan"
+    },
+    {
+      "name": "LCM models from Kaplan-Hart paper Figure 8 in order of appearance — symmetro -k i,3,5,*,v -F n -m kaplan",
+      "command": "symmetro -k i,3,5,*,v -F n -m kaplan"
+    },
+    {
+      "name": "LCM models from Kaplan-Hart paper Figure 8 in order of appearance — symmetro -k i,2,*,5,e -F n -m kaplan",
+      "command": "symmetro -k i,2,*,5,e -F n -m kaplan"
+    },
+    {
+      "name": "LCM models from Kaplan-Hart paper Figure 8 in order of appearance — symmetro -k i,2,*,5,v -F n -m kaplan",
+      "command": "symmetro -k i,2,*,5,v -F n -m kaplan"
+    },
+    {
+      "name": "LCM models from Kaplan-Hart paper Figure 8 in order of appearance — symmetro -k i,*,2,3,e -F n -m kaplan",
+      "command": "symmetro -k i,*,2,3,e -F n -m kaplan"
+    },
+    {
+      "name": "LCM models from Kaplan-Hart paper Figure 8 in order of appearance — symmetro -k i,*,2,3,v -F n -m kaplan",
+      "command": "symmetro -k i,*,2,3,v -F n -m kaplan"
+    },
+    {
+      "name": "Near miss models from Kaplan-Hart paper Figure 9 in order of appearance — symmetro -k o,*,3,*,e -F n -m kaplan",
+      "command": "symmetro -k o,*,3,*,e -F n -m kaplan"
+    },
+    {
+      "name": "Near miss models from Kaplan-Hart paper Figure 9 in order of — symmetro -k i,1,2,*,v -F n -m kaplan -r 1.07046626932,1",
+      "command": "symmetro -k i,1,2,*,v -F n -m kaplan -r 1.07046626932,1"
+    },
+    {
+      "name": "Near miss models from Kaplan-Hart paper Figure 9 in order of appearance — symmetro -k i,2,*,3,e -F n -m kaplan",
+      "command": "symmetro -k i,2,*,3,e -F n -m kaplan"
+    },
+    {
+      "name": "Appealing models from Kaplan-Hart paper Figure 10 in order — symmetro -k i,2,2,*,1 -F n -m kaplan -r 2.03614784182,1",
+      "command": "symmetro -k i,2,2,*,1 -F n -m kaplan -r 2.03614784182,1"
+    },
+    {
+      "name": "Appealing models from Kaplan-Hart paper Figure 10 in order — symmetro -k i,2,1,*,1 -F n -m kaplan -r 1.9021130325885",
+      "command": "symmetro -k i,2,1,*,1 -F n -m kaplan -r 1.9021130325885"
+    },
+    {
+      "name": "Appealing models from Kaplan-Hart paper Figure 10 in order of appearance — symmetro -k i,2,2,*,1 -F n -m kaplan",
+      "command": "symmetro -k i,2,2,*,1 -F n -m kaplan"
+    },
+    {
+      "name": "Appealing models from Kaplan-Hart paper Figure 10 in order of appearance — symmetro -k i,4,3,*,e -F n -m kaplan",
+      "command": "symmetro -k i,4,3,*,e -F n -m kaplan"
+    },
+    {
+      "name": "Appealing models from Kaplan-Hart paper Figure 10 in order of appearance — symmetro -k i,2,3,*,1 -F n -m kaplan",
+      "command": "symmetro -k i,2,3,*,1 -F n -m kaplan"
+    },
+    {
+      "name": "Appealing models from Kaplan-Hart paper Figure 10 in order — symmetro -k i,2,3,*,1 -F n -m kaplan -r 1.583841856265,1",
+      "command": "symmetro -k i,2,3,*,1 -F n -m kaplan -r 1.583841856265,1"
+    },
+    {
+      "name": "Appealing models from Kaplan-Hart paper Figure 10 in order of appearance — symmetro -k i,2,4,*,e -F n -m kaplan",
+      "command": "symmetro -k i,2,4,*,e -F n -m kaplan"
+    },
+    {
+      "name": "Appealing models from Kaplan-Hart paper Figure 10 in — symmetro -k i,2,4,*,1 -F n -m kaplan -r 1.05398768021455,1",
+      "command": "symmetro -k i,2,4,*,1 -F n -m kaplan -r 1.05398768021455,1"
+    },
+    {
+      "name": "Appealing models from Kaplan-Hart paper Figure 10 in order of appearance — symmetro -k i,3,1,*,1 -F n -m kaplan",
+      "command": "symmetro -k i,3,1,*,1 -F n -m kaplan"
+    },
+    {
+      "name": "Appealing models from Kaplan-Hart paper Figure 10 in order of appearance — symmetro -k i,3,2,*,1 -F n -m kaplan",
+      "command": "symmetro -k i,3,2,*,1 -F n -m kaplan"
+    },
+    {
+      "name": "Appealing models from Kaplan-Hart paper Figure 10 in order of appearance — symmetro -k i,*,2,2,1 -F n -m kaplan",
+      "command": "symmetro -k i,*,2,2,1 -F n -m kaplan"
+    },
+    {
+      "name": "Appealing models from Kaplan-Hart paper Figure 10 in order of appearance — symmetro -k i,*,1,4,e -F n -m kaplan",
+      "command": "symmetro -k i,*,1,4,e -F n -m kaplan"
+    },
+    {
+      "name": "Appealing models from Kaplan-Hart paper Figure 10 in — symmetro -k i,3,4,*,v -F n -m kaplan -r 1.5665309813,1 -l 8",
+      "command": "symmetro -k i,3,4,*,v -F n -m kaplan -r 1.5665309813,1 -l 8"
+    },
+    {
+      "name": "Appealing models from Kaplan-Hart paper Figure 10 in order of appearance — symmetro -k i,3,4,*,e -F n -m kaplan",
+      "command": "symmetro -k i,3,4,*,e -F n -m kaplan"
+    },
+    {
+      "name": "Appealing models from Kaplan-Hart paper Figure 10 in order — symmetro -k i,3,5,0,v -F n -m kaplan -r 1.3159206178527,1",
+      "command": "symmetro -k i,3,5,0,v -F n -m kaplan -r 1.3159206178527,1"
+    },
+    {
+      "name": "Appealing models from Kaplan-Hart paper Figure 10 in order of appearance — symmetro -k i,4,2,*,e -F n -m kaplan",
+      "command": "symmetro -k i,4,2,*,e -F n -m kaplan"
+    },
+    {
+      "name": "Appealing models from Kaplan-Hart paper Figure 10 in order of appearance — symmetro -k i,*,1,4,1 -F n -m kaplan",
+      "command": "symmetro -k i,*,1,4,1 -F n -m kaplan"
+    },
+    {
+      "name": "Appealing models from Kaplan-Hart paper Figure 10 in order of appearance — symmetro -k i,1,*,2,1 -F n -m kaplan",
+      "command": "symmetro -k i,1,*,2,1 -F n -m kaplan"
+    },
+    {
+      "name": "Appealing models from Kaplan-Hart paper Figure 10 in order of appearance — symmetro -k i,1,*,3,e -F n -m kaplan",
+      "command": "symmetro -k i,1,*,3,e -F n -m kaplan"
+    },
+    {
+      "name": "Appealing models from Kaplan-Hart paper Figure 10 in order of appearance — symmetro -k i,2,*,3,1 -F n -m kaplan",
+      "command": "symmetro -k i,2,*,3,1 -F n -m kaplan"
+    }
+  ]
+}

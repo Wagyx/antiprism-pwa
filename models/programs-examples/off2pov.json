@@ -1,0 +1,16 @@
+{
+  "off2pov": [
+    {
+      "name": "Draw an icosahedron without its faces",
+      "command": "off2pov -x f icosahedron"
+    },
+    {
+      "name": "Draw an icosahedron without its vertex or edge elements",
+      "command": "off2pov -x ve icosahedron"
+    },
+    {
+      "name": "Draw an icosahedron with thin vertex and edge elements",
+      "command": "off2pov -v 0.01 -e 0.008 icosahedron"
+    }
+  ]
+}

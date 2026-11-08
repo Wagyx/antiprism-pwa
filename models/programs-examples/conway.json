@@ -1,0 +1,40 @@
+{
+  "conway": [
+    {
+      "name": "Make truncated cuboctahedron and pass to poly_form to make unit edges",
+      "command": "conway dmO | poly_form -a r"
+    },
+    {
+      "name": "A truncated octahedron passed to canonical",
+      "command": "conway tk4Y4 | canonical"
+    },
+    {
+      "name": "A nice spiral pattern in Hart mode using operation substitutions",
+      "command": "conway eesD -g"
+    },
+    {
+      "name": "A snub pentagrammic antiprism",
+      "command": "conway s ant5/2"
+    },
+    {
+      "name": "A snub geodesic sphere",
+      "command": "conway s geo_3"
+    },
+    {
+      "name": "Opposite_lace operation on the dual of a geodesic sphere",
+      "command": "conway Gd geo_3"
+    },
+    {
+      "name": "Whirl operation repeated twice on a dodecahedron seed and colored radially (the operator string is quoted for OSs that…",
+      "command": "conway w^2D -i 5000 | off_color_radial"
+    },
+    {
+      "name": "The lace operation subscript 2 applied to triangular faces of a cuboctahedron",
+      "command": "conway L_2:3aC"
+    },
+    {
+      "name": "An interesting result with what looks like star polygons",
+      "command": "conway L_2gC -F w"
+    }
+  ]
+}

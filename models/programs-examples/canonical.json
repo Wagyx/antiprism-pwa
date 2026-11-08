@@ -1,0 +1,28 @@
+{
+  "canonical": [
+    {
+      "name": "Make a cube, distort it, and canonicalize it back into a cube",
+      "command": "off_util cube | off_trans -S 1,2,3 | canonical"
+    },
+    {
+      "name": "Make a geodesic sphere, canonicalize it, and add it to it reciprocal",
+      "command": "geodesic -c 2 ico | canonical -O bd"
+    },
+    {
+      "name": "Make a propeller cube, canonicalize it, and cover it with the tranparent convex hull of the base and reciprocal",
+      "command": "conway pC | canonical -O bdc -F white,c,128"
+    },
+    {
+      "name": "Make a gyro icosahedron, make it transparent, canonicalize it, and show the edge tangent sphere and base edge nearpoints",
+      "command": "conway gI | canonical -O bnU -F u,b,128"
+    },
+    {
+      "name": "A nice conway notation model and the same model as base and dual incircle rings — conway ageC | canonical",
+      "command": "conway ageC | canonical"
+    },
+    {
+      "name": "A nice conway notation model and the same model as base and dual incircle rings — conway ageC | canonical -O ST",
+      "command": "conway ageC | canonical -O ST"
+    }
+  ]
+}

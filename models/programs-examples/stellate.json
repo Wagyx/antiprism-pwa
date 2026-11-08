@@ -1,0 +1,12 @@
+{
+  "stellate": [
+    {
+      "name": "Display the stellation diagram for the icosahedron in I symmetry",
+      "command": "stellate ico -f 0 -s I"
+    },
+    {
+      "name": "Create a torroid stellation from the icosahedron. off_trans is used to position the icosahedron in D5 symmetry. Then fa…",
+      "command": "off_trans -y D5 ico | stellate -f 0,18 -f 3,4,47 -s D5v"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "off2crds": [
+    {
+      "name": "Coordinates of a cube's vertices",
+      "command": "off2crds cube"
+    }
+  ]
+}

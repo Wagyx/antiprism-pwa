@@ -1,0 +1,52 @@
+{
+  "n_icons": [
+    {
+      "name": "The Sphericon",
+      "command": "n_icons"
+    },
+    {
+      "name": "The Dual of the Spherican",
+      "command": "n_icons -s"
+    },
+    {
+      "name": "A Hybrid of the Sphericon and its Dual",
+      "command": "n_icons -H"
+    },
+    {
+      "name": "The N-icon of 20 twisted 5 increments. The five surfaces are colored with the default colors. No edges or vertices are…",
+      "command": "n_icons -n 20 -t 5 -F s"
+    },
+    {
+      "name": "Same as above but only using colors red, orange, and yellow.",
+      "command": "n_icons -n 20 -t 5 -F s -m map_red:orange:yellow%"
+    },
+    {
+      "name": "Same as above but 50 percent transparent.",
+      "command": "n_icons -n 20 -t 5 -F s -m map_red:orange:yellow% -T 128"
+    },
+    {
+      "name": "The N-icon of 30 twisted 5 increments. The faces are colored white and the edges are the default colors.",
+      "command": "n_icons -n 30 -t 5 -F n -m map_white%,f -E s"
+    },
+    {
+      "name": "The N-icon of 12/4 twisted 2 increments colored by compound.",
+      "command": "n_icons -n 12/4 -t 2 -F c"
+    },
+    {
+      "name": "The N-icon of 12/4 twisted 4 increments colored by compound. Shell model is created and 3/4 open to view interior.",
+      "command": "n_icons -n 12/4 -t 2 -F c -z 2 -M 36,27"
+    },
+    {
+      "name": "The N-icon of 12/4 twisted 4 increments colored by compound. Star polygon model is created and 3/4 open to view interio…",
+      "command": "n_icons -n 12/4 -t 2 -F c -z 3 -M 36,27"
+    },
+    {
+      "name": "The reporting subsystem is used. A list of even order N-icons with n between 3 and 30 and more than one surface are lis…",
+      "command": "n_icons -L p -N 3,30 -J"
+    },
+    {
+      "name": "The reporting subsystem is used. A list of hybrid N-icons with n between 3 and 30, d (of n/d) is 3, and two or more com…",
+      "command": "n_icons -L h -N 3,30 -K 2,100 -D 3 -J -B"
+    }
+  ]
+}

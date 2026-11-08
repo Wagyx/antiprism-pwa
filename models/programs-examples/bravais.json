@@ -1,0 +1,28 @@
+{
+  "bravais": [
+    {
+      "name": "Make a cubic section of CCP",
+      "command": "bravais fcc"
+    },
+    {
+      "name": "Make a spherical section of BCC with struts from centre to vertex",
+      "command": "bravais bcc -c s -r 4 -s 3,2"
+    },
+    {
+      "name": "Make the Voronoi cells of a lattice",
+      "command": "bravais bcc -g 3 -D c"
+    },
+    {
+      "name": "Add the Voronoi cells to a lattice",
+      "command": "bravais bcc -g 3 -D c -A"
+    },
+    {
+      "name": "Make the dual of a lattice",
+      "command": "bravais bcc -d c"
+    },
+    {
+      "name": "Make a triclinic lattice, include the cell grid",
+      "command": "bravais triclinic -a 60,70,80 -v 1,1.5,2 -u"
+    }
+  ]
+}

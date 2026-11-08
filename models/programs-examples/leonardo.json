@@ -1,0 +1,32 @@
+{
+  "leonardo": [
+    {
+      "name": "Leonardo da Vinci style rhombicuboctahedron",
+      "command": "leonardo std_rhombicuboctahedron"
+    },
+    {
+      "name": "Leonardo da Vinci style rhombicuboctahedron, and hide edges that run from the outside of the faces to the holes",
+      "command": "leonardo -x std_rhombicuboctahedron"
+    },
+    {
+      "name": "Leonardo da Vinci style rhombicuboctahedron, and thicken border and use the same value for height",
+      "command": "leonardo -w 0.3 std_rhombicuboctahedron"
+    },
+    {
+      "name": "Leonardo da Vinci style rhombicuboctahedron, and thicken border and use a smaller value for height",
+      "command": "leonardo -w 0.3 -l 0.05 std_rhombicuboctahedron"
+    },
+    {
+      "name": "Models use the colours from the base faces by default. In this example a geodesic sphere dual has a proper colouring of…",
+      "command": "off_color -f P geo_3_d -m map_orange:purple:white | leonardo -x"
+    },
+    {
+      "name": "Models can also use the colours from the base edges. In this example a geodesic sphere dual has a proper colouring of i…",
+      "command": "off_color -e P geo_3_d -m map_orange:purple:white | leonardo -e"
+    },
+    {
+      "name": "For non-orientable models, like the Mobius strip in this example, the original faces must have the height equally distr…",
+      "command": "unitile2d -s m -w 29 -l 2 | off_color -f P -m map_darkblue:white | leonardo -m -w 0.15"
+    }
+  ]
+}
