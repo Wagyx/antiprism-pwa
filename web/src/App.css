@@ -1592,12 +1592,6 @@ a.lib-card {
   text-decoration: none;
 }
 
-.lib-external-url {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .lib-empty {
   grid-column: 1 / -1;
   margin: 0;

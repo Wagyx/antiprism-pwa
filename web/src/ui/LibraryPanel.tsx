@@ -1998,7 +1998,6 @@ function ExternalLibraryCard({
           <span className="lib-card-name">{library.name}</span>
         </div>
       </div>
-      <p className="lib-meta lib-external-url">{library.url}</p>
     </a>
   );
 }
