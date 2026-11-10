@@ -1503,6 +1503,15 @@
   grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
   gap: 0.45rem;
   align-content: start;
+  flex: 1 0 auto;
+  min-height: 8rem;
+}
+
+.lib-grid.is-file-drop {
+  border-radius: 8px;
+  outline: 2px solid rgba(196, 163, 90, 0.75);
+  outline-offset: 2px;
+  background: rgba(196, 163, 90, 0.08);
 }
 
 .lib-section {
@@ -1678,7 +1687,7 @@ a.lib-card {
 
 .lib-card-name {
   font-family: "IBM Plex Serif", Georgia, serif;
-  font-size: 0.92rem;
+  font-size: 0.78rem;
   line-height: 1.25;
   overflow-wrap: anywhere;
 }

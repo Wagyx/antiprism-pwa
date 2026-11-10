@@ -52,6 +52,11 @@ type Props = {
   onCreatePolyhedron: () => void;
   onImportFromCli: (rows: CliImportRow[]) => Promise<EntryRef>;
   onImportCatalog: (file: File, report: (message: string) => void) => Promise<EntryRef | null>;
+  onImportModels: (
+    files: File[],
+    location: { libraryId: string; folderIds: string[] },
+    report: (message: string) => void,
+  ) => Promise<EntryRef>;
 };
 
 type Pick = {
@@ -76,6 +81,64 @@ function pickKey(item: Pick): string {
 
 function fromCardControl(target: EventTarget | null): boolean {
   return target instanceof Element && Boolean(target.closest("button, input, a, summary, details"));
+}
+
+function dragHasFiles(data: DataTransfer | null): boolean {
+  return Boolean(data && [...data.types].includes("Files"));
+}
+
+function readDirectory(reader: FileSystemDirectoryReader): Promise<FileSystemEntry[]> {
+  return new Promise((resolve, reject) => {
+    const all: FileSystemEntry[] = [];
+    const read = () => {
+      reader.readEntries((batch) => {
+        if (batch.length === 0) resolve(all);
+        else {
+          all.push(...batch);
+          read();
+        }
+      }, reject);
+    };
+    read();
+  });
+}
+
+function readFileEntry(entry: FileSystemFileEntry): Promise<File> {
+  return new Promise((resolve, reject) => entry.file(resolve, reject));
+}
+
+async function collectModelFiles(
+  entry: FileSystemEntry,
+  out: { file: File; path: string }[],
+): Promise<void> {
+  if (entry.isFile) {
+    const file = await readFileEntry(entry as FileSystemFileEntry);
+    if (/\.(off|obj)$/i.test(file.name)) out.push({ file, path: entry.fullPath || file.name });
+    return;
+  }
+  if (!entry.isDirectory) return;
+  const children = await readDirectory((entry as FileSystemDirectoryEntry).createReader());
+  for (const child of children) await collectModelFiles(child, out);
+}
+
+/** OFF and OBJ files from a drop, including files nested in dropped directories. */
+async function modelFilesFromDrop(data: DataTransfer): Promise<File[]> {
+  const found: { file: File; path: string }[] = [];
+  const entries = [...data.items]
+    .filter((item) => item.kind === "file")
+    .map((item) => item.webkitGetAsEntry?.() ?? null)
+    .filter((entry): entry is FileSystemEntry => entry !== null);
+  if (entries.length > 0) {
+    for (const entry of entries) await collectModelFiles(entry, found);
+  } else {
+    for (const file of data.files) {
+      if (/\.(off|obj)$/i.test(file.name)) found.push({ file, path: file.name });
+    }
+  }
+  found.sort((a, b) =>
+    a.path.localeCompare(b.path, undefined, { numeric: true, sensitivity: "base" }),
+  );
+  return found.map((item) => item.file);
 }
 
 function closeMenu(target: HTMLElement) {
@@ -204,6 +267,7 @@ export function LibraryPanel({
   onCreatePolyhedron,
   onImportFromCli,
   onImportCatalog,
+  onImportModels,
 }: Props) {
   const importRef = useRef<HTMLInputElement>(null);
   const externalLock = useRef(false);
@@ -222,6 +286,7 @@ export function LibraryPanel({
   const [importStatus, setImportStatus] = useState<string | null>(null);
   const [draggingIds, setDraggingIds] = useState<string[] | null>(null);
   const [dropKey, setDropKey] = useState<string | null>(null);
+  const [fileDropKey, setFileDropKey] = useState<string | null>(null);
   const [dragGhost, setDragGhost] = useState<{ x: number; y: number; label: string } | null>(null);
   const renameLock = useRef(false);
   const cancelRename = useRef(false);
@@ -245,6 +310,14 @@ export function LibraryPanel({
     onMoveUp: Props["onMoveUp"];
     run: (fn: () => Promise<void>) => Promise<void>;
   } | null>(null);
+  const fileDropRef = useRef({
+    searching: false,
+    busy: false,
+    libraryId: null as string | null,
+    folderIds: [] as string[],
+    onImportModels,
+    run: async (_fn: () => Promise<void>) => {},
+  });
   useDismissDetails();
 
   const ordered = sortLibraries(libraries);
@@ -412,6 +485,14 @@ export function LibraryPanel({
       onMoveUp,
       run,
     };
+    fileDropRef.current = {
+      searching,
+      busy: importStatus !== null,
+      libraryId: openLibrary?.id ?? null,
+      folderIds: nav.folderIds,
+      onImportModels,
+      run,
+    };
   });
 
   useEffect(() => {
@@ -510,6 +591,79 @@ export function LibraryPanel({
       window.removeEventListener("pointerup", onUp, true);
       window.removeEventListener("pointercancel", onUp, true);
       window.removeEventListener("keydown", onKey);
+    };
+  }, []);
+
+  useEffect(() => {
+    const destination = (key: string | null) => {
+      const state = fileDropRef.current;
+      if (!key || state.searching) return null;
+      if (key.startsWith("lib:")) return { libraryId: key.slice(4), folderIds: [] };
+      if (!state.libraryId) return null;
+      if (key === "here") return { libraryId: state.libraryId, folderIds: state.folderIds };
+      if (key === "up") {
+        return { libraryId: state.libraryId, folderIds: state.folderIds.slice(0, -1) };
+      }
+      return { libraryId: state.libraryId, folderIds: [...state.folderIds, key] };
+    };
+
+    const targetKey = (event: DragEvent) => {
+      const state = fileDropRef.current;
+      if (state.searching || state.busy) return null;
+      const target = event.target;
+      if (!(target instanceof Element) || !target.closest(".library-panel")) return null;
+      const marked = target.closest("[data-file-drop]")?.getAttribute("data-file-drop");
+      if (marked === "up" && state.folderIds.length === 0) return state.libraryId ? "here" : null;
+      if (marked) return marked;
+      return state.libraryId ? "here" : null;
+    };
+
+    const onOver = (event: DragEvent) => {
+      if (!dragHasFiles(event.dataTransfer)) return;
+      event.preventDefault();
+      if (event.dataTransfer) event.dataTransfer.dropEffect = "copy";
+      const key = targetKey(event);
+      setFileDropKey((current) => (current === key ? current : key));
+    };
+
+    const onDrop = (event: DragEvent) => {
+      if (!dragHasFiles(event.dataTransfer) || !event.dataTransfer) return;
+      event.preventDefault();
+      const key = targetKey(event);
+      const reading = modelFilesFromDrop(event.dataTransfer);
+      setFileDropKey(null);
+      const state = fileDropRef.current;
+      if (state.busy) return;
+      const location = destination(key);
+      void state.run(async () => {
+        if (!location) {
+          throw new Error(
+            state.searching
+              ? "Leave search before dropping files"
+              : "Drop OFF or OBJ files onto a folder",
+          );
+        }
+        setImportStatus("Reading dropped files…");
+        try {
+          await state.onImportModels(await reading, location, setImportStatus);
+        } finally {
+          setImportStatus(null);
+        }
+      });
+    };
+
+    const onLeave = (event: DragEvent) => {
+      if (event.relatedTarget instanceof Node && document.documentElement.contains(event.relatedTarget)) return;
+      setFileDropKey(null);
+    };
+
+    window.addEventListener("dragover", onOver);
+    window.addEventListener("drop", onDrop);
+    window.addEventListener("dragleave", onLeave);
+    return () => {
+      window.removeEventListener("dragover", onOver);
+      window.removeEventListener("drop", onDrop);
+      window.removeEventListener("dragleave", onLeave);
     };
   }, []);
 
@@ -1168,7 +1322,7 @@ export function LibraryPanel({
 
       <div
         ref={gridRef}
-        className={`lib-grid${draggingIds ? " is-dragging" : ""}`}
+        className={`lib-grid${draggingIds ? " is-dragging" : ""}${fileDropKey === "here" ? " is-file-drop" : ""}`}
         onClick={(event) => {
           if (event.target !== event.currentTarget) return;
           setPicked([]);
@@ -1237,7 +1391,8 @@ export function LibraryPanel({
           <>
             {openLibrary && openFolder ? (
               <article
-                className={`lib-card lib-card-up${currentKey === "up" ? " is-selected" : ""}${dropKey === "up" ? " is-drop" : ""}`}
+                className={`lib-card lib-card-up${currentKey === "up" ? " is-selected" : ""}${dropKey === "up" || fileDropKey === "up" ? " is-drop" : ""}`}
+                data-file-drop={nav.folderIds.length > 0 ? "up" : undefined}
                 data-dir="up"
                 data-drop="up"
                 tabIndex={0}
@@ -1246,7 +1401,7 @@ export function LibraryPanel({
                   currentKey === "up"
                     ? undefined
                     : nav.folderIds.length > 0
-                      ? "Double-click to open. Drop a selection here to move it to this folder."
+                      ? "Double-click to open. Drop a selection or OFF and OBJ files here."
                       : "Double-click to open"
                 }
                 onDoubleClick={goUp}
@@ -1302,6 +1457,7 @@ export function LibraryPanel({
                     onExportJson={() => void run(() => onExportJson(library.id))}
                     onExportZip={() => void run(() => onExportZip(library.id))}
                     onDelete={() => setConfirmLibraryId(library.id)}
+                    fileDrop={fileDropKey === `lib:${library.id}`}
                   />
                 ))}
                 <h2 className="lib-section">External libraries</h2>
@@ -1326,7 +1482,7 @@ export function LibraryPanel({
                       selected={currentKey === nodeKey(openLibrary.id, node.id)}
                       checked={pickedKeys.has(pickKey({ libraryId: openLibrary.id, nodeId: node.id }))}
                       dragging={draggingIds?.includes(node.id) ?? false}
-                      dropTarget={dropKey === node.id}
+                      dropTarget={dropKey === node.id || fileDropKey === node.id}
                       ignoreDragClick={ignoreDragClick}
                       onPointerDown={(event) =>
                         startDrag(event, { libraryId: openLibrary.id, nodeId: node.id }, node.name)
@@ -1687,6 +1843,7 @@ function LibraryCard({
   onExportJson,
   onExportZip,
   onDelete,
+  fileDrop,
   ...rename
 }: {
   library: LibraryDocument;
@@ -1695,15 +1852,17 @@ function LibraryCard({
   onExportJson: () => void;
   onExportZip: () => void;
   onDelete: () => void;
+  fileDrop: boolean;
 } & RenameProps) {
   const count = countEntries(library.root);
   return (
     <article
-      className={`lib-card${selected ? " is-selected" : ""}`}
+      className={`lib-card${selected ? " is-selected" : ""}${fileDrop ? " is-drop" : ""}`}
       data-dir={`library:${library.id}`}
+      data-file-drop={`lib:${library.id}`}
       tabIndex={0}
       aria-label={library.name}
-      title={selected ? undefined : "Double-click to open"}
+      title={selected ? undefined : "Double-click to open. Drop OFF and OBJ files here."}
       onDoubleClick={(event) => {
         if (fromCardControl(event.target)) return;
         onOpen();
@@ -1799,13 +1958,14 @@ function FolderCard({
       className={`lib-card${checked ? " is-checked" : ""}${selected ? " is-selected" : ""}${dragging ? " is-dragging" : ""}${dropTarget ? " is-drop" : ""}`}
       data-dir={dirKey}
       data-drop={folder.id}
+      data-file-drop={folder.id}
       tabIndex={0}
       aria-label={folder.name}
       aria-pressed={checked}
       title={
         selected
           ? undefined
-          : "Double-click to open. Drop a selection here to move it into this folder."
+          : "Double-click to open. Drop a selection or OFF and OBJ files here."
       }
       onPointerDown={onPointerDown}
       onClick={(event) => {

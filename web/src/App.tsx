@@ -7,7 +7,7 @@ import {
   useState,
   type PointerEvent as ReactPointerEvent,
 } from "react";
-import { editorKey, type CommandStep } from "./pipeline/commandStep";
+import { editorKey, readStartingFile, type CommandStep } from "./pipeline/commandStep";
 import { splitCommands } from "./pipeline/parseCommand";
 import { runPipeline } from "./pipeline/runPipeline";
 import {
@@ -350,6 +350,44 @@ export default function App() {
     return library.createGroups(built, dest);
   };
 
+  const onImportModels = async (
+    files: File[],
+    location: { libraryId: string; folderIds: string[] },
+    report: (message: string) => void,
+  ) => {
+    const models = files.filter((file) => /\.(off|obj)$/i.test(file.name));
+    if (models.length === 0) throw new Error("Drop OFF or OBJ files");
+    const doc = library.libraries.find((item) => item.id === location.libraryId);
+    const folder = doc ? folderByPath(doc, location.folderIds) : null;
+    if (!folder) throw new Error("Folder not found");
+    const taken = folder.children.map((child) => child.name);
+    const names = models.map((file) => {
+      const stem = file.name.replace(/\.[^.]+$/, "").trim();
+      const name = requireUnique(taken, stem);
+      taken.push(name);
+      return name;
+    });
+    const drafts: EntryDraft[] = [];
+    for (let index = 0; index < models.length; index += 1) {
+      const file = models[index];
+      const name = names[index] ?? file.name;
+      report(`Importing ${name} (${index + 1} of ${models.length})…`);
+      const inputFile = await readStartingFile(file);
+      const result = await runPipeline([], inputFile);
+      if (!result.ok || !result.offText?.trim()) {
+        throw new Error(`${name}: ${result.error ?? "the file produced no polyhedron"}`);
+      }
+      drafts.push({
+        name,
+        offText: result.offText,
+        pipeline: [],
+        inputFile,
+        counts: countsFor(result.offText),
+      });
+    }
+    return library.createEntries(drafts, location);
+  };
+
   const onEditEntry = (ref: EntryRef) => {
     const doc = library.libraries.find((item) => item.id === ref.libraryId);
     if (!doc) throw new Error("Library not found");
@@ -625,6 +663,7 @@ export default function App() {
           onCreatePolyhedron={onCreatePolyhedron}
           onImportFromCli={onImportFromCli}
           onImportCatalog={onImportCatalog}
+          onImportModels={onImportModels}
         />
       )}
       {resizer}
