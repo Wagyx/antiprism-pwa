@@ -1,6 +1,6 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { TOOL_DOCS, type ToolDoc } from "../pipeline/toolDocs";
+import { TOOL_DOCS, toolDocUrl, type ToolDoc } from "../pipeline/toolDocs";
 import type { PipelineKind } from "../pipeline/types";
 
 const PANEL_WIDTH = 360;
@@ -14,6 +14,7 @@ type Props = {
 
 export function ToolInfoButton({ kind, doc }: Props) {
   const info = doc ?? TOOL_DOCS[kind];
+  const docUrl = toolDocUrl(kind);
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
@@ -84,13 +85,25 @@ export function ToolInfoButton({ kind, doc }: Props) {
           >
             <header className="tool-info-header">
               <strong>{info.title}</strong>
-              <button
-                type="button"
-                className="tool-info-close"
-                onClick={() => setOpen(false)}
-              >
-                ×
-              </button>
+              <div className="tool-info-actions">
+                {docUrl ? (
+                  <a
+                    className="tool-info-doc"
+                    href={docUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Documentation
+                  </a>
+                ) : null}
+                <button
+                  type="button"
+                  className="tool-info-close"
+                  onClick={() => setOpen(false)}
+                >
+                  ×
+                </button>
+              </div>
             </header>
             <p className="tool-info-intro">{info.blurb}</p>
             {info.sections.map((section) => (

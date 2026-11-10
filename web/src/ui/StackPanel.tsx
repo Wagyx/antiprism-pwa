@@ -1353,9 +1353,6 @@ export function StackPanel({
                 }}
               >
                 <span className="save-as-label">{opt.label}</span>
-                <span className="save-as-ext">
-                  .{opt.fileName.split(".").pop()}
-                </span>
               </button>
             ))}
           </div>

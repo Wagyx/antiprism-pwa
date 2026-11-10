@@ -17,6 +17,11 @@ export const EXTERNAL_LIBRARIES: ExternalLibrary[] = [
     url: "https://asliceofcuriosity.fr/app/antiprism-pwa/libraries/Commands_Examples.zip",
   },
   {
+    id: "miratope",
+    name: "Miratope Library",
+    url: "https://asliceofcuriosity.fr/app/antiprism-pwa/libraries/Miratope.zip",
+  },
+  {
     id: "wagyx",
     name: "Wagyx Library",
     url: "https://asliceofcuriosity.fr/app/antiprism-pwa/libraries/Wagyx.zip",

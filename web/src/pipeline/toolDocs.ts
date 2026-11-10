@@ -19,6 +19,18 @@ export type ToolDoc = {
   sections: DocSection[];
 };
 
+/** Program page name when it differs from the editor step kind. */
+const DOC_PROGRAM: Partial<Record<PipelineKind, string | null>> = {
+  import_file: null,
+  conway_seed: "conway",
+};
+
+export function toolDocUrl(kind: PipelineKind): string | null {
+  const program = kind in DOC_PROGRAM ? DOC_PROGRAM[kind] : kind;
+  if (!program) return null;
+  return `https://antiprism.com/programs/${program}.html`;
+}
+
 export const TOOL_DOCS: Record<PipelineKind, ToolDoc> = {
   polygon: {
     title: "polygon",

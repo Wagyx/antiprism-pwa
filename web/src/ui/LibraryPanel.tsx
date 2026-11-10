@@ -1092,17 +1092,16 @@ export function LibraryPanel({
         </div>
       </div>
       <label className="field">
-        <span>Search</span>
         <input
           ref={searchInputRef}
           value={query}
-          placeholder="name or command"
+          placeholder="Search by name or command"
           onChange={(event) => changeQuery(event.target.value)}
           autoComplete="off"
         />
       </label>
       <details className="lib-advanced">
-        <summary>Advanced</summary>
+        <summary>Filters</summary>
         <div className="lib-filters">
           <RangeFields
             label="Date"
