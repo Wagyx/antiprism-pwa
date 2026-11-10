@@ -202,6 +202,31 @@ assert(
   sourced[0]?.items[0]?.command === "" && sourced[0]?.items[0]?.sourceFile?.fileName === "Misc.off",
   "catalog source file is the model input",
 );
+const nested = parsePolyhedronCatalog(
+  JSON.stringify({
+    "Convex regular-faced solids": {
+      "Johnson solids": [{ name: "Cupola", sourceFile: { fileName: "Cupola.off", text: "OFF\n0 0 0\n" } }],
+    },
+  }),
+);
+assert(
+  nested[0]?.items.length === 0 &&
+    nested[0]?.groups[0]?.name === "Johnson solids" &&
+    nested[0]?.groups[0]?.items[0]?.name === "Cupola",
+  "catalog folders can contain folders",
+);
+const mixed = parsePolyhedronCatalog(
+  JSON.stringify({
+    "by Tom Shapiro": {
+      items: [{ name: "17-hedron", sourceFile: { fileName: "17-hedron.off", text: "OFF\n0 0 0\n" } }],
+      FMJ: [{ name: "FMJ1", sourceFile: { fileName: "FMJ1.off", text: "OFF\n0 0 0\n" } }],
+    },
+  }),
+);
+assert(
+  mixed[0]?.items[0]?.name === "17-hedron" && mixed[0]?.groups[0]?.name === "FMJ",
+  "a catalog folder can hold polyhedra beside its subfolders",
+);
 let catalogFile = false;
 try {
   parsePolyhedronCatalog(JSON.stringify({ format: "antiprism-library", name: "MyLibrary" }));
@@ -221,6 +246,19 @@ assert(
   "catalog group becomes a folder",
 );
 assert(grouped.entry?.name === "Rhombic Dodecahedron", "catalog import keeps the last polyhedron");
+const nestedImport = insertGroups(createLibraryDocument("Nested", ["MyLibrary"]), [], [
+  {
+    name: "Convex regular-faced solids",
+    entries: [],
+    groups: [{ name: "Johnson solids", entries: [{ ...draft, name: "Cupola" }] }],
+  },
+]);
+const convex = nestedImport.doc.root.children.find((child) => child.name === "Convex regular-faced solids");
+const johnson = convex?.type === "folder" ? convex.children[0] : null;
+assert(
+  johnson?.type === "folder" && johnson.children[0]?.name === "Cupola" && nestedImport.entry?.name === "Cupola",
+  "a catalog folder keeps its subfolders",
+);
 const fraction = insertGroups(createLibraryDocument("Fractions", ["MyLibrary"]), [], [
   { name: "Prisms", entries: [{ ...draft, name: "{7/2}-Prism" }] },
 ]);

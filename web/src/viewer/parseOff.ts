@@ -13,6 +13,12 @@ export type ParsedOff = {
 
 const SEP = /\s+/;
 
+/** Drop a trailing # comment. Blank lines and comment-only lines become empty. */
+function contentOf(line: string): string {
+  const hash = line.indexOf("#");
+  return (hash >= 0 ? line.slice(0, hash) : line).trim();
+}
+
 function parseColor(parts: string[]): number[] {
   let isFloat = false;
   for (const el of parts) {
@@ -36,16 +42,21 @@ export function parseOff(text: string): ParsedOff {
     edgesColor: [],
   };
 
-  const header = lines[0]?.trim() ?? "";
+  let i = 0;
+  let header = "";
+  for (; i < lines.length; i++) {
+    header = contentOf(lines[i]);
+    if (header) break;
+  }
   if (!header.startsWith("OFF")) {
     throw new Error("Not an OFF file");
   }
+  i += 1;
 
-  let i = 1;
   let counts: number[] | null = null;
   for (; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (!line || line.startsWith("#")) continue;
+    const line = contentOf(lines[i]);
+    if (!line) continue;
     counts = line.split(SEP).map((el) => parseInt(el, 10));
     i++;
     break;
@@ -56,8 +67,8 @@ export function parseOff(text: string): ParsedOff {
   const numberFaces = counts[1];
 
   for (; i < lines.length && result.vertices.length < numberVertices; i++) {
-    const line = lines[i].trim();
-    if (!line || line.startsWith("#")) continue;
+    const line = contentOf(lines[i]);
+    if (!line) continue;
     const data = line.split(SEP);
     result.vertices.push(data.slice(0, 3).map((el) => parseFloat(el)));
     if (data.length > 3) {
@@ -72,8 +83,8 @@ export function parseOff(text: string): ParsedOff {
 
   let facesRead = 0;
   for (; i < lines.length && facesRead < numberFaces; i++) {
-    const line = lines[i].trim();
-    if (!line || line.startsWith("#")) continue;
+    const line = contentOf(lines[i]);
+    if (!line) continue;
     const lineData = line.split(SEP);
     const faceNum = parseInt(lineData[0], 10);
     facesRead++;

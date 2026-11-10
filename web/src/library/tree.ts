@@ -250,12 +250,65 @@ export function insertEntries(
   return { doc: touch(doc, root), entries: created };
 }
 
+export type ImportGroup = {
+  name: string;
+  entries: EntryDraft[];
+  groups?: ImportGroup[];
+};
+
+function groupHasContent(group: ImportGroup): boolean {
+  if (group.entries.length > 0) return true;
+  return (group.groups ?? []).some(groupHasContent);
+}
+
+function buildGroupFolder(
+  group: ImportGroup,
+  siblingNames: string[],
+  at: string,
+): { folder: LibraryFolder; last: LibraryEntry | null } {
+  const childNames: string[] = [];
+  let last: LibraryEntry | null = null;
+  const entries: LibraryEntry[] = group.entries.map((draft) => {
+    const entry: LibraryEntry = {
+      type: "entry",
+      id: crypto.randomUUID(),
+      name: requireUnique(childNames, draft.name),
+      createdAt: at,
+      modifiedAt: at,
+      inputFile: draft.inputFile,
+      offText: draft.offText,
+      pipeline: draft.pipeline,
+      counts: draft.counts,
+    };
+    childNames.push(entry.name);
+    last = entry;
+    return entry;
+  });
+  const folders: LibraryFolder[] = [];
+  for (const child of group.groups ?? []) {
+    if (!groupHasContent(child)) continue;
+    const built = buildGroupFolder(child, childNames, at);
+    folders.push(built.folder);
+    if (built.last) last = built.last;
+  }
+  const folder: LibraryFolder = {
+    type: "folder",
+    id: crypto.randomUUID(),
+    name: requireUnique(siblingNames, group.name),
+    createdAt: at,
+    modifiedAt: at,
+    children: [...folders, ...entries],
+  };
+  siblingNames.push(folder.name);
+  return { folder, last };
+}
+
 export function insertGroups(
   doc: LibraryDocument,
   folderIds: string[],
-  groups: { name: string; entries: EntryDraft[] }[],
+  groups: ImportGroup[],
 ): { doc: LibraryDocument; entry: LibraryEntry | null } {
-  if (groups.length === 0 || groups.every((group) => group.entries.length === 0)) {
+  if (groups.length === 0 || !groups.some(groupHasContent)) {
     throw new Error("Nothing to import");
   }
   let last: LibraryEntry | null = null;
@@ -264,34 +317,10 @@ export function insertGroups(
     const at = nowIso();
     const children = [...folder.children];
     for (const group of groups) {
-      if (group.entries.length === 0) continue;
-      const entryNames: string[] = [];
-      const entries = group.entries.map((draft) => {
-        const entry: LibraryEntry = {
-          type: "entry",
-          id: crypto.randomUUID(),
-          name: requireUnique(entryNames, draft.name),
-          createdAt: at,
-          modifiedAt: at,
-          inputFile: draft.inputFile,
-          offText: draft.offText,
-          pipeline: draft.pipeline,
-          counts: draft.counts,
-        };
-        entryNames.push(entry.name);
-        last = entry;
-        return entry;
-      });
-      const child: LibraryFolder = {
-        type: "folder",
-        id: crypto.randomUUID(),
-        name: requireUnique(names, group.name),
-        createdAt: at,
-        modifiedAt: at,
-        children: entries,
-      };
-      names.push(child.name);
-      children.push(child);
+      if (!groupHasContent(group)) continue;
+      const built = buildGroupFolder(group, names, at);
+      children.push(built.folder);
+      if (built.last) last = built.last;
     }
     return { ...folder, modifiedAt: at, children };
   });
@@ -595,6 +624,37 @@ export function moveDestinations(
   };
   walk(doc.root, [], []);
   return { parent, folders };
+}
+
+function countsAreEmpty(counts: PolyCounts): boolean {
+  return counts.nVertices === 0 && counts.nEdges === 0 && counts.nFaces === 0;
+}
+
+function refreshNode(node: LibraryNode): { node: LibraryNode; changed: boolean } {
+  if (node.type === "entry") {
+    if (!countsAreEmpty(node.counts) || !node.offText.trim()) return { node, changed: false };
+    try {
+      const counts = countsFromOff(node.offText);
+      if (countsAreEmpty(counts)) return { node, changed: false };
+      return { node: { ...node, counts }, changed: true };
+    } catch {
+      return { node, changed: false };
+    }
+  }
+  let changed = false;
+  const children = node.children.map((child) => {
+    const next = refreshNode(child);
+    if (next.changed) changed = true;
+    return next.node;
+  });
+  return changed ? { node: { ...node, children }, changed } : { node, changed: false };
+}
+
+/** Fill counts that were stored as zero because the OFF text could not be read. */
+export function refreshEmptyCounts(doc: LibraryDocument): { doc: LibraryDocument; changed: boolean } {
+  const root = refreshNode(doc.root);
+  if (!root.changed || root.node.type !== "folder") return { doc, changed: false };
+  return { doc: { ...doc, root: root.node }, changed: true };
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

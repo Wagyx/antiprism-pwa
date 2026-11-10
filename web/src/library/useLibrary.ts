@@ -9,9 +9,11 @@ import {
   downloadBaseName,
   findEntry,
   folderByPath,
+  refreshEmptyCounts,
   insertEntries,
   insertEntry,
   insertGroups,
+  type ImportGroup,
   moveNodes,
   moveNodesUp,
   patchEntry,
@@ -103,11 +105,20 @@ export function useLibrary() {
   useEffect(() => {
     let cancelled = false;
     loadLibraries()
-      .then((docs) => {
+      .then(async (docs) => {
         if (cancelled) return;
         const migrated = docs.map(migrateLibrary);
-        librariesRef.current = migrated;
-        setLibraries(migrated);
+        const repaired = await Promise.all(
+          migrated.map(async (doc) => {
+            const next = refreshEmptyCounts(doc);
+            if (!next.changed) return doc;
+            await saveLibrary(next.doc);
+            return next.doc;
+          }),
+        );
+        if (cancelled) return;
+        librariesRef.current = repaired;
+        setLibraries(repaired);
         setReady(true);
       })
       .catch((error: unknown) => {
@@ -313,7 +324,7 @@ export function useLibrary() {
     });
 
   const createGroups = (
-    groups: { name: string; entries: EntryDraft[] }[],
+    groups: ImportGroup[],
     location: { libraryId: string; folderIds: string[] },
   ) =>
     enqueue(async () => {

@@ -18,9 +18,15 @@ import {
 } from "./pipeline/types";
 import { useUndoable } from "./pipeline/useUndoable";
 import { countsFromOff } from "./library/counts";
-import { parsePolyhedronCatalog } from "./library/polyhedronCatalog";
+import { parsePolyhedronCatalog, type CatalogGroup } from "./library/polyhedronCatalog";
 import { cloneSteps, inputForEditor, pipelineForEditor } from "./library/snapshot";
-import { findEntry, folderByPath, requireUnique, resolveDestination } from "./library/tree";
+import {
+  findEntry,
+  folderByPath,
+  requireUnique,
+  resolveDestination,
+  type ImportGroup,
+} from "./library/tree";
 import type { CliImportRow } from "./ui/CliPipelineDialog";
 import type { EntryDraft, EntryRef, LibraryInputFile, PolyCounts } from "./library/types";
 import { useLibrary } from "./library/useLibrary";
@@ -288,17 +294,20 @@ export default function App() {
     const doc = library.libraries.find((item) => item.id === dest.libraryId);
     const folder = doc ? folderByPath(doc, dest.folderIds) : null;
     if (!folder) throw new Error("Folder not found");
+    const reserve = (group: CatalogGroup, siblings: string[]) => {
+      siblings.push(requireUnique(siblings, group.name));
+      const children: string[] = [];
+      for (const item of group.items) children.push(requireUnique(children, item.name));
+      for (const child of group.groups) reserve(child, children);
+    };
     const taken = folder.children.map((child) => child.name);
-    for (const group of groups) {
-      taken.push(requireUnique(taken, group.name));
-      const entryNames: string[] = [];
-      for (const item of group.items) entryNames.push(requireUnique(entryNames, item.name));
-    }
+    for (const group of groups) reserve(group, taken);
 
-    const total = groups.reduce((count, group) => count + group.items.length, 0);
+    const countItems = (group: CatalogGroup): number =>
+      group.items.length + group.groups.reduce((count, child) => count + countItems(child), 0);
+    const total = groups.reduce((count, group) => count + countItems(group), 0);
     let done = 0;
-    const built: { name: string; entries: EntryDraft[] }[] = [];
-    for (const group of groups) {
+    const importGroup = async (group: CatalogGroup): Promise<ImportGroup> => {
       const entries: EntryDraft[] = [];
       for (const item of group.items) {
         done += 1;
@@ -313,7 +322,7 @@ export default function App() {
           enabled: true,
           command,
         }));
-        const inputFile = source
+        const inputFile: LibraryInputFile | null = source
           ? {
               fileName: source.fileName,
               format: source.fileName.toLowerCase().endsWith(".obj") ? "obj" : "off",
@@ -332,8 +341,12 @@ export default function App() {
           counts: countsFor(result.offText),
         });
       }
-      built.push({ name: group.name, entries });
-    }
+      const nested: ImportGroup[] = [];
+      for (const child of group.groups) nested.push(await importGroup(child));
+      return { name: group.name, entries, groups: nested };
+    };
+    const built: ImportGroup[] = [];
+    for (const group of groups) built.push(await importGroup(group));
     return library.createGroups(built, dest);
   };
 
