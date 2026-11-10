@@ -534,7 +534,76 @@
 .seed-file-row {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.4rem;
+}
+
+.file-view-panel {
+  position: fixed;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  width: min(36rem, calc(100vw - 1rem));
+  max-height: min(75vh, 36rem);
+  padding: 0.65rem 0.75rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: #141c28;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  color: #e8eef6;
+}
+
+.file-view-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
+  font-size: 0.85rem;
+}
+
+.file-view-header strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-view-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.file-view-copy {
+  font: inherit;
+  font-size: 0.68rem;
+  line-height: 1.2;
+  padding: 0.15rem 0.4rem;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(0, 0, 0, 0.3);
+  color: inherit;
+  cursor: pointer;
+}
+
+.file-view-copy:hover {
+  border-color: rgba(196, 163, 90, 0.55);
+}
+
+.file-view-body {
+  margin: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: 0.45rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, monospace;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  white-space: pre;
 }
 
 .seed-file-label,

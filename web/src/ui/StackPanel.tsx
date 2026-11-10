@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { readOffFile } from "../io/loadOff";
 import type { LibraryInputFile } from "../library/types";
 import { saveTextFile } from "../io/saveTextFile";
@@ -1013,6 +1014,103 @@ function EditorTitle({
   );
 }
 
+function FileTextPanel({
+  file,
+  anchor,
+  onClose,
+}: {
+  file: LibraryInputFile;
+  anchor: HTMLButtonElement | null;
+  onClose: () => void;
+}) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const copiedTimer = useRef<number | null>(null);
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(
+    () => () => {
+      if (copiedTimer.current !== null) window.clearTimeout(copiedTimer.current);
+    },
+    [],
+  );
+
+  const copyText = () => {
+    void navigator.clipboard.writeText(file.text).then(() => {
+      setCopied(true);
+      if (copiedTimer.current !== null) window.clearTimeout(copiedTimer.current);
+      copiedTimer.current = window.setTimeout(() => {
+        copiedTimer.current = null;
+        setCopied(false);
+      }, 1500);
+    }, () => {});
+  };
+
+  useLayoutEffect(() => {
+    const place = () => {
+      const width = Math.min(560, window.innerWidth - 16);
+      const rect = anchor?.getBoundingClientRect();
+      let left = (rect?.right ?? 16) + 8;
+      if (left + width > window.innerWidth - 8) left = Math.max(8, window.innerWidth - width - 8);
+      const height = panelRef.current?.offsetHeight ?? Math.min(window.innerHeight * 0.75, 560);
+      let top = rect?.top ?? 48;
+      if (top + height > window.innerHeight - 8) top = Math.max(8, window.innerHeight - height - 8);
+      setPos({ top, left });
+    };
+    place();
+    const frame = requestAnimationFrame(place);
+    window.addEventListener("resize", place);
+    window.addEventListener("scroll", place, true);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("resize", place);
+      window.removeEventListener("scroll", place, true);
+    };
+  }, [anchor, file.text]);
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    const onPointer = (event: MouseEvent) => {
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (panelRef.current?.contains(target) || anchor?.contains(target)) return;
+      onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("mousedown", onPointer);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("mousedown", onPointer);
+    };
+  }, [anchor, onClose]);
+
+  return createPortal(
+    <div
+      ref={panelRef}
+      className="file-view-panel"
+      role="dialog"
+      aria-label={file.fileName || "File"}
+      style={pos ? { top: pos.top, left: pos.left } : { visibility: "hidden" }}
+    >
+      <header className="file-view-header">
+        <strong>{file.fileName || "File"}</strong>
+        <div className="file-view-actions">
+          <button type="button" className="file-view-copy" onClick={copyText}>
+            {copied ? "Copied" : "Copy"}
+          </button>
+          <button type="button" className="tool-info-close" aria-label="Close" onClick={onClose}>
+            ×
+          </button>
+        </div>
+      </header>
+      <pre className="file-view-body">{file.text}</pre>
+    </div>,
+    document.body,
+  );
+}
+
 function SeedFileBar({
   file,
   used,
@@ -1025,6 +1123,13 @@ function SeedFileBar({
   onChange: (file: LibraryInputFile | null) => void;
 }) {
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [fileOpen, setFileOpen] = useState(false);
+  const showRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!file) setFileOpen(false);
+  }, [file]);
+
   return (
     <div className="seed-file">
       <div className="seed-file-row">
@@ -1033,11 +1138,25 @@ function SeedFileBar({
           {file ? "Replace" : "Load"}
         </button>
         {file ? (
+          <button
+            ref={showRef}
+            type="button"
+            className="tool-btn"
+            aria-expanded={fileOpen}
+            onClick={() => setFileOpen((open) => !open)}
+          >
+            Show
+          </button>
+        ) : null}
+        {file ? (
           <button type="button" className="tool-btn" onClick={() => onChange(null)}>
             Clear
           </button>
         ) : null}
       </div>
+      {file && fileOpen ? (
+        <FileTextPanel file={file} anchor={showRef.current} onClose={() => setFileOpen(false)} />
+      ) : null}
       <input
         ref={inputRef}
         type="file"
