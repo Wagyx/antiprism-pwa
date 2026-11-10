@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
-import { BookOpen, Box, EllipsisVertical, Folder, Link } from "lucide-react";
+import { ArrowDown, ArrowUp, BookOpen, Box, EllipsisVertical, Folder, Link } from "lucide-react";
 import { createPortal } from "react-dom";
 import { EXTERNAL_LIBRARIES, type ExternalLibrary } from "../library/externalLibraries";
 import { entryCommand } from "../library/snapshot";
@@ -22,6 +22,7 @@ import type {
 import { APP_VERSION } from "../version";
 import { AboutButton } from "./AboutButton";
 import { CliPipelineDialog, type CliImportRow } from "./CliPipelineDialog";
+import { MenuSelect } from "./MenuSelect";
 import { useDismissDetails } from "./useDismissDetails";
 
 type Props = {
@@ -153,13 +154,48 @@ type RenameState = {
   original: string;
 };
 
+type EntrySort = "name" | "date" | "vertices" | "edges" | "faces";
+type SortDirection = "asc" | "desc";
+
+const ENTRY_SORTS: { value: EntrySort; label: string }[] = [
+  { value: "name", label: "Name" },
+  { value: "date", label: "Date" },
+  { value: "vertices", label: "Vertices" },
+  { value: "edges", label: "Edges" },
+  { value: "faces", label: "Faces" },
+];
+
 function byName(a: { name: string }, b: { name: string }): number {
   return a.name.localeCompare(b.name, undefined, { sensitivity: "base" });
 }
 
-function sortedNodes(nodes: LibraryNode[]): LibraryNode[] {
+function compareEntries(
+  a: LibraryEntry,
+  b: LibraryEntry,
+  sort: EntrySort,
+  direction: SortDirection,
+): number {
+  const sign = direction === "asc" ? 1 : -1;
+  const byCount = (left: number, right: number) => sign * (left - right) || byName(a, b);
+  switch (sort) {
+    case "date":
+      return sign * a.modifiedAt.localeCompare(b.modifiedAt) || byName(a, b);
+    case "vertices":
+      return byCount(a.counts.nVertices, b.counts.nVertices);
+    case "edges":
+      return byCount(a.counts.nEdges, b.counts.nEdges);
+    case "faces":
+      return byCount(a.counts.nFaces, b.counts.nFaces);
+    default:
+      return sign * byName(a, b);
+  }
+}
+
+function sortedNodes(nodes: LibraryNode[], sort: EntrySort, direction: SortDirection): LibraryNode[] {
   const folders = nodes.filter((node) => node.type === "folder").sort(byName);
-  const entries = nodes.filter((node) => node.type === "entry").sort(byName);
+  const entries = nodes
+    .filter((node) => node.type === "entry")
+    .sort((a, b) => compareEntries(a, b, sort, direction));
   return [...folders, ...entries];
 }
 
@@ -284,6 +320,8 @@ export function LibraryPanel({
   const [moveOpen, setMoveOpen] = useState(false);
   const [cliOpen, setCliOpen] = useState(false);
   const [importStatus, setImportStatus] = useState<string | null>(null);
+  const [entrySort, setEntrySort] = useState<EntrySort>("name");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
   const [draggingIds, setDraggingIds] = useState<string[] | null>(null);
   const [dropKey, setDropKey] = useState<string | null>(null);
   const [fileDropKey, setFileDropKey] = useState<string | null>(null);
@@ -865,9 +903,13 @@ export function LibraryPanel({
     }
   }
 
-  const visibleNodes = openLibrary && openFolder ? sortedNodes(openFolder.children) : [];
+  const visibleNodes =
+    openLibrary && openFolder ? sortedNodes(openFolder.children, entrySort, sortDirection) : [];
+  const searchHits = [...(search.hits ?? [])].sort((a, b) =>
+    compareEntries(a.entry, b.entry, entrySort, sortDirection),
+  );
   const dirItems: DirItem[] = searching
-    ? (search.hits ?? []).map((hit) => ({
+    ? searchHits.map((hit) => ({
         key: nodeKey(hit.libraryId, hit.entry.id),
         kind: "entry" as const,
         libraryId: hit.libraryId,
@@ -977,7 +1019,7 @@ export function LibraryPanel({
   };
 
   const visiblePicks: Pick[] = searching
-    ? (search.hits ?? []).map((hit) => ({ libraryId: hit.libraryId, nodeId: hit.entry.id }))
+    ? searchHits.map((hit) => ({ libraryId: hit.libraryId, nodeId: hit.entry.id }))
     : openLibrary
       ? visibleNodes.map((node) => ({ libraryId: openLibrary.id, nodeId: node.id }))
       : [];
@@ -1218,6 +1260,31 @@ export function LibraryPanel({
             </details>
           </>
         )}
+        {openLibrary || searching ? (
+          <div className="lib-sort">
+            <span className="lib-sort-label">Sort:</span>
+            <MenuSelect
+              className="lib-sort-field"
+              value={entrySort}
+              options={ENTRY_SORTS}
+              aria-label="Sort entries"
+              onChange={(value) => setEntrySort(value as EntrySort)}
+            />
+            <button
+              type="button"
+              className="tool-btn lib-sort-order"
+              aria-label={sortDirection === "asc" ? "Increasing order" : "Decreasing order"}
+              title={sortDirection === "asc" ? "Increasing order" : "Decreasing order"}
+              onClick={() => setSortDirection((direction) => (direction === "asc" ? "desc" : "asc"))}
+            >
+              {sortDirection === "asc" ? (
+                <ArrowUp size={14} strokeWidth={1.75} aria-hidden />
+              ) : (
+                <ArrowDown size={14} strokeWidth={1.75} aria-hidden />
+              )}
+            </button>
+          </div>
+        ) : null}
         {picked.length > 0 ? (
           <>
             {/* <span className="lib-picked">{picked.length} selected</span> */}
@@ -1330,10 +1397,10 @@ export function LibraryPanel({
         }}
       >
         {searching ? (
-          search.error || !search.hits ? null : search.hits.length === 0 ? (
+          search.error || !search.hits ? null : searchHits.length === 0 ? (
             <p className="lib-empty">No matches.</p>
           ) : (
-            search.hits.map((hit, index) => (
+            searchHits.map((hit, index) => (
               <EntryCard
                 key={`${hit.libraryId}:${hit.entry.id}`}
                 entry={hit.entry}

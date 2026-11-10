@@ -1440,14 +1440,52 @@
   z-index: 3;
 }
 
+.lib-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: auto;
+}
+
+.lib-sort-label {
+  font-size: 0.72rem;
+  opacity: 0.7;
+}
+
+.lib-sort .lib-sort-field > .add-op-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: auto;
+  min-width: 0;
+}
+
+.lib-sort .lib-sort-field > .add-op-btn::after {
+  float: none;
+}
+
+.lib-sort .lib-sort-field > .add-op-menu {
+  right: auto;
+  width: max-content;
+  min-width: 100%;
+}
+
+.lib-sort-order {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.7rem;
+  padding-inline: 0;
+}
+
 .lib-toolbar .add-op-btn {
   width: auto;
-  min-width: 7.5rem;
+  min-width: 5rem;
 }
 
 .lib-toolbar .add-op-menu {
   right: auto;
-  min-width: 12rem;
+  min-width: 8rem;
 }
 
 .lib-picked {
