@@ -322,6 +322,7 @@ export function LibraryPanel({
   const [importStatus, setImportStatus] = useState<string | null>(null);
   const [entrySort, setEntrySort] = useState<EntrySort>("name");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [externalsOpen, setExternalsOpen] = useState(false);
   const [draggingIds, setDraggingIds] = useState<string[] | null>(null);
   const [dropKey, setDropKey] = useState<string | null>(null);
   const [fileDropKey, setFileDropKey] = useState<string | null>(null);
@@ -447,7 +448,7 @@ export function LibraryPanel({
       } else if (typing(event.target)) {
         return;
       }
-      if (kb.blocked || document.querySelector(".library-panel details[open]:not(.lib-advanced)")) return;
+      if (kb.blocked || document.querySelector(".library-panel details[open]:not(.lib-advanced, .lib-external)")) return;
       if (event.key === "Enter") {
         if (
           event.target instanceof HTMLElement &&
@@ -922,11 +923,13 @@ export function LibraryPanel({
             kind: "library" as const,
             libraryId: library.id,
           })),
-          ...EXTERNAL_LIBRARIES.map((library) => ({
-            key: `external:${library.id}`,
-            kind: "external" as const,
-            url: library.url,
-          })),
+          ...(externalsOpen
+            ? EXTERNAL_LIBRARIES.map((library) => ({
+                key: `external:${library.id}`,
+                kind: "external" as const,
+                url: library.url,
+              }))
+            : []),
         ]
       : openFolder
         ? [
@@ -1527,15 +1530,22 @@ export function LibraryPanel({
                     fileDrop={fileDropKey === `lib:${library.id}`}
                   />
                 ))}
-                <h2 className="lib-section">External libraries</h2>
-                {EXTERNAL_LIBRARIES.map((library) => (
-                  <ExternalLibraryCard
-                    key={library.id}
-                    library={library}
-                    selected={currentKey === `external:${library.id}`}
-                    onOpen={() => addExternal(library.url)}
-                  />
-                ))}
+                <details
+                  className="lib-external"
+                  onToggle={(event) => setExternalsOpen(event.currentTarget.open)}
+                >
+                  <summary>External libraries</summary>
+                  <div className="lib-external-grid">
+                    {EXTERNAL_LIBRARIES.map((library) => (
+                      <ExternalLibraryCard
+                        key={library.id}
+                        library={library}
+                        selected={currentKey === `external:${library.id}`}
+                        onOpen={() => addExternal(library.url)}
+                      />
+                    ))}
+                  </div>
+                </details>
               </>
             ) : null}
 

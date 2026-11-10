@@ -1340,9 +1340,8 @@
 }
 
 .lib-advanced > summary {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
   gap: 0.4rem;
   list-style: none;
   cursor: pointer;
@@ -1358,7 +1357,7 @@
   display: none;
 }
 
-.lib-advanced > summary::after {
+.lib-advanced > summary::before {
   content: "▾";
   opacity: 0.55;
 }
@@ -1552,12 +1551,40 @@
   background: rgba(196, 163, 90, 0.08);
 }
 
-.lib-section {
+.lib-external {
   grid-column: 1 / -1;
-  margin: 0.85rem 0 0.05rem;
+  margin-top: 0.85rem;
+}
+
+.lib-external > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  list-style: none;
+  cursor: pointer;
   font-family: "IBM Plex Serif", Georgia, serif;
   font-size: 0.95rem;
   font-weight: 600;
+}
+
+.lib-external > summary::-webkit-details-marker,
+.lib-external > summary::marker {
+  content: none;
+  display: none;
+}
+
+.lib-external > summary::before {
+  content: "▾";
+  font-size: 0.72rem;
+  font-weight: 400;
+  opacity: 0.55;
+}
+
+.lib-external-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
+  gap: 0.45rem;
+  margin-top: 0.35rem;
 }
 
 a.lib-card {
