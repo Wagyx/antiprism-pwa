@@ -37,7 +37,7 @@ function edgeLengths(vertices: number[][], edges: number[][]): number[] {
   return lengths;
 }
 
-function clustered(sorted: number[]): LengthBin[] | null {
+function clustered(sorted: number[], limit: number): LengthBin[] | null {
   const clusters: { sum: number; count: number }[] = [];
   for (const value of sorted) {
     const last = clusters[clusters.length - 1];
@@ -48,18 +48,18 @@ function clustered(sorted: number[]): LengthBin[] | null {
       clusters.push({ sum: value, count: 1 });
     }
   }
-  if (clusters.length > MAX_BINS) return null;
+  if (clusters.length > limit) return null;
   return clusters.map((cluster) => ({
     length: cluster.sum / cluster.count,
     count: cluster.count,
   }));
 }
 
-function equalWidth(sorted: number[]): LengthBin[] {
+function equalWidth(sorted: number[], limit: number): LengthBin[] {
   const min = sorted[0] ?? 0;
   const max = sorted[sorted.length - 1] ?? min;
   const span = max - min;
-  const bins = Math.min(MAX_BINS, sorted.length);
+  const bins = Math.min(limit, sorted.length);
   if (bins <= 1 || span === 0) return [{ length: min, count: sorted.length }];
   const width = span / bins;
   const counts = Array.from({ length: bins }, () => 0);
@@ -77,7 +77,22 @@ function equalWidth(sorted: number[]): LengthBin[] {
 export function histogram(values: number[]): LengthBin[] {
   if (values.length === 0) return [];
   const sorted = [...values].sort((a, b) => a - b);
-  return clustered(sorted) ?? equalWidth(sorted);
+  const min = sorted[0] ?? 0;
+  const max = sorted[sorted.length - 1] ?? min;
+  if (sameLength(min, max)) return [{ length: min, count: sorted.length }];
+
+  const shortest = { length: min, count: 0 };
+  const longest = { length: max, count: 0 };
+  const middle: number[] = [];
+  for (const value of sorted) {
+    if (sameLength(value, min)) shortest.count += 1;
+    else if (sameLength(value, max)) longest.count += 1;
+    else middle.push(value);
+  }
+  const room = Math.max(1, MAX_BINS - 2);
+  const between =
+    middle.length === 0 ? [] : (clustered(middle, room) ?? equalWidth(middle, room)).filter((bin) => bin.count > 0);
+  return [shortest, ...between, longest];
 }
 
 export function geometryOf(offText: string): GeometryStats | null {
