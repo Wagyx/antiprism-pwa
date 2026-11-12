@@ -1973,22 +1973,18 @@ function ExternalLibraryCard({
   onOpen: () => void;
 }) {
   return (
-    <a
+    <article
       className={`lib-card${selected ? " is-selected" : ""}`}
       data-dir={`external:${library.id}`}
-      href={library.url}
+      tabIndex={0}
       aria-label={library.name}
       title={selected ? undefined : "Add this library"}
       onClick={(event) => {
-        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
-        event.preventDefault();
+        if (event.target instanceof Element && event.target.closest("a")) return;
         onOpen();
       }}
       onKeyDown={(event) => {
-        if (event.key === "Enter") {
-          event.preventDefault();
-          onOpen();
-        }
+        if (event.key === "Enter" && event.target === event.currentTarget) onOpen();
       }}
     >
       <div className="lib-card-head">
@@ -1997,7 +1993,21 @@ function ExternalLibraryCard({
           <span className="lib-card-name">{library.name}</span>
         </div>
       </div>
-    </a>
+      {library.description ? (
+        <p
+          className="lib-external-desc"
+          onClick={(event) => {
+            const link = event.target instanceof Element ? event.target.closest("a") : null;
+            if (!link) return;
+            event.preventDefault();
+            event.stopPropagation();
+            const href = link.getAttribute("href");
+            if (href) window.open(href, "_blank", "noopener,noreferrer");
+          }}
+          dangerouslySetInnerHTML={{ __html: library.description }}
+        />
+      ) : null}
+    </article>
   );
 }
 

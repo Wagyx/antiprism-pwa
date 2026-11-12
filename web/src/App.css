@@ -1788,6 +1788,22 @@
   margin-top: 0.35rem;
 }
 
+.lib-external-desc {
+  margin: 0;
+  font-size: 0.68rem;
+  line-height: 1.35;
+  opacity: 0.75;
+  overflow-wrap: anywhere;
+}
+
+.lib-external-desc a {
+  color: #c4a35a;
+}
+
+.lib-external-desc a:hover {
+  text-decoration: underline;
+}
+
 a.lib-card {
   color: inherit;
   text-decoration: none;
