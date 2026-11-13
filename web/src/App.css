@@ -118,6 +118,36 @@
   background: rgba(196, 163, 90, 0.25);
 }
 
+.app.is-view-closed {
+  grid-template-columns: var(--panel-width) 6px minmax(0, 1fr) 1.75rem 0px;
+}
+
+.view-panel-toggle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.75rem 0;
+  border: 0;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(10, 14, 20, 0.55);
+  color: inherit;
+  cursor: pointer;
+}
+
+.view-panel-toggle span {
+  writing-mode: vertical-rl;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.view-panel-toggle:hover {
+  background: rgba(196, 163, 90, 0.25);
+}
+
 .field {
   display: flex;
   flex-direction: column;
@@ -1978,8 +2008,6 @@ a.lib-card {
 
 .lib-grid.is-list .lib-card-menu {
   position: static;
-  opacity: 1;
-  pointer-events: auto;
 }
 
 .lib-card-menu-btn {
@@ -2224,6 +2252,24 @@ a.lib-card {
 
   .panel-resizer {
     display: none;
+  }
+
+  .app.is-view-closed {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(160px, 34vh) minmax(0, 1fr) auto;
+  }
+
+  .view-panel-toggle {
+    flex-direction: row;
+    width: 100%;
+    min-height: 2rem;
+    border-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .view-panel-toggle span {
+    writing-mode: horizontal-tb;
+    letter-spacing: 0.08em;
   }
 
   .cli-row {

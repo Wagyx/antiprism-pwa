@@ -1,3 +1,4 @@
+import { ChevronLeft } from "lucide-react";
 import {
   useCallback,
   useEffect,
@@ -89,6 +90,8 @@ function PanelResizer({
   max,
   grow,
   onWidth,
+  onCollapseDrag,
+  onCollapse,
 }: {
   label: string;
   width: number;
@@ -96,28 +99,41 @@ function PanelResizer({
   max: number;
   grow: 1 | -1;
   onWidth: (width: number) => void;
+  onCollapseDrag?: (width: number | null) => void;
+  onCollapse?: () => void;
 }) {
-  const dragRef = useRef<{ startX: number; startW: number } | null>(null);
+  const dragRef = useRef<{ startX: number; startW: number; collapsed: boolean } | null>(null);
 
   const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
     e.preventDefault();
-    dragRef.current = { startX: e.clientX, startW: width };
+    dragRef.current = { startX: e.clientX, startW: width, collapsed: false };
     e.currentTarget.setPointerCapture(e.pointerId);
   };
 
   const onPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
-    if (!dragRef.current) return;
-    const dx = (e.clientX - dragRef.current.startX) * grow;
-    onWidth(Math.min(max, Math.max(min, dragRef.current.startW + dx)));
+    const drag = dragRef.current;
+    if (!drag) return;
+    const next = drag.startW + (e.clientX - drag.startX) * grow;
+    if (onCollapseDrag && next < min) {
+      drag.collapsed = true;
+      onCollapseDrag(Math.max(0, next));
+      return;
+    }
+    drag.collapsed = false;
+    onCollapseDrag?.(null);
+    onWidth(Math.min(max, Math.max(min, next)));
   };
 
   const onPointerUp = (e: ReactPointerEvent<HTMLDivElement>) => {
+    const collapsed = dragRef.current?.collapsed ?? false;
     dragRef.current = null;
     try {
       e.currentTarget.releasePointerCapture(e.pointerId);
     } catch {
       /* already released */
     }
+    if (collapsed) onCollapse?.();
+    onCollapseDrag?.(null);
   };
 
   return (
@@ -166,6 +182,9 @@ export default function App() {
   const [stepText, setStepText] = useState<Record<string, string>>({});
   const [panelWidth, setPanelWidth] = useState(PANEL_DEFAULT);
   const [viewPanelWidth, setViewPanelWidth] = useState(VIEW_DEFAULT);
+  const [viewOpen, setViewOpen] = useState(true);
+  const [viewDragWidth, setViewDragWidth] = useState<number | null>(null);
+  const viewShown = viewOpen ? (viewDragWidth ?? viewPanelWidth) : 0;
 
   const latestRun = useRef(0);
   const lastRunKey = useRef<string>("");
@@ -596,10 +615,10 @@ export default function App() {
 
   return (
     <div
-      className="app"
+      className={viewOpen ? "app" : "app is-view-closed"}
       style={{
         ["--panel-width" as string]: `${panelWidth}px`,
-        ["--view-panel-width" as string]: `${viewPanelWidth}px`,
+        ["--view-panel-width" as string]: `${viewShown}px`,
       }}
     >
       {editorOpen && session ? (
@@ -684,20 +703,36 @@ export default function App() {
         onWidth={setPanelWidth}
       />
       {stage}
-      <PanelResizer
-        label="Resize view panel"
-        width={viewPanelWidth}
-        min={VIEW_MIN}
-        max={VIEW_MAX}
-        grow={-1}
-        onWidth={setViewPanelWidth}
-      />
-      <ViewPanel
-        offText={viewOffText}
-        display={display}
-        onDisplay={setDisplay}
-        onResetCamera={() => setCameraResetKey((key) => key + 1)}
-      />
+      {viewOpen ? (
+        <PanelResizer
+          label="Resize view panel"
+          width={viewPanelWidth}
+          min={VIEW_MIN}
+          max={VIEW_MAX}
+          grow={-1}
+          onWidth={setViewPanelWidth}
+          onCollapseDrag={setViewDragWidth}
+          onCollapse={() => setViewOpen(false)}
+        />
+      ) : (
+        <button
+          type="button"
+          className="view-panel-toggle"
+          aria-label="Show view panel"
+          onClick={() => setViewOpen(true)}
+        >
+          <ChevronLeft size={16} aria-hidden="true" />
+          <span>Display & Stats</span>
+        </button>
+      )}
+      {viewOpen ? (
+        <ViewPanel
+          offText={viewOffText}
+          display={display}
+          onDisplay={setDisplay}
+          onResetCamera={() => setCameraResetKey((key) => key + 1)}
+        />
+      ) : null}
       {saveMode && session ? (
         <SavePolyhedronDialog
           libraries={library.libraries}
