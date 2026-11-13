@@ -19,6 +19,7 @@ import type {
   LibraryLocation,
   LibraryNode,
 } from "../library/types";
+import { beginPreviewScope, previewKey, previewUrl, requestPreview, subscribePreview } from "../viewer/previewQueue";
 import { APP_VERSION } from "../version";
 import { AboutButton } from "./AboutButton";
 import { CliPipelineDialog, type CliImportRow } from "./CliPipelineDialog";
@@ -911,6 +912,20 @@ export function LibraryPanel({
   const searchHits = [...(search.hits ?? [])].sort((a, b) =>
     compareEntries(a.entry, b.entry, entrySort, sortDirection),
   );
+  const previewScope =
+    libraryView !== "cards"
+      ? ""
+      : searching
+        ? searchHits.map((hit) => previewKey(hit.libraryId, hit.entry.id, hit.entry.modifiedAt)).join("\n")
+        : openLibrary
+          ? visibleNodes
+              .filter((node) => node.type === "entry")
+              .map((node) => previewKey(openLibrary.id, node.id, node.modifiedAt))
+              .join("\n")
+          : "";
+  useEffect(() => {
+    beginPreviewScope();
+  }, [previewScope]);
   const dirItems: DirItem[] = searching
     ? searchHits.map((hit) => ({
         key: nodeKey(hit.libraryId, hit.entry.id),
@@ -1141,6 +1156,7 @@ export function LibraryPanel({
       </p>
 
       <div className="lib-toolbar">
+        <div className="lib-toolbar-actions">
         {!openLibrary ? (
           <>
             <button
@@ -1264,6 +1280,16 @@ export function LibraryPanel({
             </details>
           </>
         )}
+        <button
+          type="button"
+          className="tool-btn"
+          disabled={picked.length === 0}
+          onClick={() => setConfirmDelete(picked)}
+        >
+          Delete
+        </button>
+        </div>
+        <div className="lib-toolbar-browse">
         {openLibrary || searching ? (
           <div className="lib-sort">
             <span className="lib-sort-label">Sort:</span>
@@ -1311,14 +1337,7 @@ export function LibraryPanel({
             <List size={14} strokeWidth={1.75} aria-hidden />
           </button>
         </div>
-        {picked.length > 0 ? (
-          <>
-            {/* <span className="lib-picked">{picked.length} selected</span> */}
-            <button type="button" className="tool-btn" onClick={() => setConfirmDelete(picked)}>
-              Delete
-            </button>
-          </>
-        ) : null}
+        </div>
       </div>
       <input
         ref={importRef}
@@ -1429,6 +1448,8 @@ export function LibraryPanel({
             searchHits.map((hit, index) => (
               <EntryCard
                 key={`${hit.libraryId}:${hit.entry.id}`}
+                libraryId={hit.libraryId}
+                preview={libraryView === "cards"}
                 entry={hit.entry}
                 dirKey={nodeKey(hit.libraryId, hit.entry.id)}
                 command={hit.command}
@@ -1502,6 +1523,7 @@ export function LibraryPanel({
                   if (event.key === "Enter" && event.target === event.currentTarget) goUp();
                 }}
               >
+                {libraryView === "cards" ? <CardPreviewIcon kind={parentKind} /> : null}
                 <div className="lib-card-head">
                   <div className="lib-card-title">
                     <KindIcon kind={parentKind} />
@@ -1578,6 +1600,7 @@ export function LibraryPanel({
                     <FolderCard
                       key={node.id}
                       folder={node}
+                      preview={libraryView === "cards"}
                       dirKey={nodeKey(openLibrary.id, node.id)}
                       selected={currentKey === nodeKey(openLibrary.id, node.id)}
                       checked={pickedKeys.has(pickKey({ libraryId: openLibrary.id, nodeId: node.id }))}
@@ -1628,6 +1651,8 @@ export function LibraryPanel({
                   ) : (
                     <EntryCard
                       key={node.id}
+                      libraryId={openLibrary.id}
+                      preview={libraryView === "cards"}
                       entry={node}
                       dirKey={nodeKey(openLibrary.id, node.id)}
                       command={entryCommand(node.pipeline)}
@@ -1891,6 +1916,15 @@ function KindIcon({ kind }: { kind: CardKind }) {
   return <Icon className="lib-card-icon" size={16} strokeWidth={1.5} aria-hidden />;
 }
 
+function CardPreviewIcon({ kind }: { kind: CardKind }) {
+  const Icon = KIND_ICONS[kind];
+  return (
+    <div className="lib-card-preview lib-card-preview-icon" aria-hidden>
+      <Icon size={42} strokeWidth={1.25} />
+    </div>
+  );
+}
+
 function CardTitle({
   kind,
   name,
@@ -2037,6 +2071,7 @@ function ExternalLibraryCard({
 
 function FolderCard({
   folder,
+  preview,
   dirKey,
   selected,
   checked,
@@ -2050,6 +2085,7 @@ function FolderCard({
   ...rename
 }: {
   folder: LibraryFolder;
+  preview: boolean;
   dirKey: string;
   selected: boolean;
   checked: boolean;
@@ -2090,6 +2126,7 @@ function FolderCard({
         if (event.key === "Enter" && event.target === event.currentTarget) onOpen();
       }}
     >
+      {preview ? <CardPreviewIcon kind="folder" /> : null}
       <div className="lib-card-head">
         <CardTitle kind="folder" name={folder.name} {...rename} />
         <CardMenu>
@@ -2104,7 +2141,36 @@ function FolderCard({
   );
 }
 
+function useEntryPreview(libraryId: string, entry: LibraryEntry, active: boolean) {
+  const key = previewKey(libraryId, entry.id, entry.modifiedAt);
+  const [url, setUrl] = useState<string | null>(() => previewUrl(key));
+  const ref = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    setUrl(previewUrl(key));
+    return subscribePreview(key, () => setUrl(previewUrl(key)));
+  }, [key]);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!active || !element) return;
+    const root = element.closest(".controls");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((item) => item.isIntersecting)) requestPreview(key, entry.offText);
+      },
+      { root: root instanceof Element ? root : null, rootMargin: "120px" },
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [active, key, entry.offText]);
+
+  return { ref, url };
+}
+
 function EntryCard({
+  libraryId,
+  preview,
   entry,
   dirKey,
   command,
@@ -2122,6 +2188,8 @@ function EntryCard({
   onDelete,
   ...rename
 }: {
+  libraryId: string;
+  preview: boolean;
   entry: LibraryEntry;
   dirKey: string;
   command: string;
@@ -2139,8 +2207,10 @@ function EntryCard({
   onDelete: () => void;
 } & RenameProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { ref, url } = useEntryPreview(libraryId, entry, preview);
   return (
     <article
+      ref={ref}
       className={`lib-card${checked ? " is-checked" : ""}${selected ? " is-selected" : ""}${dragging ? " is-dragging" : ""}`}
       data-dir={dirKey}
       tabIndex={0}
@@ -2162,6 +2232,11 @@ function EntryCard({
         if (event.key === "Enter" && event.target === event.currentTarget) onEdit();
       }}
     >
+      {preview ? (
+        <div className="lib-card-preview">
+          {url ? <img src={url} alt="" /> : null}
+        </div>
+      ) : null}
       <div className="lib-card-head">
         <CardTitle kind="polyhedron" name={entry.name} {...rename} />
         <CardMenu onToggle={setMenuOpen}>
