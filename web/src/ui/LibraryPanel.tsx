@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
-import { ArrowDown, ArrowUp, BookOpen, Box, EllipsisVertical, Folder, Link } from "lucide-react";
+import { ArrowDown, ArrowUp, BookOpen, Box, EllipsisVertical, Folder, LayoutGrid, Link, List } from "lucide-react";
 import { createPortal } from "react-dom";
 import { EXTERNAL_LIBRARIES, type ExternalLibrary } from "../library/externalLibraries";
 import { entryCommand } from "../library/snapshot";
@@ -156,6 +156,7 @@ type RenameState = {
 
 type EntrySort = "name" | "date" | "vertices" | "edges" | "faces";
 type SortDirection = "asc" | "desc";
+type LibraryView = "cards" | "list";
 
 const ENTRY_SORTS: { value: EntrySort; label: string }[] = [
   { value: "name", label: "Name" },
@@ -322,6 +323,7 @@ export function LibraryPanel({
   const [importStatus, setImportStatus] = useState<string | null>(null);
   const [entrySort, setEntrySort] = useState<EntrySort>("name");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [libraryView, setLibraryView] = useState<LibraryView>("cards");
   const [externalsOpen, setExternalsOpen] = useState(false);
   const [draggingIds, setDraggingIds] = useState<string[] | null>(null);
   const [dropKey, setDropKey] = useState<string | null>(null);
@@ -1287,6 +1289,28 @@ export function LibraryPanel({
             </button>
           </div>
         ) : null}
+        <div className="lib-view" role="group" aria-label="Library view">
+          <button
+            type="button"
+            className={`tool-btn lib-view-btn${libraryView === "cards" ? " is-active" : ""}`}
+            aria-pressed={libraryView === "cards"}
+            aria-label="Card view"
+            title="Card view"
+            onClick={() => setLibraryView("cards")}
+          >
+            <LayoutGrid size={14} strokeWidth={1.75} aria-hidden />
+          </button>
+          <button
+            type="button"
+            className={`tool-btn lib-view-btn${libraryView === "list" ? " is-active" : ""}`}
+            aria-pressed={libraryView === "list"}
+            aria-label="List view"
+            title="List view"
+            onClick={() => setLibraryView("list")}
+          >
+            <List size={14} strokeWidth={1.75} aria-hidden />
+          </button>
+        </div>
         {picked.length > 0 ? (
           <>
             {/* <span className="lib-picked">{picked.length} selected</span> */}
@@ -1391,7 +1415,7 @@ export function LibraryPanel({
 
       <div
         ref={gridRef}
-        className={`lib-grid${draggingIds ? " is-dragging" : ""}${fileDropKey === "here" ? " is-file-drop" : ""}`}
+        className={`lib-grid${libraryView === "list" ? " is-list" : ""}${draggingIds ? " is-dragging" : ""}${fileDropKey === "here" ? " is-file-drop" : ""}`}
         onClick={(event) => {
           if (event.target !== event.currentTarget) return;
           setPicked([]);

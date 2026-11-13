@@ -23,28 +23,19 @@ The application has a library manager module. This module allows the user to sto
 - entries have an edit button that opens it in the editor.
 - the browsing lives on the right panel, the left panel shows a live view of the last selected entry (based on the output OFF, there is no need to rerun the whole pipeline)
 
-TODOS Library
-- Double clicking on an entry opens it in the editor, on a folder enters it instead of single clicking
-- entry and folder can be moved to another folder or to parent folder
-- multiple selection for moving entries and folders
-- multiple selection for deletion (with a confirmation popup in red)
-- Button New : dropdown to "Folder", "Polyhedron"
-- Button Export at the libraries level : dropdown to "Export database", "Zip all OFF files"
-
 The application has an editor module that lets the user inspect the polyhedron in a 3D view and call the programs from antiprism. Some operations from antiprism can be piped like the geometry modifiers from Blender.
 
 Let's rework how commands are handled. The raw command pipeline created or loaded by the user is the source of truth. The stack in the editor splits and show the command line operations. Each element does show the command line which should in first instead of last. The text field should be editable. Then the inteface should reflect the fields that it supports and allow modifications back. Also store in the piepline the raw commands instead of the operations.
 Also when creating a polyhedron from CLI, adds an input file for the starting polyhedron.
 
 TODOS:
-- save the raw cli in the json and create a mapper that auto fill in the gui parameters
-- populate an example library based on the examples from the antiprism website
-- move button
-- dropdown buttons have uncecessary down arrow
+- preview image on card
 - settings panel (nothing yet)
 - undo/redo (history wired; UI buttons hidden)
 - importer (WRL ?)
-- should off_util UC2_a22.5 work ?
+- should off_util UC2_a22.5 work ? yes, bug was fixed on my side but not on antiprism yet
+- off_align
+-
 
 ## Antiprism tool support
 

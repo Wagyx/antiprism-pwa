@@ -1678,6 +1678,62 @@
   padding-inline: 0;
 }
 
+.lib-view {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin-left: auto;
+}
+
+.lib-toolbar:has(.lib-sort) .lib-view {
+  margin-left: 0;
+}
+
+.lib-view-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.7rem;
+  padding-inline: 0;
+}
+
+.lib-view-btn.is-active {
+  border-color: rgba(196, 163, 90, 0.7);
+  color: #c4a35a;
+}
+
+.lib-grid.is-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.lib-grid.is-list .lib-card,
+.lib-grid.is-list .lib-card-up {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.28rem 0.45rem;
+}
+
+.lib-grid.is-list .lib-card-head {
+  flex: 1 1 auto;
+  align-items: center;
+}
+
+.lib-grid.is-list .lib-meta,
+.lib-grid.is-list .lib-path,
+.lib-grid.is-list .lib-counts,
+.lib-grid.is-list .lib-external-desc {
+  display: none;
+}
+
+.lib-grid.is-list .lib-external-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
 .lib-toolbar .add-op-btn {
   width: auto;
   min-width: 5rem;
